@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "bundler/gem_tasks"
+require 'bundler/audit/task'
 require "rspec/core/rake_task"
 require "rubocop"
 require "rubocop-rspec"
@@ -16,5 +17,6 @@ RuboCop::RakeTask.new(:rubocop) do |t|
 end
 
 RSpec::Core::RakeTask.new(:rspec)
+Bundler::Audit::Task.new
 
 task default: :rspec
