@@ -1,0 +1,12 @@
+inherit_gem:
+  rubocop-config-umbrellio: lib/rubocop.yml
+
+AllCops:
+  TargetRubyVersion: 2.3
+  Include:
+    - bin/*
+    - lib/**/*.rb
+    - spec/**/*.rb
+    - Gemfile
+    - Rakefile
+    - table_sync.gemspec
