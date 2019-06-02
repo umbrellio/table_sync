@@ -1,4 +1,4 @@
-# TableSync &middot;
+# TableSync &middot; [![Gem Version](https://badge.fury.io/rb/table_sync.svg)](https://badge.fury.io/rb/table_sync) [![Build Status](https://travis-ci.org/umbrellio/table_sync.svg?branch=master)](https://travis-ci.org/umbrellio/table_sync) [![Coverage Status](https://coveralls.io/repos/github/umbrellio/table_sync/badge.svg?branch=master)](https://coveralls.io/github/umbrellio/table_sync?branch=master)
 
 ## Instalation
 
