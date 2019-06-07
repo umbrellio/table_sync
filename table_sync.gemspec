@@ -24,10 +24,20 @@ Gem::Specification.new do |spec|
     f.match(%r{^(test|spec|features)/})
   end
 
+  spec.add_runtime_dependency "rails"
+  spec.add_runtime_dependency "rabbit_messaging", "~> 0.3"
+  spec.add_runtime_dependency "memery"
+
   spec.add_development_dependency "coveralls", "~> 0.8"
   spec.add_development_dependency "rspec", "~> 3.8"
   spec.add_development_dependency "rubocop-config-umbrellio", "~> 0.70"
   spec.add_development_dependency "simplecov", "~> 0.16"
+
+  spec.add_development_dependency "activejob"
+  spec.add_development_dependency "activerecord"
+  spec.add_development_dependency "sequel"
+  spec.add_development_dependency "timecop"
+  spec.add_development_dependency "pg", "~> 0.18"
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "bundler-audit"

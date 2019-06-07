@@ -14,7 +14,7 @@ $ gem install table_sync
 
 ## Usage
 
-Coming soon...
+- [Documentation](docs/synopsis.md)
 
 ## Contributing
 
