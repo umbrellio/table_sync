@@ -23,8 +23,6 @@ require_relative "support/spec_support"
 
 RSpec.configure do |config|
   config.include Rabbit::TestHelpers
-
-  config.order = :random
   Kernel.srand config.seed
 
   config.disable_monkey_patching!

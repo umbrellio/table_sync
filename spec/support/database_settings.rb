@@ -68,5 +68,11 @@ DB.run <<~SQL
     "first_sync_time" timestamp without time zone,
     UNIQUE (ext_id, ext_project_id)
   );
-
 SQL
+
+RSpec.configure do |config|
+  config.before do
+    tables = DB[:pg_tables].where(schemaname: "public").select_map(:tablename)
+    DB.run("TRUNCATE #{tables.join(', ')}")
+  end
+end
