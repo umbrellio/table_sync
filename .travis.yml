@@ -13,6 +13,7 @@ sudo: false
 cache: bundler
 before_install: gem install bundler
 script:
+- mkdir log
 - bundle exec rake bundle:audit
 - bundle exec rubocop
 - bundle exec rspec
