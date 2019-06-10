@@ -13,6 +13,8 @@ sudo: false
 cache: bundler
 services:
   - postgresql
+addons:
+  postgresql: "10"
 before_install: gem install bundler
 script:
 - mkdir log
