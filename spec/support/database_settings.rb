@@ -9,8 +9,8 @@ db_url = "postgres:///#{DB_NAME}"
 
 def connect(db_url)
   Sequel.connect(db_url).tap(&:tables)
-rescue Sequel::DatabaseConnectionError => e
-  raise unless e.message.include? "database \"#{DB_NAME}\" does not exist"
+rescue Sequel::DatabaseConnectionError => error
+  raise unless error.message.include? "database \"#{DB_NAME}\" does not exist"
 
   `createdb #{DB_NAME}`
   Sequel.connect(db_url)

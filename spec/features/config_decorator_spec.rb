@@ -11,8 +11,8 @@ describe TableSync::ConfigDecorator do
                             upsert: upsert_results,
                             destroy: destroy_results
 
-    allow(model).to receive(:transaction) { |&block| block.call }
-    allow(model).to receive(:after_commit) { |&block| block.call }
+    allow(model).to receive(:transaction).and_yield
+    allow(model).to receive(:after_commit).and_yield
 
     model
   end

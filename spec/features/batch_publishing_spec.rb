@@ -12,6 +12,7 @@ describe TableSync::BatchPublisher do
   let(:push_original_attributes) { false }
 
   before { Timecop.freeze("2018-01-01 12:00 UTC") }
+
   before { TableSync.batch_publishing_job_class_callable = -> { TestJob } }
 
   def assert_last_job
@@ -19,9 +20,9 @@ describe TableSync::BatchPublisher do
 
     object_attributes = attributes.map { |attrs| attrs.merge("_aj_symbol_keys" => attrs.keys) }
     job_params = {
-      "confirm"                    => true,
-      "_aj_symbol_keys"            => %w[confirm push_original_attributes],
-      "push_original_attributes"   => push_original_attributes,
+      "confirm" => true,
+      "_aj_symbol_keys" => %w[confirm push_original_attributes],
+      "push_original_attributes" => push_original_attributes,
     }
 
     expect(job[:job]).to eq(TestJob)

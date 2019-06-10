@@ -84,7 +84,7 @@
       end
 
       context "when milti update" do
-        it "creates" do # rubocop:disable RSpec/ExampleLength
+        it "creates" do
           result = clients.upsert(
             data: [
               { client_id: 1, project_id: 1, name: "test", ext_id: 1, ext_project_id: 1,
@@ -234,7 +234,7 @@
           end
 
           context "when multi update" do
-            it "updates by composite unique constraint" do # rubocop:disable RSpec/ExampleLength
+            it "updates by composite unique constraint" do
               pending if described_class == TableSync::Model::ActiveRecord
 
               result = clients.upsert(
@@ -352,7 +352,7 @@
           end
 
           context "when multi update" do
-            it "updates by pk" do # rubocop:disable RSpec/ExampleLength
+            it "updates by pk" do
               result = users.upsert(
                 data: [
                   { id: 1, name: "test2", ext_id: 222, ext_project_id: 222, version: 124 },
@@ -392,7 +392,7 @@
     end
 
     describe "#destroy" do
-      it "destroys in table with composite primary keys" do # rubocop:disable RSpec/ExampleLength
+      it "destroys in table with composite primary keys" do
         pending if described_class == TableSync::Model::ActiveRecord
 
         DB[:clients].multi_insert([
@@ -426,7 +426,7 @@
         }])
       end
 
-      it "destroys im table without composite primary keys" do # rubocop:disable RSpec/ExampleLength
+      it "destroys im table without composite primary keys" do
         DB[:players].multi_insert([
           {
             external_id: 111,
@@ -470,8 +470,8 @@
             items.after_commit { checks[0] = "test_after_commit" }
             raise "test error"
           end
-        rescue => e
-          raise e if e.message != "test error"
+        rescue => error
+          raise error if error.message != "test error"
         end
 
         expect(checks).to eq([])

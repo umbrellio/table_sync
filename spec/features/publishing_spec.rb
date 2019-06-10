@@ -52,8 +52,8 @@ RSpec.describe TableSync::Publisher do
 
       object_attributes = attributes.merge("_aj_symbol_keys" => attributes.keys)
       job_params = {
-        "state"           => state.to_s,
-        "confirm"         => true,
+        "state" => state.to_s,
+        "confirm" => true,
         "_aj_symbol_keys" => %w[state confirm],
       }
 
@@ -110,17 +110,17 @@ RSpec.describe TableSync::Publisher do
     end
 
     def expect_message(event, attributes, created:)
-      expect_rabbit_message(routing_key:    routing_key,
-                            event:          :table_sync,
+      expect_rabbit_message(routing_key: routing_key,
+                            event: :table_sync,
                             confirm_select: true,
-                            realtime:       true,
-                            headers:        headers,
+                            realtime: true,
+                            headers: headers,
                             data: {
-                              event:      event,
-                              model:      expected_model_name,
+                              event: event,
+                              model: expected_model_name,
                               attributes: attributes,
-                              version:    Time.now.to_f,
-                              metadata:   { created: created },
+                              version: Time.now.to_f,
+                              metadata: { created: created },
                             })
     end
 

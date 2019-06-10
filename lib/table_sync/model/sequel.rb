@@ -66,7 +66,7 @@ module TableSync::Model
     end
 
     def type_cast(data)
-      data.map { |d| raw_model.new(d).values.keep_if { |k| d.keys.include?(k) } }
+      data.map { |d| raw_model.new(d).values.keep_if { |k| d.key?(k) } }
     end
 
     def update_spec(keys)

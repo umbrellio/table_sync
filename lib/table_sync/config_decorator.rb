@@ -9,7 +9,7 @@ module TableSync
       @handler = handler
     end
 
-    def method_missing(name, *args) # rubocop:disable Style/MethodMissing
+    def method_missing(name, *args)
       value = @config.send(name)
 
       if value.is_a?(Proc)

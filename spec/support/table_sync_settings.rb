@@ -1,3 +1,3 @@
-# frozen_string_literals: true
+# frozen_string_literal: true
 
 TableSync.orm = :active_record

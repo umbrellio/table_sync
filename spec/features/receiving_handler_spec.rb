@@ -180,10 +180,10 @@ describe TableSync::ReceivingHandler do
           .to eq(update1: 1, update2: 1, update3: 1, destroy: 0, before_commit_update: 1)
 
         # Insert a random client to make sure destroy does not delete everything
-        DB[:clients].insert(client_id:      34,
-                            project_id:     22,
-                            name:           "test",
-                            ext_id:         35,
+        DB[:clients].insert(client_id: 34,
+                            project_id: 22,
+                            name: "test",
+                            ext_id: 35,
                             ext_project_id: 36)
 
         fire_destroy_event
@@ -412,7 +412,7 @@ describe TableSync::ReceivingHandler do
           )
         end
 
-        specify do # rubocop:disable RSpec/ExampleLength
+        specify do
           expect(DB[:players_part_1].count).to eq(2)
           expect(DB[:players_part_1].first).to match(
             email: "mail@example.com",
