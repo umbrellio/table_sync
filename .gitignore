@@ -9,3 +9,4 @@
 .ruby-version
 Gemfile.lock
 /log/
+*.gem
