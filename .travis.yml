@@ -10,14 +10,18 @@ matrix:
   allow_failures:
   - rvm: ruby-head
 sudo: false
+dist: xenial
 cache: bundler
 services:
   - postgresql
 addons:
   postgresql: "10"
 before_install: gem install bundler
+before_script:
+  - psql -c 'create database table_sync_test;' -U postgres
 script:
 - mkdir log
 - bundle exec rake bundle:audit
 - bundle exec rubocop
 - bundle exec rspec
+
