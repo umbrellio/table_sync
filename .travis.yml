@@ -11,6 +11,8 @@ matrix:
   - rvm: ruby-head
 sudo: false
 cache: bundler
+services:
+  - postgresql
 before_install: gem install bundler
 script:
 - mkdir log
