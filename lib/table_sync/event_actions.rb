@@ -2,7 +2,7 @@
 
 module TableSync
   module EventActions
-    def update(data)
+    def update(data) # rubocop:disable Metrics/MethodLength
       model.transaction do
         args = {
           data: data,
@@ -53,8 +53,8 @@ module TableSync
       end
     end
 
-    def correct_keys?(x)
-      x.uniq { |d| d.slice(*target_keys) }.size == x.size
+    def correct_keys?(query_results)
+      query_results.uniq { |d| d.slice(*target_keys) }.size == query_results.size
     end
   end
 end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module TableSync
+  # rubocop:disable Style/MissingRespondToMissing, Style/MethodMissingSuper
   class ConfigDecorator
     include ::TableSync::EventActions
 
@@ -30,4 +31,5 @@ module TableSync
       @config.allow_event?(event)
     end
   end
+  # rubocop:enable Style/MissingRespondToMissing, Style/MethodMissingSuper
 end
