@@ -8,6 +8,14 @@ class TableSync::ReceivingHandler < Rabbit::EventHandler
   attribute :version
 
   def call
+    ActiveSupport::Notifications.instrument instrument_name, instrument_payload do
+      run
+    end
+  end
+
+  private
+
+  def run
     raise TableSync::UndefinedConfig.new(model) if configs.blank?
 
     configs.each do |config|
@@ -28,8 +36,6 @@ class TableSync::ReceivingHandler < Rabbit::EventHandler
       end
     end
   end
-
-  private
 
   def data=(data)
     @data = data[:attributes]
@@ -72,5 +78,16 @@ class TableSync::ReceivingHandler < Rabbit::EventHandler
         row unless config.skip(original_row_for_data)
       end.compact.presence
     end.compact
+  end
+
+  def instrument_name
+    "tablesync.receive.#{event}"
+  end
+
+  def instrument_payload
+    {
+      event: event,
+      model: model,
+    }
   end
 end

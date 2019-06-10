@@ -244,3 +244,19 @@ after_commit on: event, &block
 ```
 TableSync performs this callbacks after transaction commit as to avoid side effects. Block receives array of
 record attributes.
+
+### Events
+You can subscribe to active support notifications.
+Now available two type of events: `"tablesync.receive.update"` and `"tablesync.receive.destroy"`.
+
+Also, you can subscribe to all tablesync's events by using regexp `/tablesync.receive/`.
+
+You have access to the payload:, which contains the event's `type` and `model`, for example:
+```
+{
+  :event => :destroy,
+  :model => "User"
+}
+```
+
+See more about events at https://guides.rubyonrails.org/active_support_instrumentation.html
