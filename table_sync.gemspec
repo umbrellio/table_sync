@@ -11,8 +11,10 @@ Gem::Specification.new do |spec|
   spec.version     = TableSync::VERSION
   spec.authors     = ["Umbrellio"]
   spec.email       = ["oss@umbrellio.biz"]
-  spec.summary     = "Coming soon"
-  spec.description = "Coming soon"
+  spec.summary     = "DB Table synchronization between microservices " \
+                     "based on Model's event system and RabbitMQ messaging"
+  spec.description = "DB Table synchronization between microservices " \
+                     "based on Model's event system and RabbitMQ messaging"
   spec.homepage    = "https://github.com/umbrellio/table_sync"
   spec.license     = "MIT"
 
