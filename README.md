@@ -14,6 +14,10 @@ $ bundle install
 $ gem install table_sync
 ```
 
+```ruby
+require 'table_sync'
+```
+
 ## Usage
 
 - [Documentation](docs/synopsis.md)
