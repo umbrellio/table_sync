@@ -63,6 +63,8 @@ class TableSync::BasePublisher
         .transform_keys(&method(:filter_safe_for_serialization))
         .transform_values(&method(:filter_safe_for_serialization))
         .select { |*objects| objects.all?(&method(:object_mapped?)) }
+    when Float::INFINITY
+      NOT_MAPPED
     when *BASE_SAFE_JSON_TYPES
       object
     else
