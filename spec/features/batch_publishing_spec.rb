@@ -79,7 +79,7 @@ describe TableSync::BatchPublisher do
       let(:attributes) do
         [
           good_attribute: { kek: "pek", array_with_nil: [nil] },
-          half_bad: { bad_inside: [Time.current], good_inside: 1 },
+          half_bad: { bad_inside: [Time.current, Float::INFINITY], good_inside: 1 },
           Time.current => "wtf?!",
         ]
       end
