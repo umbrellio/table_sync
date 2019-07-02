@@ -1,3 +1,5 @@
+/log/*
+!/log/.keep
 /.bundle/
 /.yardoc
 /_yardoc/
@@ -8,5 +10,4 @@
 /tmp/
 .ruby-version
 Gemfile.lock
-/log/
 *.gem
