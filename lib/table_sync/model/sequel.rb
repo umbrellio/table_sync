@@ -28,7 +28,7 @@ module TableSync::Model
         insert_data.each { |datum| datum[first_sync_time_key] = Time.current }
       end
 
-      TableSync::Instrument.update(table_name) do
+      TableSync::Instrument::Receive.update(table_name) do
         dataset.returning
                .insert_conflict(
                  target: target_keys,
@@ -40,7 +40,7 @@ module TableSync::Model
     end
 
     def destroy(data)
-      TableSync::Instrument.destroy(table_name) do
+      TableSync::Instrument::Receive.destroy(table_name) do
         dataset.returning.where(data).delete
       end
     end

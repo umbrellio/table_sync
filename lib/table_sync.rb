@@ -33,6 +33,8 @@ module TableSync
     attr_accessor :exchange_name
     attr_accessor :routing_metadata_callable
 
+    delegate :subscribe, to: TableSync::Instrument
+
     def sync(*args)
       orm.setup_sync(*args)
     end

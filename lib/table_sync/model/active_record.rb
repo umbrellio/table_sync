@@ -53,7 +53,7 @@ module TableSync::Model
     def upsert(data:, target_keys:, version_key:, first_sync_time_key:, default_values:)
       data = Array.wrap(data)
 
-      TableSync::Instrument.update(table_info[:name]) do
+      TableSync::Instrument::Receive.notify(table: table_info[:name], event: :update) do
         transaction do
           data.map do |datum|
             conditions = datum.select { |k| target_keys.include?(k) }
@@ -76,7 +76,7 @@ module TableSync::Model
     end
 
     def destroy(data)
-      TableSync::Instrument.destroy(table_info[:name]) do
+      TableSync::Instrument::Receive.notify(table: table_info[:name], event: :destroy) do
         transaction do
           row = raw_model.lock("FOR UPDATE").find_by(data)&.destroy!
           [row_to_hash(row)]
