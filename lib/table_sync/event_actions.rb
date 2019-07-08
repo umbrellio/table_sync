@@ -40,10 +40,13 @@ module TableSync
           cb[attributes]
         end
 
-        results = model.destroy(target_attributes)
-
-        return if results.empty?
-        raise TableSync::DestroyError.new(target_attributes) if results.size != 1
+        if on_destroy
+          on_destroy.call(attributes: attributes, target_keys: target_keys)
+        else
+          results = model.destroy(target_attributes)
+          return if results.empty?
+          raise TableSync::DestroyError.new(target_attributes) if results.size != 1
+        end
 
         @config.model.after_commit do
           @config.callback_registry.get_callbacks(kind: :after_commit, event: :destroy).each do |cb|
