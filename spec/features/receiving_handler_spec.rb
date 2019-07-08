@@ -465,7 +465,7 @@ describe TableSync::ReceivingHandler do
         end
       end
 
-      context "when on_destroy  is defined" do
+      context "when on_destroy is defined" do
         before { stub_const("DESTROY_INTERCEPTOR", []) }
 
         let(:handler) do
