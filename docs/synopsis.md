@@ -204,7 +204,12 @@ You can use one `source` for a lot of `to_table`.
 
 The following options are available inside the block:
 - `on_destroy` - defines a custom logic and behavior for `destroy` event:
-  - definition: `on_destroy { |attributes:|, |target_keys:| ...your code... }`
+  - definition:
+    ```ruby
+      on_destroy do |attributes:, target_keys:|
+        # your code here
+      end
+    ```
   - `target_keys:` - primary keys or unique keys;
   - `attributes:` - received model attributes;
 - `only` - whitelist for receiving attributes
