@@ -17,6 +17,7 @@ module TableSync
       @rest_key = :rest
       @version_key = :version
       @first_sync_time_key = nil
+      @on_destroy = nil
       target_keys(model.primary_keys)
     end
 
@@ -53,6 +54,10 @@ module TableSync
 
     def after_commit(on:, &block)
       callback_registry.register_callback(block, kind: :after_commit, event: on.to_sym)
+    end
+
+    def on_destroy(&block)
+      block_given? ? @on_destroy = block : @on_destroy
     end
 
     check_and_set_column_key = proc do |key|

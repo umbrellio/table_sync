@@ -4,6 +4,9 @@ module TableSync
   # rubocop:disable Style/MissingRespondToMissing, Style/MethodMissingSuper
   class ConfigDecorator
     include ::TableSync::EventActions
+    extend Forwardable
+
+    def_delegators :@config, :on_destroy
 
     def initialize(config, handler)
       @config = config
