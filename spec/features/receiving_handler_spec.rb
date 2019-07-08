@@ -493,12 +493,15 @@ describe TableSync::ReceivingHandler do
         end
 
         specify "uses custom destroying logic instead of the real destroying" do
+          expect(DB[:players].count).to eq(1)
           expect(DESTROY_INTERCEPTOR).to be_empty
 
           fire_destroy_event
+          expect(DB[:players].count).to eq(1)
           expect(DESTROY_INTERCEPTOR).to contain_exactly(expected_on_destroy_attrs)
 
           fire_destroy_event
+          expect(DB[:players].count).to eq(1)
           expect(DESTROY_INTERCEPTOR).to contain_exactly(
             expected_on_destroy_attrs,
             expected_on_destroy_attrs,
