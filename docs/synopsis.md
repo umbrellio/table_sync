@@ -203,6 +203,15 @@ This method implements logic of mapping `source` to `to_table` and allows custom
 You can use one `source` for a lot of `to_table`.
 
 The following options are available inside the block:
+- `on_destroy` - defines a custom logic and behavior for `destroy` event:
+  - definition:
+    ```ruby
+      on_destroy do |attributes:, target_keys:|
+        # your code here
+      end
+    ```
+  - `target_keys:` - primary keys or unique keys;
+  - `attributes:` - received model attributes;
 - `only` - whitelist for receiving attributes
 - `skip` - return truthy value to skip the row
 - `target_keys` - primary keys or unique keys
