@@ -475,6 +475,11 @@ describe TableSync::ReceivingHandler do
               additional_data { |project_id:| { project_id: project_id.upcase } }
               on_destroy do |attributes:, target_keys:|
                 DESTROY_INTERCEPTOR.push(attributes: attributes, target_keys: target_keys)
+                'on_destroy_completed' # returning value
+              end
+
+              after_commit on: :destroy do |results|
+                DESTROY_INTERCEPTOR.push(results) # results == 'on_destroy_completed'
               end
             end
           end
@@ -492,19 +497,28 @@ describe TableSync::ReceivingHandler do
           }
         end
 
+        let(:expected_on_destroy_results) do
+          'on_destroy_completed'
+        end
+
         specify "uses custom destroying logic instead of the real destroying" do
           expect(DB[:players].count).to eq(1)
           expect(DESTROY_INTERCEPTOR).to be_empty
 
           fire_destroy_event
           expect(DB[:players].count).to eq(1)
-          expect(DESTROY_INTERCEPTOR).to contain_exactly(expected_on_destroy_attrs)
+          expect(DESTROY_INTERCEPTOR).to contain_exactly(
+            expected_on_destroy_attrs,
+            expected_on_destroy_results,
+          )
 
           fire_destroy_event
           expect(DB[:players].count).to eq(1)
           expect(DESTROY_INTERCEPTOR).to contain_exactly(
             expected_on_destroy_attrs,
+            expected_on_destroy_results,
             expected_on_destroy_attrs,
+            expected_on_destroy_results,
           )
         end
       end
