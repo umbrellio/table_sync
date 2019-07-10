@@ -475,7 +475,7 @@ describe TableSync::ReceivingHandler do
               additional_data { |project_id:| { project_id: project_id.upcase } }
               on_destroy do |attributes:, target_keys:|
                 DESTROY_INTERCEPTOR.push(attributes: attributes, target_keys: target_keys)
-                'on_destroy_completed' # returning value
+                "on_destroy_completed" # returning value
               end
 
               after_commit on: :destroy do |results|
@@ -498,7 +498,7 @@ describe TableSync::ReceivingHandler do
         end
 
         let(:expected_on_destroy_results) do
-          'on_destroy_completed'
+          "on_destroy_completed"
         end
 
         specify "uses custom destroying logic instead of the real destroying" do
