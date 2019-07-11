@@ -41,7 +41,7 @@ module TableSync
         end
 
         if on_destroy
-          on_destroy.call(attributes: attributes, target_keys: target_keys)
+          results = on_destroy.call(attributes: attributes, target_keys: target_keys)
         else
           results = model.destroy(target_attributes)
           return if results.empty?
