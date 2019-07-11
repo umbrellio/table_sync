@@ -4,26 +4,28 @@ class TableSync::Publisher < TableSync::BasePublisher
   DEBOUNCE_TIME = 1.minute
 
   # 'original_attributes' are not published, they are used to resolve the routing key
-  def initialize(object_class, original_attributes, destroyed: nil, confirm: true, state: :updated)
+  def initialize(object_class, original_attributes, **opts)
     @object_class = object_class.constantize
     @original_attributes = filter_safe_for_serialization(original_attributes.deep_symbolize_keys)
-    @confirm = confirm
+    @confirm = opts.fetch(:confirm, true)
+    @debounce_time = opts[:debounce_time]&.seconds || DEBOUNCE_TIME
 
-    if destroyed.nil?
-      @state = validate_state(state)
+    if opts[:destroyed].nil?
+      @state = opts.fetch(:state, :update)
+      validate_state
     else
       # TODO Legacy job support, remove
-      @state = destroyed ? :destroyed : :updated
+      @state = opts[:destroyed] ? :destroyed : :updated
     end
   end
 
   def publish
-    return enqueue_job if destroyed?
+    return enqueue_job if destroyed? || debounce_time.zero?
 
-    sync_time = Rails.cache.read(cache_key) || current_time - DEBOUNCE_TIME - 1.second
+    sync_time = Rails.cache.read(cache_key) || current_time - debounce_time - 1.second
     return if sync_time > current_time
 
-    next_sync_time = sync_time + DEBOUNCE_TIME
+    next_sync_time = sync_time + debounce_time
     next_sync_time <= current_time ? enqueue_job : enqueue_job(next_sync_time)
   end
 
@@ -38,6 +40,7 @@ class TableSync::Publisher < TableSync::BasePublisher
 
   attr_reader :original_attributes
   attr_reader :state
+  attr_reader :debounce_time
 
   def attrs_for_callables
     original_attributes
@@ -113,10 +116,8 @@ class TableSync::Publisher < TableSync::BasePublisher
     state == :created
   end
 
-  def validate_state(state)
-    if %i[created updated destroyed].include?(state&.to_sym)
-      state.to_sym
-    else
+  def validate_state
+    unless %i[created updated destroyed].include?(state&.to_sym)
       raise "Unknown state: #{state.inspect}"
     end
   end

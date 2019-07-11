@@ -20,7 +20,8 @@ module TableSync::ORMAdapter
       klass.instance_exec do
         { create: :created, update: :updated, destroy: :destroyed }.each do |event, state|
           after_commit(on: event, **opts) do
-            TableSync::Publisher.new(self.class.name, attributes, state: state).publish
+            TableSync::Publisher.new(self.class.name, attributes,
+                                     state: state, debounce_time: debounce_time).publish
           end
         end
       end
