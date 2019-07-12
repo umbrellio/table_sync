@@ -249,10 +249,16 @@ record attributes.
 
 The instrumentation API provided by Active Support.
 
+You can subscribe to notifications:
+
+```ruby
+TableSync.subscribe(/tablesync/) do |name, start, finish, id, payload|
+  # do something
+end
+```
+
 Now available types of events:
 `"tablesync.receive.update"`, `"tablesync.receive.destroy"`, `"tablesync.publish.update"` and `"tablesync.receive.destroy"`
-
- Also, you can subscribe with regexp like `/tablesync.receive/`.
 
  You have access to the payload, which contains `table`,  `event`, `direction` and `count`, for example:
 ```
