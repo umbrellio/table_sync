@@ -465,6 +465,64 @@ describe TableSync::ReceivingHandler do
         end
       end
 
+      context "when on_destroy is defined" do
+        before { stub_const("DESTROY_INTERCEPTOR", []) }
+
+        let(:handler) do
+          Class.new(TableSync::ReceivingHandler).tap do |handler|
+            handler.receive("User", to_table: :players) do
+              mapping_overrides id: :external_id
+              additional_data { |project_id:| { project_id: project_id.upcase } }
+              on_destroy do |attributes:, target_keys:|
+                DESTROY_INTERCEPTOR.push(attributes: attributes, target_keys: target_keys)
+                "on_destroy_completed" # returning value
+              end
+
+              after_commit on: :destroy do |results|
+                DESTROY_INTERCEPTOR.push(results) # results == 'on_destroy_completed'
+              end
+            end
+          end
+        end
+
+        let(:expected_on_destroy_attrs) do
+          {
+            target_keys: [:external_id],
+            attributes: {
+              external_id: 33,
+              rest: {},
+              version: nil,
+              project_id: "PID",
+            },
+          }
+        end
+
+        let(:expected_on_destroy_results) do
+          "on_destroy_completed"
+        end
+
+        specify "uses custom destroying logic instead of the real destroying" do
+          expect(DB[:players].count).to eq(1)
+          expect(DESTROY_INTERCEPTOR).to be_empty
+
+          fire_destroy_event
+          expect(DB[:players].count).to eq(1)
+          expect(DESTROY_INTERCEPTOR).to contain_exactly(
+            expected_on_destroy_attrs,
+            expected_on_destroy_results,
+          )
+
+          fire_destroy_event
+          expect(DB[:players].count).to eq(1)
+          expect(DESTROY_INTERCEPTOR).to contain_exactly(
+            expected_on_destroy_attrs,
+            expected_on_destroy_results,
+            expected_on_destroy_attrs,
+            expected_on_destroy_results,
+          )
+        end
+      end
+
       context "when skip config is defined" do
         let(:handler) do
           handler = Class.new(TableSync::ReceivingHandler)

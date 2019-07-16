@@ -20,7 +20,6 @@ before_install: gem install bundler
 before_script:
   - psql -c 'create database table_sync_test;' -U postgres
 script:
-- mkdir log
 - bundle exec rake bundle:audit
 - bundle exec rubocop
 - bundle exec rspec
