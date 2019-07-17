@@ -265,7 +265,7 @@ TableSync.subscribe(/tablesync/) do |name, start, finish, id, payload|
 end
 ```
 
-Types of event available:
+Types of events available:
 `"tablesync.receive.update"`, `"tablesync.receive.destroy"`, `"tablesync.publish.update"`
 and `"tablesync.publish.destroy"`
 
