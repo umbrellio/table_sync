@@ -36,18 +36,15 @@ module TableSync::Model
                       )
                       .multi_insert(insert_data)
 
-      TableSync::Instrument.notify(
-        table: table_name, count: dataset.count, event: :update, direction: :receive,
-      )
-
+      TableSync::Instrument.notify table: table_name, count: dataset.count,
+                                   event: :update, direction: :receive
       result
     end
 
     def destroy(data)
       result = dataset.returning.where(data).delete
-      TableSync::Instrument.notify(
-        table: table_name, count: result.count, event: :destroy, direction: :receive,
-      )
+      TableSync::Instrument.notify table: table_name, count: result.count,
+                                   event: :destroy, direction: :receive
       result
     end
 
