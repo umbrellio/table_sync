@@ -53,35 +53,43 @@ module TableSync::Model
     def upsert(data:, target_keys:, version_key:, first_sync_time_key:, default_values:)
       data = Array.wrap(data)
 
-      TableSync::Instrument::Receive.notify(table: table_info[:name], event: :update) do
-        transaction do
-          data.map do |datum|
-            conditions = datum.select { |k| target_keys.include?(k) }
+      result = transaction do
+        data.map do |datum|
+          conditions = datum.select { |k| target_keys.include?(k) }
 
-            row = raw_model.lock("FOR NO KEY UPDATE").find_by(conditions)
-            if row
-              next if datum[version_key] <= row[version_key]
+          row = raw_model.lock("FOR NO KEY UPDATE").find_by(conditions)
+          if row
+            next if datum[version_key] <= row[version_key]
 
-              row.update!(datum)
-            else
-              create_data = datum.merge(default_values)
-              create_data[first_sync_time_key] = Time.current if first_sync_time_key
-              row = raw_model.create!(create_data)
-            end
+            row.update!(datum)
+          else
+            create_data = datum.merge(default_values)
+            create_data[first_sync_time_key] = Time.current if first_sync_time_key
+            row = raw_model.create!(create_data)
+          end
 
-            row_to_hash(row)
-          end.compact
-        end
+          row_to_hash(row)
+        end.compact
       end
+
+      TableSync::Instrument.notify(
+        table: table_info[:name], event: :update, count: result.count, direction: :receive,
+      )
+
+      result
     end
 
     def destroy(data)
-      TableSync::Instrument::Receive.notify(table: table_info[:name], event: :destroy) do
-        transaction do
-          row = raw_model.lock("FOR UPDATE").find_by(data)&.destroy!
-          [row_to_hash(row)]
-        end
+      result = transaction do
+        row = raw_model.lock("FOR UPDATE").find_by(data)&.destroy!
+        [row_to_hash(row)]
       end
+
+      TableSync::Instrument.notify(
+        table: table_info[:name], event: :destroy, count: result.count, direction: :receive,
+      )
+
+      result
     end
 
     def transaction(&block)

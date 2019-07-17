@@ -32,7 +32,7 @@ class TableSync::Publisher < TableSync::BasePublisher
     return if !object && !destroyed?
 
     Rabbit.publish(params)
-    TableSync::Instrument::Publish.notify table: object_class.table_name, event: event
+    TableSync::Instrument.notify table: object_class.table_name, event: event, direction: :publish
   end
 
   private

@@ -19,8 +19,8 @@ class TableSync::BatchPublisher < TableSync::BasePublisher
     return unless need_publish?
     Rabbit.publish(params)
 
-    TableSync::Instrument::Publish.notify table: object_class.table_name, event: event,
-                                          count: publishing_data[:attributes].size
+    TableSync::Instrument.notify table: object_class.table_name, event: event,
+                                 count: publishing_data[:attributes].size, direction: :publish
   end
 
   private

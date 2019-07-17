@@ -28,21 +28,27 @@ module TableSync::Model
         insert_data.each { |datum| datum[first_sync_time_key] = Time.current }
       end
 
-      TableSync::Instrument::Receive.update(table_name) do
-        dataset.returning
-               .insert_conflict(
-                 target: target_keys,
-                 update: upd_spec,
-                 update_where: version_condition,
-               )
-               .multi_insert(insert_data)
-      end
+      result = dataset.returning
+                      .insert_conflict(
+                        target: target_keys,
+                        update: upd_spec,
+                        update_where: version_condition,
+                      )
+                      .multi_insert(insert_data)
+
+      TableSync::Instrument.notify(
+        table: table_name, count: dataset.count, event: :update, direction: :receive,
+      )
+
+      result
     end
 
     def destroy(data)
-      TableSync::Instrument::Receive.destroy(table_name) do
-        dataset.returning.where(data).delete
-      end
+      result = dataset.returning.where(data).delete
+      TableSync::Instrument.notify(
+        table: table_name, count: result.count, event: :destroy, direction: :receive,
+      )
+      result
     end
 
     def transaction(&block)

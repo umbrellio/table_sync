@@ -251,12 +251,11 @@ You can set callbacks like this:
 before_commit on: event, &block
 after_commit on: event, &block
 ```
-TableSync performs this callbacks after transaction commit as to avoid side effects.
-Block receives array of record attributes.
+TableSync performs this callbacks after transaction commit as to avoid side effects. Block receives array of record attributes.
 
 ### Notifications
 
-The instrumentation API provided by Active Support.
+The instrumentation API is provided by Active Support.
 
 You can subscribe to notifications:
 
@@ -266,17 +265,17 @@ TableSync.subscribe(/tablesync/) do |name, start, finish, id, payload|
 end
 ```
 
-Now available types of events:
+Types of event available:
 `"tablesync.receive.update"`, `"tablesync.receive.destroy"`, `"tablesync.publish.update"`
 and `"tablesync.publish.destroy"`
 
-You have access to the payload, which contains `table`,  `event`, `direction` and `count`,
+You have access to the payload, which contains  `event`, `direction`, `table` and `count`,
 for example:
 ```
 {
+  :event => :update,       # one of update / destroy
+  :direction => :publish,  # one of publish / receive
   :table => "users",
-  :event => :update,
-  :direction => :publish,
   :count => 1
 }
 ```
