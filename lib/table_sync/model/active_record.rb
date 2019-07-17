@@ -73,7 +73,7 @@ module TableSync::Model
       end
 
       TableSync::Instrument.notify(
-        table: table_info[:name], event: :update, count: result.count, direction: :receive,
+        table: table_name, event: :update, count: result.count, direction: :receive,
       )
 
       result
@@ -86,7 +86,7 @@ module TableSync::Model
       end
 
       TableSync::Instrument.notify(
-        table: table_info[:name], event: :destroy, count: result.count, direction: :receive,
+        table: table_name, event: :destroy, count: result.count, direction: :receive,
       )
 
       result
@@ -109,6 +109,10 @@ module TableSync::Model
       name = keys[-1]
       schema = keys[-2] || "public"
       { schema: schema, name: name }
+    end
+
+    def table_name
+      table_info[:name]
     end
 
     def db

@@ -16,6 +16,10 @@ module TableSync::ORMAdapter
       object.attributes
     end
 
+    def table_name(object)
+      object.table_name
+    end
+
     def setup_sync(klass, **opts)
       klass.instance_exec do
         { create: :created, update: :updated, destroy: :destroyed }.each do |event, state|
