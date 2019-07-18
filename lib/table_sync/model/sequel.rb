@@ -36,7 +36,7 @@ module TableSync::Model
                       )
                       .multi_insert(insert_data)
 
-      TableSync::Instrument.notify table: table_name, count: dataset.count,
+      TableSync::Instrument.notify table: table_name, count: result.count,
                                    event: :update, direction: :receive
       result
     end
