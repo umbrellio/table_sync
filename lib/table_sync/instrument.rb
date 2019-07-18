@@ -11,7 +11,13 @@ module TableSync::Instrument
                                             direction: direction
   end
 
-  def subscribe(name, &block)
-    ActiveSupport::Notifications.subscribe(name, &block)
+  module DSL
+    def subscribe(name, &block)
+      ActiveSupport::Notifications.subscribe(name, &block)
+    end
+
+    def unsubscribe(subscriber)
+      ActiveSupport::Notifications.unsubscribe(subscriber)
+    end
   end
 end

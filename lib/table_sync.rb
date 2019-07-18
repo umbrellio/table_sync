@@ -26,14 +26,13 @@ module TableSync
 
   class << self
     include Memery
+    include TableSync::Instrument::DSL
 
     attr_accessor :publishing_job_class_callable
     attr_accessor :batch_publishing_job_class_callable
     attr_accessor :routing_key_callable
     attr_accessor :exchange_name
     attr_accessor :routing_metadata_callable
-
-    delegate :subscribe, to: TableSync::Instrument
 
     def sync(*args)
       orm.setup_sync(*args)

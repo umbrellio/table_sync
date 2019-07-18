@@ -5,9 +5,12 @@
     before do
       allow(TableSync).to receive(:orm).and_return(orm)
       allow(TableSync).to receive(:routing_key_callable) { proc { "routing_key_callable" } }
-    end
 
-    let(:instrument) { TableSync::Instrument }
+      DB.run <<~SQL
+        INSERT INTO players (external_id, project_id, email, online_status)
+        VALUES (1, 'ab', 'foo@example.com', 't')
+      SQL
+    end
 
     let(:handler) do
       handler = Class.new(TableSync::ReceivingHandler)
@@ -20,7 +23,7 @@
 
     shared_context "processing" do |event|
       before do
-        instrument.subscribe(event) do |*args|
+        TableSync.subscribe(event) do |*args|
           events << ActiveSupport::Notifications::Event.new(*args)
         end
 

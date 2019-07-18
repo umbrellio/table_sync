@@ -32,7 +32,6 @@ end
       allow(TableSync).to receive(:routing_key_callable) { proc { "routing_key_callable" } }
     end
 
-    let(:instrument) { TableSync::Instrument }
     let(:player)     { double("player", values: attributes, attributes: attributes) }
     let(:publisher)  { publisher_class.new("Player", attributes, state: :updated) }
     let(:events)     { [] }
@@ -44,7 +43,7 @@ end
         allow(Player).to receive(:find).and_return(player)
         allow(Rabbit).to receive(:publish).and_return(nil)
 
-        instrument.subscribe("tablesync.publish.update") do |*args|
+        TableSync.subscribe("tablesync.publish.update") do |*args|
           events << ActiveSupport::Notifications::Event.new(*args)
         end
 
