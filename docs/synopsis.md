@@ -83,7 +83,7 @@ to default Rabbit gem configuration).
 # Manual publishing
 
 `TableSync::Publisher.new(object_class, original_attributes, confirm: true, state: :updated, debounce_time: 45)` 
-where state is one of `:created / :updated / :destroyed` and `confirm` is Rabbit's confirm delivery flag and optional param `debounce_time` determines debounce time in seconds, by default it sets up to 1 minute. 
+where state is one of `:created / :updated / :destroyed` and `confirm` is Rabbit's confirm delivery flag and optional param `debounce_time` determines debounce time in seconds, 1 minute by default.
 
 # Manual publishing with batches
 
