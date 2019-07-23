@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.9.0] - 2019-07-23
+### Added
+- add notifications
+
 ## [1.8.0] - 2019-07-23
 ### Added
 - `debounce_time` option for publishing
