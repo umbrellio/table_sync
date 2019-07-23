@@ -3,6 +3,8 @@
 [TableSync::ORMAdapter::ActiveRecord, TableSync::ORMAdapter::Sequel].each do |orm|
   describe TableSync::Instrument do
     before do
+      TableSync.notifier = TableSync::InstrumentAdapter::ActiveSupport
+
       allow(TableSync).to receive(:orm).and_return(orm)
       allow(TableSync).to receive(:routing_key_callable) { proc { "routing_key_callable" } }
 

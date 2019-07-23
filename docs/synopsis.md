@@ -80,6 +80,8 @@ TableSync.routing_metadata_callable = -> (klass, attributes) { attributes.slice(
 - `TableSync.exchange_name` defines the exchange name used for publishing (optional, falls back
 to default Rabbit gem configuration).
 
+- `TableSync.notifier` is a module, that provides publish and recieve notifications.
+
 # Manual publishing
 
 `TableSync::Publisher.new(object_class, original_attributes, confirm: true, state: :updated)` where
@@ -255,9 +257,14 @@ TableSync performs this callbacks after transaction commit as to avoid side effe
 
 ### Notifications
 
-The instrumentation API is provided by Active Support.
+#### ActiveSupport adapter
 
-You can subscribe to notifications:
+You can use an already existing ActiveSupport adapter:
+```ruby
+  TableSync.notifier = TableSync::InstrumentAdapter::ActiveSupport
+```
+
+This instrumentation API is provided by Active Support. It allows to subscribe to notifications:
 
 ```ruby
 TableSync.subscribe(/tablesync/) do |name, start, finish, id, payload|
@@ -267,10 +274,10 @@ end
 
 Types of events available:
 `"tablesync.receive.update"`, `"tablesync.receive.destroy"`, `"tablesync.publish.update"`
-and `"tablesync.publish.destroy"`
+and `"tablesync.publish.destroy"`.
 
-You have access to the payload, which contains  `event`, `direction`, `table` and `count`,
-for example:
+You have access to the payload, which contains  `event`, `direction`, `table` and `count`.
+
 ```
 {
   :event => :update,       # one of update / destroy
@@ -280,4 +287,25 @@ for example:
 }
 ```
 
- See more about events at https://guides.rubyonrails.org/active_support_instrumentation.html
+ See more at https://guides.rubyonrails.org/active_support_instrumentation.html
+
+
+#### Custom adapters
+
+You can also create custom adapter. It is expected to respond to the following three methods:
+
+```ruby
+  def notify(table:, event:, direction:, count:)
+    # processes data about table_sync event
+  end
+
+  def subscribe(name, &block)
+    # optional
+    # subscribes to watch for the processed data and returns subscriber
+  end
+
+  def unsubscribe(subscriber)
+    # optional
+    # unsubscribes from watching
+  end
+```

@@ -1,23 +1,31 @@
 # frozen_string_literal: true
 
 module TableSync::Instrument
-  extend self
+  module_function
 
-  def notify(table:, event:, direction:, count: 1)
-    ActiveSupport::Notifications.instrument "tablesync.#{direction}.#{event}",
-                                            count: count,
-                                            table: table.to_s,
-                                            event: event,
-                                            direction: direction
+  def notify(*args)
+    notifier&.notify(*args)
   end
 
-  module DSL
-    def subscribe(name, &block)
-      ActiveSupport::Notifications.subscribe(name, &block)
-    end
+  def subscribe(*args)
+    notifier&.subscribe(*args)
+  end
 
-    def unsubscribe(subscriber)
-      ActiveSupport::Notifications.unsubscribe(subscriber)
-    end
+  def unsubscribe(*args)
+    notifier&.unsubscribe(*args)
+  end
+
+  def notifier
+    TableSync.notifier
+  end
+end
+
+module TableSync::Instrument::DSL
+  def subscribe(name, &block)
+    TableSync.notifier.subscribe(name, &block)
+  end
+
+  def unsubscribe(subscriber)
+    TableSync.notifier.unsubscribe(subscriber)
   end
 end
