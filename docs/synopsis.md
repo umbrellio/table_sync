@@ -267,7 +267,7 @@ You can use an already existing ActiveSupport adapter:
 This instrumentation API is provided by Active Support. It allows to subscribe to notifications:
 
 ```ruby
-TableSync.subscribe(/tablesync/) do |name, start, finish, id, payload|
+ActiveSupport::Notifications.subscribe(/tablesync/) do |name, start, finish, id, payload|
   # do something
 end
 ```
@@ -292,20 +292,10 @@ You have access to the payload, which contains  `event`, `direction`, `table` an
 
 #### Custom adapters
 
-You can also create custom adapter. It is expected to respond to the following three methods:
+You can also create custom adapter. It is expected to respond to the following method:
 
 ```ruby
   def notify(table:, event:, direction:, count:)
     # processes data about table_sync event
-  end
-
-  def subscribe(name, &block)
-    # optional
-    # subscribes to watch for the processed data and returns subscriber
-  end
-
-  def unsubscribe(subscriber)
-    # optional
-    # unsubscribes from watching
   end
 ```

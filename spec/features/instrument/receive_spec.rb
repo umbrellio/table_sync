@@ -25,7 +25,7 @@
 
     shared_context "processing" do |event|
       before do
-        TableSync.subscribe(event) do |*args|
+        ::ActiveSupport::Notifications.subscribe(event) do |*args|
           events << ActiveSupport::Notifications::Event.new(*args)
         end
 

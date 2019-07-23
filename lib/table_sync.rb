@@ -27,7 +27,6 @@ module TableSync
 
   class << self
     include Memery
-    include TableSync::Instrument::DSL
 
     attr_accessor :publishing_job_class_callable
     attr_accessor :batch_publishing_job_class_callable
