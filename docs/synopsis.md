@@ -80,7 +80,7 @@ TableSync.routing_metadata_callable = -> (klass, attributes) { attributes.slice(
 - `TableSync.exchange_name` defines the exchange name used for publishing (optional, falls back
 to default Rabbit gem configuration).
 
-- `TableSync.notifier` is a module, that provides publish and recieve notifications.
+- `TableSync.notifier` is a module that provides publish and recieve notifications.
 
 # Manual publishing
 
@@ -292,7 +292,7 @@ You have access to the payload, which contains  `event`, `direction`, `table` an
 
 #### Custom adapters
 
-You can also create custom adapter. It is expected to respond to the following method:
+You can also create a custom adapter. It is expected to respond to the following method:
 
 ```ruby
   def notify(table:, event:, direction:, count:)
