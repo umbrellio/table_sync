@@ -35,16 +35,19 @@ end
 TestJob = Class.new(ActiveJob::Base)
 
 RSpec.describe TableSync::Publisher do
-  let(:id)         { 1 }
-  let(:email)      { "example@example.org" }
-  let(:attributes) { { "id" => id, "email" => email } }
-  let!(:pk)        { "id" }
+  let(:id)            { 1 }
+  let(:email)         { "example@example.org" }
+  let(:attributes)    { { "id" => id, "email" => email } }
+  let!(:pk)           { "id" }
+  let(:debounce_time) { nil }
 
   before { Timecop.freeze("2010-01-01 12:00 UTC") }
 
   describe "#publish" do
     def publish
-      described_class.new("TestUser", attributes, state: state).publish
+      described_class.new(
+        "TestUser", attributes, state: state, debounce_time: debounce_time
+      ).publish
     end
 
     def assert_last_job(time)
@@ -90,6 +93,35 @@ RSpec.describe TableSync::Publisher do
 
         expect { publish }.to change { ActiveJob::Base.queue_adapter.enqueued_jobs.count }.by(1)
         assert_last_job(50.seconds.from_now)
+      end
+
+      context "when skip_debounce is set" do
+        let(:debounce_time) { 25 }
+
+        specify do
+          publish
+          assert_last_job(Time.now)
+
+          Timecop.travel(10.seconds)
+          expect { publish }.to change { ActiveJob::Base.queue_adapter.enqueued_jobs.count }.by(1)
+          assert_last_job(15.seconds.from_now)
+
+          expect { publish }.not_to change { ActiveJob::Base.queue_adapter.enqueued_jobs.count }
+          Timecop.travel(25.seconds)
+
+          expect { publish }.to change { ActiveJob::Base.queue_adapter.enqueued_jobs.count }.by(1)
+          assert_last_job(15.seconds.from_now)
+        end
+
+        context "enqueues job immediately" do
+          let(:debounce_time) { 0 }
+
+          specify do
+            expect { publish }.to change { ActiveJob::Base.queue_adapter.enqueued_jobs.count }.by(1)
+            expect { publish }.to change { ActiveJob::Base.queue_adapter.enqueued_jobs.count }.by(1)
+            assert_last_job(Time.now)
+          end
+        end
       end
     end
 
@@ -159,6 +191,12 @@ RSpec.describe TableSync::Publisher do
           publish
         end
       end
+    end
+
+    context "unknown state" do
+      let(:state) { :unknown }
+
+      specify { expect { publish }.to raise_error("Unknown state: :unknown") }
     end
 
     context "not destroyed" do
