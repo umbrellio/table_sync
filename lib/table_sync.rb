@@ -22,6 +22,8 @@ module TableSync
   require_relative "./table_sync/orm_adapter/sequel"
   require_relative "./table_sync/model/active_record"
   require_relative "./table_sync/model/sequel"
+  require_relative "./table_sync/instrument"
+  require_relative "./table_sync/instrument_adapter/active_support"
 
   class << self
     include Memery
@@ -31,6 +33,7 @@ module TableSync
     attr_accessor :routing_key_callable
     attr_accessor :exchange_name
     attr_accessor :routing_metadata_callable
+    attr_accessor :notifier
 
     def sync(*args)
       orm.setup_sync(*args)

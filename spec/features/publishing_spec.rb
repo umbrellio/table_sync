@@ -14,6 +14,10 @@ class TestUser
     def primary_key
       "id"
     end
+
+    def table_name
+      :test_users
+    end
   end
 end
 

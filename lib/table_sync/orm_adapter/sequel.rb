@@ -16,6 +16,10 @@ module TableSync::ORMAdapter
       object.values
     end
 
+    def table_name(object)
+      object.table_name
+    end
+
     def setup_sync(klass, **opts)
       if_predicate     = to_predicate(opts.delete(:if), true)
       unless_predicate = to_predicate(opts.delete(:unless), false)

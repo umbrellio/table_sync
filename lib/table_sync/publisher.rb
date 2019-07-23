@@ -34,6 +34,8 @@ class TableSync::Publisher < TableSync::BasePublisher
     return if !object && !destroyed?
 
     Rabbit.publish(params)
+    TableSync::Instrument.notify table: TableSync.orm.table_name(object_class),
+                                 event: event, direction: :publish
   end
 
   private
@@ -77,7 +79,7 @@ class TableSync::Publisher < TableSync::BasePublisher
   def publishing_data
     {
       **super,
-      event: (destroyed? ? :destroy : :update),
+      event: event,
       metadata: { created: created? },
     }
   end
@@ -98,6 +100,10 @@ class TableSync::Publisher < TableSync::BasePublisher
 
   memoize def object
     TableSync.orm.find(object_class, needle)
+  end
+
+  def event
+    destroyed? ? :destroy : :update
   end
 
   def needle

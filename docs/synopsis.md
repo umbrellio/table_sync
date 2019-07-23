@@ -80,6 +80,8 @@ TableSync.routing_metadata_callable = -> (klass, attributes) { attributes.slice(
 - `TableSync.exchange_name` defines the exchange name used for publishing (optional, falls back
 to default Rabbit gem configuration).
 
+- `TableSync.notifier` is a module that provides publish and recieve notifications.
+
 # Manual publishing
 
 `TableSync::Publisher.new(object_class, original_attributes, confirm: true, state: :updated, debounce_time: 45)` 
@@ -251,5 +253,49 @@ You can set callbacks like this:
 before_commit on: event, &block
 after_commit on: event, &block
 ```
-TableSync performs this callbacks after transaction commit as to avoid side effects. Block receives array of
-record attributes.
+TableSync performs this callbacks after transaction commit as to avoid side effects. Block receives array of record attributes.
+
+### Notifications
+
+#### ActiveSupport adapter
+
+You can use an already existing ActiveSupport adapter:
+```ruby
+  TableSync.notifier = TableSync::InstrumentAdapter::ActiveSupport
+```
+
+This instrumentation API is provided by Active Support. It allows to subscribe to notifications:
+
+```ruby
+ActiveSupport::Notifications.subscribe(/tablesync/) do |name, start, finish, id, payload|
+  # do something
+end
+```
+
+Types of events available:
+`"tablesync.receive.update"`, `"tablesync.receive.destroy"`, `"tablesync.publish.update"`
+and `"tablesync.publish.destroy"`.
+
+You have access to the payload, which contains  `event`, `direction`, `table` and `count`.
+
+```
+{
+  :event => :update,       # one of update / destroy
+  :direction => :publish,  # one of publish / receive
+  :table => "users",
+  :count => 1
+}
+```
+
+ See more at https://guides.rubyonrails.org/active_support_instrumentation.html
+
+
+#### Custom adapters
+
+You can also create a custom adapter. It is expected to respond to the following method:
+
+```ruby
+  def notify(table:, event:, direction:, count:)
+    # processes data about table_sync event
+  end
+```
