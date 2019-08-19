@@ -14,6 +14,8 @@ module TableSync::Model
       def before_committed!(*); end
 
       def rolledback!(*); end
+
+      def trigger_transactional_callbacks?(*); end
     end
 
     def initialize(table_name)

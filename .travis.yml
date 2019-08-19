@@ -1,26 +1,34 @@
 language: ruby
+
 matrix:
   fast_finish: true
   include:
-  - rvm: 2.3
-  - rvm: 2.4
-  - rvm: 2.5
-  - rvm: 2.6
-  - rvm: ruby-head
+    - rvm: 2.3
+    - rvm: 2.4
+    - rvm: 2.5
+    - rvm: 2.6
+    - rvm: ruby-head
   allow_failures:
-  - rvm: ruby-head
+    - rvm: ruby-head
+
 sudo: false
+
 dist: xenial
+
 cache: bundler
+
 services:
   - postgresql
+
 addons:
   postgresql: "10"
+
 before_install: gem install bundler
+
 before_script:
   - psql -c 'create database table_sync_test;' -U postgres
-script:
-- bundle exec rake bundle:audit
-- bundle exec rubocop
-- bundle exec rspec
 
+script:
+  - bundle exec rake bundle:audit
+  - bundle exec rubocop
+  - bundle exec rspec
