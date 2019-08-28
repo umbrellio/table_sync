@@ -95,6 +95,26 @@ describe TableSync::BatchPublisher do
       end
     end
 
+    # NOTE: for compatibility with active_job 4.2.11
+    context "attributes with symbolic values in hashes" do
+      let(:attributes) do
+        [
+          half_bad: { bad_inside: { foo: :bar }, good_inside: { foo: "bar" } },
+        ]
+      end
+
+      it "converts these values to string" do
+        publisher.publish
+        job = ActiveJob::Base.queue_adapter.enqueued_jobs.last
+        params = job[:args][1]
+        expect(params.first.keys.size).to eq(2)
+        expect(params.first["half_bad"]).to include(
+          "bad_inside" => { "_aj_symbol_keys" => ["foo"], "foo" => "bar" },
+          "good_inside" => { "_aj_symbol_keys" => ["foo"], "foo" => "bar" },
+        )
+      end
+    end
+
     context "with inserting original attributes" do
       let(:push_original_attributes) { true }
       let(:options) { Hash[push_original_attributes: true] }

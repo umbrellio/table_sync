@@ -35,7 +35,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rubocop-config-umbrellio", "~> 0.70"
   spec.add_development_dependency "simplecov", "~> 0.16"
 
-  spec.add_development_dependency "activejob"
+  spec.add_development_dependency "activejob", ">= 4.2.11"
   spec.add_development_dependency "activerecord"
   spec.add_development_dependency "pg", "~> 0.18"
   spec.add_development_dependency "sequel"
