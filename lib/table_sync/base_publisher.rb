@@ -61,7 +61,7 @@ class TableSync::BasePublisher
     when Hash
       object
         .transform_keys(&method(:filter_safe_for_serialization))
-        .transform_values(&method(:filter_safe_for_serialization))
+        .transform_values(&method(:filter_safe_hash_values))
         .select { |*objects| objects.all?(&method(:object_mapped?)) }
     when Float::INFINITY
       NOT_MAPPED
@@ -69,6 +69,15 @@ class TableSync::BasePublisher
       object
     else
       NOT_MAPPED
+    end
+  end
+
+  def filter_safe_hash_values(value)
+    case value
+    when Symbol
+      value.to_s
+    else
+      filter_safe_for_serialization(value)
     end
   end
 

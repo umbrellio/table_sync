@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.10.0] - 2019-08-28
+### Added
+- convert symbolic values to strings in hashes to support older versions of activejob
+
 ## [1.9.0] - 2019-07-23
 ### Added
 - add notifications
