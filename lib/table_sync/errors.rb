@@ -28,5 +28,14 @@ module TableSync
     end
   end
 
-  UnprovidedEventTargetKeysError = Class.new(Error)
+  class UnprovidedEventTargetKeysError < Error
+    # @param target_keys [Array<Symbol,String>]
+    # @param target_attributes [Hash<Symbol|String,Any>]
+    def initialize(target_keys, target_attributes)
+      super(<<~MSG.squish)
+        Some target keys not found in received attributes!
+        (Expects: #{target_keys}, Actual: #{target_attributes.keys})
+      MSG
+    end
+  end
 end

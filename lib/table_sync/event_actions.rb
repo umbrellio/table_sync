@@ -69,10 +69,7 @@ module TableSync
 
     def prevent_incomplete_event!(attributes)
       unless target_keys.all?(&attributes.keys.method(:include?))
-        raise TableSync::UnprovidedEventTargetKeysError, <<~MSG.squish
-          Some target keys not found in received attributes!
-          (Expects: #{target_keys}, Actual: #{attributes.keys})
-        MSG
+        raise TableSync::UnprovidedEventTargetKeysError.new(target_keys, attributes)
       end
     end
   end
