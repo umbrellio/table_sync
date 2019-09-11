@@ -21,12 +21,12 @@ describe "Receiving: <detroy> event" do
     end
   end
 
-  shared_examples "destroing with no target keys" do
+  shared_examples "destroying with no target keys" do
     subject(:emit_destroy) do
       handler.new(event).call
     end
 
-    describe "destroing with no target keys" do
+    describe "destroying with no target keys" do
       context "semi-provided key set" do
         let(:event) do
           OpenStruct.new(
@@ -69,11 +69,11 @@ describe "Receiving: <detroy> event" do
     end
   end
 
-  it_behaves_like "destroing with no target keys" do
+  it_behaves_like "destroying with no target keys" do
     before { allow(TableSync).to receive(:orm).and_return(TableSync::ORMAdapter::Sequel) }
   end
 
-  it_behaves_like "destroing with no target keys" do
+  it_behaves_like "destroying with no target keys" do
     before { allow(TableSync).to receive(:orm).and_return(TableSync::ORMAdapter::ActiveRecord) }
   end
 end
