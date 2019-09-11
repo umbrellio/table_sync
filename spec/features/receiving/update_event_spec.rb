@@ -17,12 +17,13 @@ describe "Receiving: <detroy> event" do
     Class.new(TableSync::ReceivingHandler) do
       receive("User", to_table: :simple_players) do
         target_keys [:internal_id, :external_id]
+        mapping_overrides id: :external_id
       end
     end
   end
 
-  shared_examples "destroying with no target keys" do
-    subject(:emit_destroy) do
+  shared_examples "updating with no target keys" do
+    subject(:emit_update) do
       handler.new(event).call
     end
 
@@ -31,10 +32,10 @@ describe "Receiving: <detroy> event" do
         let(:event) do
           OpenStruct.new(
             data: {
-              event: "destroy",
+              event: "update",
               model: "User",
               attributes: {
-                external_id: 123, # NOTE: missing :internal_id attribute
+                id: 123, # NOTE: missing :internal_id attribute (id is mapped to :external_id)
               },
               version: 123,
             },
@@ -43,7 +44,7 @@ describe "Receiving: <detroy> event" do
         end
 
         it "fails with corresponding error" do
-          expect { emit_destroy }.to raise_error(TableSync::UnprovidedEventTargetKeysError)
+          expect { emit_update }.to raise_error(TableSync::UnprovidedEventTargetKeysError)
           expect(DB[:simple_players].count).to eq(1)
         end
       end
@@ -52,7 +53,7 @@ describe "Receiving: <detroy> event" do
         let(:event) do
           OpenStruct.new(
             data: {
-              event: "destroy",
+              event: "update",
               model: "User",
               attributes: {}, # NOTE: empty key set
               version: 456,
@@ -62,18 +63,18 @@ describe "Receiving: <detroy> event" do
         end
 
         it "fails with corresponding error" do
-          expect { emit_destroy }.to raise_error(TableSync::UnprovidedEventTargetKeysError)
+          expect { emit_update }.to raise_error(TableSync::UnprovidedEventTargetKeysError)
           expect(DB[:simple_players].count).to eq(1)
         end
       end
     end
   end
 
-  it_behaves_like "destroying with no target keys" do
+  it_behaves_like "updating with no target keys" do
     before { allow(TableSync).to receive(:orm).and_return(TableSync::ORMAdapter::Sequel) }
   end
 
-  it_behaves_like "destroying with no target keys" do
+  it_behaves_like "updating with no target keys" do
     before { allow(TableSync).to receive(:orm).and_return(TableSync::ORMAdapter::ActiveRecord) }
   end
 end

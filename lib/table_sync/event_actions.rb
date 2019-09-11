@@ -3,6 +3,12 @@
 module TableSync
   module EventActions
     def update(data) # rubocop:disable Metrics/MethodLength
+      data.each_value do |attribute_set|
+        attribute_set.each do |attributes|
+          prevent_inclomplete_event!(attributes)
+        end
+      end
+
       model.transaction do
         args = {
           data: data,
@@ -11,6 +17,7 @@ module TableSync
           first_sync_time_key: first_sync_time_key,
           default_values: default_values,
         }
+
 
         @config.callback_registry.get_callbacks(kind: :before_commit, event: :update).each do |cb|
           cb[data.values.flatten]
@@ -34,7 +41,7 @@ module TableSync
     def destroy(data)
       attributes = data.first || {}
       target_attributes = attributes.select { |key, _value| target_keys.include?(key) }
-      prevent_inclomplete_destroy_event!(target_attributes)
+      prevent_inclomplete_event!(target_attributes)
 
       model.transaction do
         @config.callback_registry.get_callbacks(kind: :before_commit, event: :destroy).each do |cb|
@@ -46,7 +53,7 @@ module TableSync
         else
           results = model.destroy(target_attributes)
           return if results.empty?
-          raise TableSync::InconsistentDestroyError.new(target_attributes) if results.size != 1
+          raise TableSync::DestroyError.new(target_attributes) if results.size != 1
         end
 
         @config.model.after_commit do
@@ -61,11 +68,11 @@ module TableSync
       query_results.uniq { |d| d.slice(*target_keys) }.size == query_results.size
     end
 
-    def prevent_inclomplete_destroy_event!(target_attributes)
-      unless target_keys.all?(&target_attributes.keys.method(:include?))
-        raise TableSync::UnprovidedDestroyTargetKeysError, <<~MSG.squish
+    def prevent_inclomplete_event!(attributes)
+      unless target_keys.all?(&attributes.keys.method(:include?))
+        raise TableSync::UnprovidedEventTargetKeysError, <<~MSG.squish
           Some target keys not found in received attributes!
-          (Expects: #{target_keys}, Actual: #{target_attributes.keys})
+          (Expects: #{target_keys}, Actual: #{attributes.keys})
         MSG
       end
     end

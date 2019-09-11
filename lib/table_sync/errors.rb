@@ -22,13 +22,11 @@ module TableSync
     end
   end
 
-  DestroyError = Class.new(Error)
-
-  class InconsistentDestroyError < DestroyError
+  class DestroyError < Error
     def initialize(data)
       super("Destroy has changed more than 1 row; data: #{data.inspect}")
     end
   end
 
-  UnprovidedDestroyTargetKeysError = Class.new(DestroyError)
+  UnprovidedEventTargetKeysError = Class.new(Error)
 end
