@@ -29,7 +29,7 @@ describe "Incomplete events" do
     context "semi-provided key set" do
       it "fails with corresponding error" do
         expect { emit_event(semi_provided_event) }.to raise_error(
-          TableSync::UnprovidedEventTargetKeysError
+          TableSync::UnprovidedEventTargetKeysError,
         )
 
         expect(DB[:simple_players].count).to eq(1)
@@ -39,7 +39,7 @@ describe "Incomplete events" do
     context "empty key set" do
       it "fails with corresponding error" do
         expect { emit_event(empty_event) }.to raise_error(
-          TableSync::UnprovidedEventTargetKeysError
+          TableSync::UnprovidedEventTargetKeysError,
         )
 
         expect(DB[:simple_players].count).to eq(1)
@@ -47,7 +47,7 @@ describe "Incomplete events" do
     end
   end
 
-  describe 'incomplete <destroy> event' do
+  describe "incomplete <destroy> event" do
     let(:semi_provided_event) do
       OpenStruct.new(
         data: {
@@ -83,7 +83,7 @@ describe "Incomplete events" do
     end
   end
 
-  describe 'incomplete <update> event' do
+  describe "incomplete <update> event" do
     let(:semi_provided_event) do
       OpenStruct.new(
         data: {
