@@ -5,7 +5,7 @@ module TableSync
     def update(data) # rubocop:disable Metrics/MethodLength
       data.each_value do |attribute_set|
         attribute_set.each do |attributes|
-          prevent_inclomplete_event!(attributes)
+          prevent_incomplete_event!(attributes)
         end
       end
 
@@ -17,7 +17,6 @@ module TableSync
           first_sync_time_key: first_sync_time_key,
           default_values: default_values,
         }
-
 
         @config.callback_registry.get_callbacks(kind: :before_commit, event: :update).each do |cb|
           cb[data.values.flatten]
@@ -41,7 +40,7 @@ module TableSync
     def destroy(data)
       attributes = data.first || {}
       target_attributes = attributes.select { |key, _value| target_keys.include?(key) }
-      prevent_inclomplete_event!(target_attributes)
+      prevent_incomplete_event!(target_attributes)
 
       model.transaction do
         @config.callback_registry.get_callbacks(kind: :before_commit, event: :destroy).each do |cb|
@@ -68,7 +67,7 @@ module TableSync
       query_results.uniq { |d| d.slice(*target_keys) }.size == query_results.size
     end
 
-    def prevent_inclomplete_event!(attributes)
+    def prevent_incomplete_event!(attributes)
       unless target_keys.all?(&attributes.keys.method(:include?))
         raise TableSync::UnprovidedEventTargetKeysError, <<~MSG.squish
           Some target keys not found in received attributes!
