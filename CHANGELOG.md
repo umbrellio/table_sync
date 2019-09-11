@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.11.0] - 2019-09-11
+### Added
+- Receiving: inconsistent events raises `TableSync::UnprovidedEventTargetKeysError`
+  (events that include only some of the target keys (or none))
+
 ## [1.10.0] - 2019-08-28
 ### Added
 - convert symbolic values to strings in hashes to support older versions of activejob
