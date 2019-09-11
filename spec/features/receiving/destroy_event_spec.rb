@@ -34,7 +34,7 @@ describe "Receiving: <detroy> event" do
               event: "destroy",
               model: "User",
               attributes: {
-                external_id: 123,
+                external_id: 123, # NOTE: missing :internal_id attribute
               },
               version: 123,
             },
@@ -54,7 +54,7 @@ describe "Receiving: <detroy> event" do
             data: {
               event: "destroy",
               model: "User",
-              attributes: {},
+              attributes: {}, # NOTE: empty key set
               version: 456,
             },
             project_id: "prj1",
