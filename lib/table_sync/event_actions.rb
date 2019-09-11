@@ -3,6 +3,12 @@
 module TableSync
   module EventActions
     def update(data) # rubocop:disable Metrics/MethodLength
+      data.each_value do |attribute_set|
+        attribute_set.each do |attributes|
+          prevent_incomplete_event!(attributes)
+        end
+      end
+
       model.transaction do
         args = {
           data: data,
@@ -21,7 +27,7 @@ module TableSync
         end
 
         return if results.empty?
-        raise TableSync::UpsertError.new(**args) unless correct_keys?(results)
+        raise TableSync::UpsertError.new(**args) unless expected_update_result?(results)
 
         @config.model.after_commit do
           @config.callback_registry.get_callbacks(kind: :after_commit, event: :update).each do |cb|
@@ -33,7 +39,8 @@ module TableSync
 
     def destroy(data)
       attributes = data.first || {}
-      target_attributes = attributes.select { |key| target_keys.include?(key) }
+      target_attributes = attributes.select { |key, _value| target_keys.include?(key) }
+      prevent_incomplete_event!(target_attributes)
 
       model.transaction do
         @config.callback_registry.get_callbacks(kind: :before_commit, event: :destroy).each do |cb|
@@ -56,8 +63,14 @@ module TableSync
       end
     end
 
-    def correct_keys?(query_results)
+    def expected_update_result?(query_results)
       query_results.uniq { |d| d.slice(*target_keys) }.size == query_results.size
+    end
+
+    def prevent_incomplete_event!(attributes)
+      unless target_keys.all?(&attributes.keys.method(:include?))
+        raise TableSync::UnprovidedEventTargetKeysError.new(target_keys, attributes)
+      end
     end
   end
 end

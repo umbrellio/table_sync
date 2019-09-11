@@ -127,7 +127,7 @@ describe TableSync::ConfigDecorator do
       let(:destroy_results) { [] }
 
       it "does nothing" do
-        decorated_config.destroy([])
+        decorated_config.destroy([{ id: 1, projects_id: "pid" }])
         expect(checks).to eq([])
       end
     end
@@ -136,7 +136,7 @@ describe TableSync::ConfigDecorator do
       let(:destroy_results) { [{ a: 1, b: 2 }] }
 
       it "calls callbacks" do
-        decorated_config.destroy([])
+        decorated_config.destroy([{ id: 1, projects_id: "pid" }])
         expect(checks[0]).to eq([{ a: 1, b: 2 }])
         expect(checks[1]).to eq([{ a: 1, b: 2 }])
       end
@@ -146,7 +146,9 @@ describe TableSync::ConfigDecorator do
       let(:destroy_results) { [{ a: 1 }, { a: 2 }] }
 
       it "calls callbacks" do
-        expect { decorated_config.destroy([]) }.to raise_error(TableSync::DestroyError)
+        expect { decorated_config.destroy([{ id: 1, projects_id: "pid" }]) }.to raise_error(
+          TableSync::DestroyError,
+        )
       end
     end
   end
