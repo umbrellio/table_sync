@@ -17,6 +17,7 @@ describe "Incomplete events" do
     Class.new(TableSync::ReceivingHandler) do
       receive("User", to_table: :simple_players) do
         target_keys [:internal_id, :external_id]
+        mapping_overrides id: :external_id
       end
     end
   end
@@ -54,7 +55,7 @@ describe "Incomplete events" do
           event: "destroy",
           model: "User",
           attributes: {
-            external_id: 123, # NOTE: missing :internal_id attribute
+            id: 123, # NOTE: missing :internal_id attribute (id is mapped to :external_id)
           },
           version: 123,
         },
