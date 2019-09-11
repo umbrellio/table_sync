@@ -27,7 +27,7 @@ module TableSync
         end
 
         return if results.empty?
-        raise TableSync::UpsertError.new(**args) unless correct_keys_for_update?(results)
+        raise TableSync::UpsertError.new(**args) unless expected_update_result?(results)
 
         @config.model.after_commit do
           @config.callback_registry.get_callbacks(kind: :after_commit, event: :update).each do |cb|
@@ -63,7 +63,7 @@ module TableSync
       end
     end
 
-    def correct_keys_for_update?(query_results)
+    def expected_update_result?(query_results)
       query_results.uniq { |d| d.slice(*target_keys) }.size == query_results.size
     end
 
