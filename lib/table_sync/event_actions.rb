@@ -21,7 +21,7 @@ module TableSync
         end
 
         return if results.empty?
-        raise TableSync::UpsertError.new(**args) unless correct_keys?(results)
+        raise TableSync::UpsertError.new(**args) unless correct_keys_for_update?(results)
 
         @config.model.after_commit do
           @config.callback_registry.get_callbacks(kind: :after_commit, event: :update).each do |cb|
@@ -33,7 +33,8 @@ module TableSync
 
     def destroy(data)
       attributes = data.first || {}
-      target_attributes = attributes.select { |key| target_keys.include?(key) }
+      prevent_inclomplete_destroy_event!(attributes)
+      target_attributes = attributes.select { |key, _value| target_keys.include?(key) }
 
       model.transaction do
         @config.callback_registry.get_callbacks(kind: :before_commit, event: :destroy).each do |cb|
@@ -56,8 +57,17 @@ module TableSync
       end
     end
 
-    def correct_keys?(query_results)
+    def correct_keys_for_update?(query_results)
       query_results.uniq { |d| d.slice(*target_keys) }.size == query_results.size
+    end
+
+    def prevent_inclomplete_destroy_event!(received_attributes)
+      unless target_keys.all?(&received_attributes.keys.method(:include?))
+        raise TableSync::UnprovidedDestroyTargetKeysError, <<~MSG.squish
+          Some target keys not found in received attributes!
+          (Expects: #{target_keys}, Actual: #{received_attributes.keys})
+        MSG
+      end
     end
   end
 end

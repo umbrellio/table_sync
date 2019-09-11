@@ -1,14 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe TableSync::Config::CallbackRegistry do
-  CALLBACK_KINDS = %i[after_commit before_commit].freeze
-  EVENTS = %i[create update destroy].freeze
-
   let(:instance) { described_class.new }
 
-  CALLBACK_KINDS.each do |callback_kind|
+  %i[after_commit before_commit].each do |callback_kind|
     context "callback kind: #{callback_kind}" do
-      EVENTS.each do |event|
+      %i[create update destroy].each do |event|
         context "event: #{event}" do
           it "is empty by default" do
             expect(instance.get_callbacks(kind: callback_kind, event: event)).to eq([])

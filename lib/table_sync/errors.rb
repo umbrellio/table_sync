@@ -27,4 +27,6 @@ module TableSync
       super("Config not defined for model; model: #{model.inspect}")
     end
   end
+
+  UnprovidedDestroyTargetKeysError = Class.new(Error)
 end
