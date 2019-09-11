@@ -34,7 +34,7 @@ module TableSync
     def destroy(data)
       attributes = data.first || {}
       target_attributes = attributes.select { |key, _value| target_keys.include?(key) }
-      prevent_inclomplete_destroy_event!(target_attributes )
+      prevent_inclomplete_destroy_event!(target_attributes)
 
       model.transaction do
         @config.callback_registry.get_callbacks(kind: :before_commit, event: :destroy).each do |cb|
