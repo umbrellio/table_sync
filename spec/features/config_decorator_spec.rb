@@ -147,7 +147,7 @@ describe TableSync::ConfigDecorator do
 
       it "calls callbacks" do
         expect { decorated_config.destroy([{ id: 1, projects_id: "pid" }]) }.to raise_error(
-          TableSync::DestroyError,
+          TableSync::InconsistentDestroyError,
         )
       end
     end

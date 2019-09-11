@@ -16,17 +16,19 @@ module TableSync
     end
   end
 
-  class DestroyError < Error
-    def initialize(data)
-      super("Destroy has changed more than 1 row; data: #{data.inspect}")
-    end
-  end
-
   class UndefinedConfig < Error
     def initialize(model)
       super("Config not defined for model; model: #{model.inspect}")
     end
   end
 
-  UnprovidedDestroyTargetKeysError = Class.new(Error)
+  DestroyError = Class.new(Error)
+
+  class InconsistentDestroyError < DestroyError
+    def initialize(data)
+      super("Destroy has changed more than 1 row; data: #{data.inspect}")
+    end
+  end
+
+  UnprovidedDestroyTargetKeysError = Class.new(DestroyError)
 end

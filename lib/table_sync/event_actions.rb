@@ -33,8 +33,8 @@ module TableSync
 
     def destroy(data)
       attributes = data.first || {}
-      prevent_inclomplete_destroy_event!(attributes)
       target_attributes = attributes.select { |key, _value| target_keys.include?(key) }
+      prevent_inclomplete_destroy_event!(target_attributes )
 
       model.transaction do
         @config.callback_registry.get_callbacks(kind: :before_commit, event: :destroy).each do |cb|
@@ -46,7 +46,7 @@ module TableSync
         else
           results = model.destroy(target_attributes)
           return if results.empty?
-          raise TableSync::DestroyError.new(target_attributes) if results.size != 1
+          raise TableSync::InconsistentDestroyError.new(target_attributes) if results.size != 1
         end
 
         @config.model.after_commit do
@@ -61,11 +61,11 @@ module TableSync
       query_results.uniq { |d| d.slice(*target_keys) }.size == query_results.size
     end
 
-    def prevent_inclomplete_destroy_event!(received_attributes)
-      unless target_keys.all?(&received_attributes.keys.method(:include?))
+    def prevent_inclomplete_destroy_event!(target_attributes)
+      unless target_keys.all?(&target_attributes.keys.method(:include?))
         raise TableSync::UnprovidedDestroyTargetKeysError, <<~MSG.squish
           Some target keys not found in received attributes!
-          (Expects: #{target_keys}, Actual: #{received_attributes.keys})
+          (Expects: #{target_keys}, Actual: #{target_attributes.keys})
         MSG
       end
     end
