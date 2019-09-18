@@ -74,10 +74,8 @@ module TableSync::Model
         end.compact
       end
 
-      TableSync::Instrument.notify(
-        table: model_naming_table, schema: model_naming_schema,
-        event: :update, count: result.count, direction: :receive,
-      )
+      TableSync::Instrument.notify(table: model_naming_table, schema: model_naming_schema,
+                                   event: :update, count: result.count, direction: :receive)
 
       result
     end
@@ -90,7 +88,7 @@ module TableSync::Model
 
       TableSync::Instrument.notify(
         table: model_naming_table, schema: model_naming_schema,
-        event: :destroy, count: result.count, direction: :receive,
+        event: :destroy, count: result.count, direction: :receive
       )
 
       result

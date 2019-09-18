@@ -37,8 +37,7 @@ module TableSync::Model
                       .multi_insert(insert_data)
 
       TableSync::Instrument.notify table: model_naming_table, schema: model_naming_schema,
-                                   count: result.count,
-                                   event: :update, direction: :receive
+                                   count: result.count, event: :update, direction: :receive
       result
     end
 

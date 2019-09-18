@@ -94,7 +94,8 @@ SQL
 
 RSpec.configure do |config|
   config.before do
-    schemas_tables = DB[:pg_tables].where(schemaname: %w[public custom_schema]).select_hash(:tablename, :schemaname)
+    schemas_tables = DB[:pg_tables].where(schemaname: %w[public custom_schema])
+                                   .select_hash(:tablename, :schemaname)
     tables = schemas_tables.map { |table, schema| "#{schema}.#{table}" }
     DB.run("TRUNCATE #{tables.join(', ')}")
   end

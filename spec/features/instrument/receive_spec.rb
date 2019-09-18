@@ -136,10 +136,11 @@
               version: 123.34534,
             },
             project_id: "pid",
-            )
+          )
         end
 
-        it_behaves_like "sync notification", table: "clubs", schema: "custom_schema", event_type: :destroy
+        it_behaves_like "sync notification", table: "clubs", schema: "custom_schema",
+                                             event_type: :destroy
       end
     end
 
@@ -196,7 +197,7 @@
               version: 123.34534,
             },
             project_id: "pid",
-            )
+          )
         end
 
         it_behaves_like "sync notification", table: "clubs", schema: "custom_schema", count: 2
