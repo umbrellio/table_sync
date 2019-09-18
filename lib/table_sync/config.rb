@@ -10,6 +10,7 @@ module TableSync
 
       @callback_registry = CallbackRegistry.new
 
+      # initialize default options
       only(model.columns)
       mapping_overrides({})
       additional_data({})
@@ -21,23 +22,33 @@ module TableSync
       target_keys(model.primary_keys)
     end
 
-    # add_option implements next logic
+    # add_option implements the following logic
     # config.option - get value
     # config.option(args) - set static value
     # config.option { ... } - set proc as value
     def self.add_option(name, &option_block)
       ivar = "@#{name}".to_sym
 
+      # default option handler (empty handler)
+      # handles values when setting options
       option_block ||= proc { |value| value }
 
       define_method(name) do |*args, &block|
-        if args.empty? && block.nil?
+        # logic for each option
+        if args.empty? && block.nil? # case for config.option, just return ivar
           instance_variable_get(ivar)
-        elsif block
+        elsif block # case for config.option { ... }
+          # get named parameters (parameters with :keyreq) from proc-value
           params = block.parameters.map { |param| param[0] == :keyreq ? param[1] : nil }.compact
+
+          # wrapper for proc-value, this wrapper receives all params (model, version, project_id...)
+          # and filters them for proc-value
           unified_block = proc { |hash = {}| block.call(hash.slice(*params)) }
+
+          # set wrapped proc-value as ivar value
           instance_variable_set(ivar, unified_block)
-        else
+        else # case for config.option(args)
+          # call option_block with args as params and set ivar to result
           instance_variable_set(ivar, instance_exec(*args, &option_block))
         end
       end
