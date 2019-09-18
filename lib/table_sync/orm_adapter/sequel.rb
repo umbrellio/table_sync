@@ -8,16 +8,16 @@ module TableSync::ORMAdapter
       ::TableSync::Model::Sequel
     end
 
+    def model_naming(object)
+      ::TableSync::NamingResolver::Sequel.new(table_name: object.table_name, db: object.db)
+    end
+
     def find(dataset, conditions)
       dataset.find(conditions)
     end
 
     def attributes(object)
       object.values
-    end
-
-    def table_name(object)
-      object.table_name
     end
 
     def setup_sync(klass, **opts)

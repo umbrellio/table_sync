@@ -8,6 +8,10 @@ module TableSync::ORMAdapter
       ::TableSync::Model::ActiveRecord
     end
 
+    def model_naming(object)
+      ::TableSync::NamingResolver::ActiveRecord.new(table_name: object.table_name)
+    end
+
     def find(dataset, conditions)
       dataset.find_by(conditions)
     end

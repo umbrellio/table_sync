@@ -9,14 +9,25 @@
       allow(TableSync).to receive(:routing_key_callable) { proc { "routing_key_callable" } }
 
       DB.run <<~SQL
-        INSERT INTO players (external_id, project_id, email, online_status)
-        VALUES (1, 'ab', 'foo@example.com', 't')
+        INSERT INTO players (external_id, project_id, email, online_status, version)
+        VALUES (1, 'ab', 'foo@example.com', 't', 100);
+        INSERT INTO custom_schema.clubs (id, name, position, version)
+        VALUES (10, 'Real Madrid', 2, 100);
       SQL
+    end
+
+    let(:custom_schema_table) do
+      if orm == TableSync::ORMAdapter::ActiveRecord
+        "custom_schema.clubs"
+      elsif orm == TableSync::ORMAdapter::Sequel
+        Sequel[:custom_schema][:clubs]
+      end
     end
 
     let(:handler) do
       handler = Class.new(TableSync::ReceivingHandler)
       handler.receive("Player", to_table: :players)
+      handler.receive("Club", to_table: custom_schema_table)
       handler.new(data)
     end
 
@@ -31,102 +42,164 @@
 
         handler.call
       end
+    end
 
+    shared_examples "sync notification" do |table:, count: 1, schema: "public", event_type: :update|
       specify { expect(events.count).to eq(1) }
+
+      specify do
+        expect(event.payload[:count]).to eq(count)
+        expect(event.payload[:table]).to eq(table)
+        expect(event.payload[:schema]).to eq(schema)
+        expect(event.payload[:event]).to eq(event_type)
+        expect(event.payload[:direction]).to eq(:receive)
+      end
     end
 
     context "when recieve update with #{orm}" do
-      let(:data) do
-        OpenStruct.new(
-          data: {
-            event: "update",
-            model: "Player",
-            attributes: {
-              id: 100,
-              external_id: 100,
-              name: "test1",
-              nickname: "test2",
-              balance: 100,
-              email: "mail@example.com",
-            },
-            version: 123.34534,
-          },
-          project_id: "pid",
-        )
-      end
-
       include_context "processing", "tablesync.receive.update"
 
-      specify do
-        expect(event.payload[:count]).to eq(1)
-        expect(event.payload[:table]).to eq("players")
-        expect(event.payload[:event]).to eq(:update)
-        expect(event.payload[:direction]).to eq(:receive)
+      context "default schema" do
+        let(:data) do
+          OpenStruct.new(
+            data: {
+              event: "update",
+              model: "Player",
+              attributes: {
+                id: 1,
+                external_id: 100,
+                name: "test1",
+                nickname: "test2",
+                balance: 100,
+                email: "mail@example.com",
+              },
+              version: 123.34534,
+            },
+            project_id: "pid",
+          )
+        end
+
+        it_behaves_like "sync notification", table: "players"
+      end
+
+      context "custom schema" do
+        let(:data) do
+          OpenStruct.new(
+            data: {
+              event: "update",
+              model: "Club",
+              attributes: {
+                id: 10,
+                name: "Real Madrid",
+                position: 1,
+              },
+              version: 123.34534,
+            },
+            project_id: "pid",
+          )
+        end
+
+        it_behaves_like "sync notification", table: "clubs", schema: "custom_schema"
       end
     end
 
     context "when recieve destroy with #{orm}" do
-      let!(:player_id) { DB[:players].insert(external_id: 101, email: "email@example.com") }
-
-      let(:data) do
-        OpenStruct.new(
-          data: {
-            event: "destroy",
-            model: "Player",
-            attributes: {
-              external_id: player_id,
-            },
-            version: 123.34534,
-          },
-          project_id: "pid",
-        )
-      end
-
       include_context "processing", "tablesync.receive.destroy"
 
-      specify do
-        expect(event.payload[:count]).to eq(1)
-        expect(event.payload[:table]).to eq("players")
-        expect(event.payload[:event]).to eq(:destroy)
-        expect(event.payload[:direction]).to eq(:receive)
+      context "default schema" do
+        let(:data) do
+          OpenStruct.new(
+            data: {
+              event: "destroy",
+              model: "Player",
+              attributes: {
+                external_id: 1,
+              },
+              version: 123.34534,
+            },
+            project_id: "pid",
+          )
+        end
+
+        it_behaves_like "sync notification", table: "players", event_type: :destroy
+      end
+
+      context "custom schema" do
+        let(:data) do
+          OpenStruct.new(
+            data: {
+              event: "destroy",
+              model: "Club",
+              attributes: {
+                id: 10,
+              },
+              version: 123.34534,
+            },
+            project_id: "pid",
+            )
+        end
+
+        it_behaves_like "sync notification", table: "clubs", schema: "custom_schema", event_type: :destroy
       end
     end
 
     context "when batch recieve with #{orm}" do
-      let(:data) do
-        OpenStruct.new(
-          data: {
-            event: "update",
-            model: "Player",
-            attributes: [
-              {
-                external_id: 100,
-                name: "test1",
-                nickname: "test1",
-                balance: 100,
-                email: "mail1@example.com",
-              },
-              {
-                external_id: 101,
-                name: "test2",
-                nickname: "test2",
-                balance: 100,
-                email: "mail2@example.com",
-              },
-            ],
-            version: 123.34534,
-          },
-          project_id: "pid",
-        )
-      end
-
       include_context "processing", "tablesync.receive.update"
 
-      specify do
-        expect(event.payload[:count]).to eq(2)
-        expect(event.payload[:table]).to eq("players")
-        expect(event.payload[:event]).to eq(:update)
-        expect(event.payload[:direction]).to eq(:receive)
+      context "default schema" do
+        let(:data) do
+          OpenStruct.new(
+            data: {
+              event: "update",
+              model: "Player",
+              attributes: [
+                {
+                  external_id: 100,
+                  name: "test1",
+                  nickname: "test1",
+                  balance: 100,
+                  email: "mail1@example.com",
+                },
+                {
+                  external_id: 101,
+                  name: "test2",
+                  nickname: "test2",
+                  balance: 100,
+                  email: "mail2@example.com",
+                },
+              ],
+              version: 123.34534,
+            },
+            project_id: "pid",
+          )
+        end
+
+        it_behaves_like "sync notification", table: "players", count: 2
+      end
+
+      context "custom schema" do
+        let(:data) do
+          OpenStruct.new(
+            data: {
+              event: "update",
+              model: "Club",
+              attributes: [
+                {
+                  id: 100,
+                  name: "Barcelona",
+                },
+                {
+                  id: 101,
+                  name: "Atletico Madrid",
+                },
+              ],
+              version: 123.34534,
+            },
+            project_id: "pid",
+            )
+        end
+
+        it_behaves_like "sync notification", table: "clubs", schema: "custom_schema", count: 2
       end
     end
   end

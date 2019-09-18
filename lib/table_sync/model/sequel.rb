@@ -36,14 +36,16 @@ module TableSync::Model
                       )
                       .multi_insert(insert_data)
 
-      TableSync::Instrument.notify table: table_name, count: result.count,
+      TableSync::Instrument.notify table: model_naming_table, schema: model_naming_schema,
+                                   count: result.count,
                                    event: :update, direction: :receive
       result
     end
 
     def destroy(data)
       result = dataset.returning.where(data).delete
-      TableSync::Instrument.notify table: table_name, count: result.count,
+      TableSync::Instrument.notify table: model_naming_table, schema: model_naming_schema,
+                                   count: result.count,
                                    event: :destroy, direction: :receive
       result
     end
@@ -60,8 +62,14 @@ module TableSync::Model
 
     attr_reader :raw_model
 
+    delegate :table, :schema, to: :model_naming, prefix: true
+
     def table_name
       raw_model.table_name
+    end
+
+    def model_naming
+      ::TableSync::NamingResolver::Sequel.new(table_name: table_name, db: db)
     end
 
     def dataset

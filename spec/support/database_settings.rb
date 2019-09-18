@@ -78,11 +78,24 @@ DB.run <<~SQL
     "first_sync_time" timestamp without time zone,
     UNIQUE (ext_id, ext_project_id)
   );
+
+  DROP TABLE IF EXISTS "custom_schema"."clubs";
+  DROP SCHEMA IF EXISTS "custom_schema";
+
+  CREATE SCHEMA custom_schema;
+  CREATE TABLE "custom_schema"."clubs" (
+    "id" int primary key,
+    "name" text,
+    "position" int,
+    "version" decimal,
+    "rest" jsonb
+  );
 SQL
 
 RSpec.configure do |config|
   config.before do
-    tables = DB[:pg_tables].where(schemaname: "public").select_map(:tablename)
+    schemas_tables = DB[:pg_tables].where(schemaname: %w[public custom_schema]).select_hash(:tablename, :schemaname)
+    tables = schemas_tables.map { |table, schema| "#{schema}.#{table}" }
     DB.run("TRUNCATE #{tables.join(', ')}")
   end
 end
