@@ -45,8 +45,8 @@ module TableSync::Model
           AND kcu.constraint_name = tc.constraint_name
         WHERE
           t.table_schema NOT IN ('pg_catalog', 'information_schema')
-          AND t.table_schema = '#{model_naming_schema}'
-          AND t.table_name = '#{model_naming_table}'
+          AND t.table_schema = '#{model_naming.schema}'
+          AND t.table_name = '#{model_naming.table}'
         ORDER BY
           kcu.ordinal_position
       SQL
@@ -74,7 +74,7 @@ module TableSync::Model
         end.compact
       end
 
-      TableSync::Instrument.notify(table: model_naming_table, schema: model_naming_schema,
+      TableSync::Instrument.notify(table: model_naming.table, schema: model_naming.schema,
                                    event: :update, count: result.count, direction: :receive)
 
       result
@@ -87,7 +87,7 @@ module TableSync::Model
       end
 
       TableSync::Instrument.notify(
-        table: model_naming_table, schema: model_naming_schema,
+        table: model_naming.table, schema: model_naming.schema,
         event: :destroy, count: result.count, direction: :receive
       )
 
@@ -105,8 +105,6 @@ module TableSync::Model
     private
 
     attr_reader :raw_model
-
-    delegate :table, :schema, to: :model_naming, prefix: true
 
     def db
       @raw_model.connection
