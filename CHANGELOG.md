@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.12.0] - 2019-09-19
+### Changed
+- Payload for existing ActiveSupport adapter contains both `table` and `schema` fields now. 
+
 ## [1.11.0] - 2019-09-11
 ### Added
 - Receiving: inconsistent events raises `TableSync::UnprovidedEventTargetKeysError`

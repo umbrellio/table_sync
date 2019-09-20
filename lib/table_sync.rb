@@ -24,6 +24,8 @@ module TableSync
   require_relative "./table_sync/model/sequel"
   require_relative "./table_sync/instrument"
   require_relative "./table_sync/instrument_adapter/active_support"
+  require_relative "./table_sync/naming_resolver/active_record"
+  require_relative "./table_sync/naming_resolver/sequel"
 
   class << self
     include Memery

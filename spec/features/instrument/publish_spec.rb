@@ -22,6 +22,8 @@ class Player
     def table_name
       :players
     end
+
+    def db; end
   end
 end
 
@@ -55,17 +57,45 @@ end
       specify { expect(events.count).to eq(1) }
     end
 
+    shared_context "custom schema" do
+      before do
+        if orm == TableSync::ORMAdapter::Sequel
+          table_name = Sequel[:custom_schema][:players]
+        elsif orm == TableSync::ORMAdapter::ActiveRecord
+          table_name = "custom_schema.players"
+        end
+
+        allow(Player).to receive(:table_name).and_return(table_name)
+      end
+    end
+
+    shared_examples "sync players notification" do |count: 1, schema: "public"|
+      specify { expect(events.count).to eq(1) }
+
+      specify do
+        expect(event.payload[:count]).to eq(count)
+        expect(event.payload[:table]).to eq("players")
+        expect(event.payload[:schema]).to eq(schema)
+        expect(event.payload[:event]).to eq(:update)
+        expect(event.payload[:direction]).to eq(:publish)
+      end
+    end
+
     context "when publish with #{orm}" do
       let(:publisher_class) { TableSync::Publisher }
       let(:attributes)      { { "external_id" => 101, "email" => "email@example.com" } }
 
-      include_context "processing"
+      context "default schema" do
+        include_context "processing"
 
-      specify do
-        expect(event.payload[:count]).to eq(1)
-        expect(event.payload[:table]).to eq("players")
-        expect(event.payload[:event]).to eq(:update)
-        expect(event.payload[:direction]).to eq(:publish)
+        it_behaves_like "sync players notification"
+      end
+
+      context "custom schema" do
+        include_context "custom schema"
+        include_context "processing"
+
+        it_behaves_like "sync players notification", schema: "custom_schema"
       end
     end
 
@@ -75,13 +105,17 @@ end
         [1, 2, 3].map { |e| { "external_id" => e, "email" => "email#{e}@example.com" } }
       end
 
-      include_context "processing"
+      context "default schema" do
+        include_context "processing"
 
-      specify do
-        expect(event.payload[:count]).to eq(3)
-        expect(event.payload[:table]).to eq("players")
-        expect(event.payload[:event]).to eq(:update)
-        expect(event.payload[:direction]).to eq(:publish)
+        it_behaves_like "sync players notification", count: 3
+      end
+
+      context "custom schema" do
+        include_context "custom schema"
+        include_context "processing"
+
+        it_behaves_like "sync players notification", count: 3, schema: "custom_schema"
       end
     end
   end

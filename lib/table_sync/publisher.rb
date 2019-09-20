@@ -34,7 +34,8 @@ class TableSync::Publisher < TableSync::BasePublisher
     return if !object && !destroyed?
 
     Rabbit.publish(params)
-    TableSync::Instrument.notify table: TableSync.orm.table_name(object_class),
+    model_naming = TableSync.orm.model_naming(object_class)
+    TableSync::Instrument.notify table: model_naming.table, schema: model_naming.schema,
                                  event: event, direction: :publish
   end
 

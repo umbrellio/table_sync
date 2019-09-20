@@ -45,8 +45,8 @@ module TableSync::Model
           AND kcu.constraint_name = tc.constraint_name
         WHERE
           t.table_schema NOT IN ('pg_catalog', 'information_schema')
-          AND t.table_schema = '#{table_info[:schema]}'
-          AND t.table_name = '#{table_info[:name]}'
+          AND t.table_schema = '#{model_naming.schema}'
+          AND t.table_name = '#{model_naming.table}'
         ORDER BY
           kcu.ordinal_position
       SQL
@@ -74,9 +74,8 @@ module TableSync::Model
         end.compact
       end
 
-      TableSync::Instrument.notify(
-        table: table_name, event: :update, count: result.count, direction: :receive,
-      )
+      TableSync::Instrument.notify(table: model_naming.table, schema: model_naming.schema,
+                                   event: :update, count: result.count, direction: :receive)
 
       result
     end
@@ -88,7 +87,8 @@ module TableSync::Model
       end
 
       TableSync::Instrument.notify(
-        table: table_name, event: :destroy, count: result.count, direction: :receive,
+        table: model_naming.table, schema: model_naming.schema,
+        event: :destroy, count: result.count, direction: :receive
       )
 
       result
@@ -106,19 +106,12 @@ module TableSync::Model
 
     attr_reader :raw_model
 
-    def table_info
-      keys = raw_model.table_name.split(".")
-      name = keys[-1]
-      schema = keys[-2] || "public"
-      { schema: schema, name: name }
-    end
-
-    def table_name
-      table_info[:name]
-    end
-
     def db
       @raw_model.connection
+    end
+
+    def model_naming
+      ::TableSync::NamingResolver::ActiveRecord.new(table_name: raw_model.table_name)
     end
 
     def row_to_hash(row)

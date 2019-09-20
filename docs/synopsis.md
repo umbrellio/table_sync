@@ -276,13 +276,14 @@ Types of events available:
 `"tablesync.receive.update"`, `"tablesync.receive.destroy"`, `"tablesync.publish.update"`
 and `"tablesync.publish.destroy"`.
 
-You have access to the payload, which contains  `event`, `direction`, `table` and `count`.
+You have access to the payload, which contains  `event`, `direction`, `table`, `schema` and `count`.
 
 ```
 {
   :event => :update,       # one of update / destroy
   :direction => :publish,  # one of publish / receive
   :table => "users",
+  :schema => "public",  
   :count => 1
 }
 ```
