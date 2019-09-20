@@ -1,9 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.12.0] - 2019-09-19
+## [1.12.0] - 2019-09-20
 ### Changed
-- Payload for existing ActiveSupport adapter contains both `table` and `schema` fields now. 
+- Payload for existing ActiveSupport adapter contains both `table` and `schema` fields now.
 
 ## [1.11.0] - 2019-09-11
 ### Added
