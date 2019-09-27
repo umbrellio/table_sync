@@ -21,7 +21,7 @@ module TableSync::Model
                           ::Sequel.qualify(:excluded, version_key)
 
       upd_spec = update_spec(data.first.keys - target_keys)
-      data.map! { |d| d.merge(default_values) }
+      data.map! { |d| default_values.merge(d) }
 
       insert_data = type_cast(data)
       if first_sync_time_key
