@@ -65,7 +65,7 @@ module TableSync::Model
 
             row.update!(datum)
           else
-            create_data = datum.merge(default_values)
+            create_data = default_values.merge(datum)
             create_data[first_sync_time_key] = Time.current if first_sync_time_key
             row = raw_model.create!(create_data)
           end

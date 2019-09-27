@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.12.1] - 2019-09-27
+### Fixed
+- The `default_values` option no longer overrides original values.
+
 ## [1.12.0] - 2019-09-20
 ### Changed
 - Payload for existing ActiveSupport adapter contains both `table` and `schema` fields now.

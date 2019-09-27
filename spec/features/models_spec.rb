@@ -38,6 +38,32 @@
         end.to raise_error(error)
       end
 
+      it "merges the default_values correctly" do
+        result = clients.upsert(
+          data: { name: "test", ext_id: 1, ext_project_id: 1, ts_version: 1, ts_rest: { a: 1 } },
+          target_keys: %i[ext_id ext_project_id],
+          version_key: :ts_version,
+          default_values: {
+            client_id: 1,
+            project_id: 1,
+            ts_version: 2,
+            name: "test123",
+            ts_rest: { b: 2 },
+          },
+          first_sync_time_key: nil,
+        )
+
+        expect(result).to eq([{
+          client_id: 1,
+          project_id: 1,
+          name: "test",
+          ext_id: 1,
+          ext_project_id: 1,
+          ts_version: 1,
+          ts_rest: { "a" => 1 },
+        }])
+      end
+
       it "creates" do
         result = clients.upsert(
           data: { name: "test", ext_id: 1, ext_project_id: 1, ts_version: 1, ts_rest: { a: 1 } },
