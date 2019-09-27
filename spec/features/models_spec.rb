@@ -48,7 +48,7 @@
             project_id: 1,
             ts_version: 2,
             name: "test123",
-            ts_rest: { b: 2 }
+            ts_rest: { b: 2 },
           },
           first_sync_time_key: nil,
         )
