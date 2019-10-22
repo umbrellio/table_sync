@@ -19,6 +19,7 @@ module TableSync
       @version_key = :version
       @first_sync_time_key = nil
       @on_destroy = nil
+      @wrap_receiving = nil
       target_keys(model.primary_keys)
     end
 
@@ -69,6 +70,10 @@ module TableSync
 
     def on_destroy(&block)
       block_given? ? @on_destroy = block : @on_destroy
+    end
+
+    def wrap_receiving(&block)
+      block_given? ? @wrap_receiving = block : @wrap_receiving
     end
 
     check_and_set_column_key = proc do |key|

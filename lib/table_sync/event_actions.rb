@@ -9,6 +9,18 @@ module TableSync
         end
       end
 
+      with_wrapping(data) { process_upsert(data) }
+    end
+
+    def destroy(data)
+      attributes = data.first || {}
+      target_attributes = attributes.select { |key, _value| target_keys.include?(key) }
+      prevent_incomplete_event!(target_attributes)
+
+      with_wrapping(attributes) { process_destroy(attributes, target_attributes) }
+    end
+
+    def process_upsert(data)
       model.transaction do
         args = {
           data: data,
@@ -37,18 +49,14 @@ module TableSync
       end
     end
 
-    def destroy(data)
-      attributes = data.first || {}
-      target_attributes = attributes.select { |key, _value| target_keys.include?(key) }
-      prevent_incomplete_event!(target_attributes)
-
+    def process_destroy(original_attributes, target_attributes)
       model.transaction do
         @config.callback_registry.get_callbacks(kind: :before_commit, event: :destroy).each do |cb|
-          cb[attributes]
+          cb[original_attributes]
         end
 
         if on_destroy
-          results = on_destroy.call(attributes: attributes, target_keys: target_keys)
+          results = on_destroy.call(attributes: original_attributes, target_keys: target_keys)
         else
           results = model.destroy(target_attributes)
           return if results.empty?
@@ -60,6 +68,14 @@ module TableSync
             cb[results]
           end
         end
+      end
+    end
+
+    def with_wrapping(data = {}, &operations)
+      if @config.wrap_receiving
+        @config.wrap_receiving.call(data, operations)
+      else
+        operations.call
       end
     end
 
