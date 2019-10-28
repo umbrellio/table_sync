@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2019-10-28
+## [Unreleased]
 ### Added
 - Wrapping interface around receiving logic (`wrap_receiving`);
 
