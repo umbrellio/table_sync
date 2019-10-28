@@ -229,7 +229,7 @@ The following options are available inside the block:
  While the proc is called inside an upsert transaction it is suitable place for creating partitions for new data.
  Note that transaction of proc is a TableSynk.orm transaction.
 - `wrap_reciving` - proc that is used to wrap the receiving logic by custom block of code. Receives `data` and `receiving` attributes
-  (received event data and receiving logic proc respectively). `receiving.call` runs receiving process.
+  (received event data and receiving logic proc respectively). `receiving.call` runs receiving process (you should use it manually).
     - example (concurrent receiving):
     ```ruby
       wrap_receiving do |data, receiving|
