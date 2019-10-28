@@ -62,17 +62,13 @@ describe "Wrap receiving logic" do
     specify "destroy event" do
       expect { handler.new(destroy_event).call }.to change { DB[:players].count }.by(-1)
 
-      expect(DB[:players].count).to eq(0)
-
       expect(RECEIVING_WRAPPER_RESULTS).to contain_exactly(
         external_id: 123, rest: {}, version: 123,
       )
     end
 
     specify "create event" do
-      handler.new(create_event).call
-
-      expect(DB[:players].count).to eq(2)
+      expect { handler.new(create_event).call }.to change { DB[:players].count }.by(1)
       expect(RECEIVING_WRAPPER_RESULTS.count).to eq(1)
 
       receiving_data = RECEIVING_WRAPPER_RESULTS.first.values.first.first # omg...
@@ -100,6 +96,7 @@ describe "Wrap receiving logic" do
 
     specify "destroy event" do
       expect { handler.new(destroy_event).call }.not_to change { DB[:players].count }
+
       expect(RECEIVING_WRAPPER_RESULTS).to contain_exactly(
         external_id: 123, rest: {}, version: 123,
       )
@@ -107,6 +104,7 @@ describe "Wrap receiving logic" do
 
     specify "create event" do
       expect { handler.new(create_event).call }.not_to change { DB[:players].count }
+
       expect(RECEIVING_WRAPPER_RESULTS.count).to eq(1)
       receiving_data = RECEIVING_WRAPPER_RESULTS.first.values.first.first # omg...
       # NOTE: [{ TableSync::Model::Sequel/ActiveRecord => [{ ...data... }] }]
