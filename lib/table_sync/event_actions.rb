@@ -20,7 +20,7 @@ module TableSync
       with_wrapping(attributes) { process_destroy(attributes, target_attributes) }
     end
 
-    def process_upsert(data)
+    def process_upsert(data) # rubocop:disable Metrics/MethodLength
       model.transaction do
         args = {
           data: data,

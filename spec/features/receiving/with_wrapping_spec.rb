@@ -79,7 +79,7 @@ describe "Wrap receiving logic" do
       # NOTE: [{ TableSync::Model::Sequel/ActiveRecord => [{ ...data... }] }]
 
       expect(receiving_data).to match(
-        external_id: 1234, rest: {}, version: 456, email: "kek@pek.test", online_status: false
+        external_id: 1234, rest: {}, version: 456, email: "kek@pek.test", online_status: false,
       )
     end
   end
@@ -101,7 +101,7 @@ describe "Wrap receiving logic" do
     specify "destroy event" do
       expect { handler.new(destroy_event).call }.not_to change { DB[:players].count }
       expect(RECEIVING_WRAPPER_RESULTS).to contain_exactly(
-        { external_id: 123, rest: {}, version: 123 }
+        external_id: 123, rest: {}, version: 123,
       )
     end
 
