@@ -84,7 +84,7 @@ to default Rabbit gem configuration).
 
 # Manual publishing
 
-`TableSync::Publisher.new(object_class, original_attributes, confirm: true, state: :updated, debounce_time: 45)` 
+`TableSync::Publisher.new(object_class, original_attributes, confirm: true, state: :updated, debounce_time: 45)`
 where state is one of `:created / :updated / :destroyed` and `confirm` is Rabbit's confirm delivery flag and optional param `debounce_time` determines debounce time in seconds, 1 minute by default.
 
 # Manual publishing with batches
@@ -228,6 +228,14 @@ The following options are available inside the block:
  partition `{ measurements_2018_01: [ { attrs }, ... ], measurements_2018_02: [ { attrs }, ... ], ...}`.
  While the proc is called inside an upsert transaction it is suitable place for creating partitions for new data.
  Note that transaction of proc is a TableSynk.orm transaction.
+- `wrap_reciving` - proc that is used to wrap the receiving logic by custom block of code. Receives `data` and `receiving` attributes
+  (received event data and receiving logic proc respectively). `receiving.call` runs receiving process.
+    - example (concurrent receiving):
+    ```ruby
+      wrap_receiving do |data, receiving|
+        Locking.acquire("lock-key-#{data[:some_uniq_attr]}") { receiving.call }
+      end
+    ```
 
 ```ruby
 partitions do |data:|
@@ -283,7 +291,7 @@ You have access to the payload, which contains  `event`, `direction`, `table`, `
   :event => :update,       # one of update / destroy
   :direction => :publish,  # one of publish / receive
   :table => "users",
-  :schema => "public",  
+  :schema => "public",
   :count => 1
 }
 ```
