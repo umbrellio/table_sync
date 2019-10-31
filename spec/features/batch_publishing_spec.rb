@@ -214,4 +214,45 @@ describe TableSync::BatchPublisher do
       end
     end
   end
+
+  context "#filter_safe_for_serialization" do
+    let(:attributes) do
+      {"id"=>17,
+       "parent_id"=>17,
+       "session_id"=>14,
+       "user_id"=>1,
+       "game_id"=>103,
+       "time"=>Time.current.to_s,
+       "points"=>0.0,
+       "new_points"=>0.0,
+       "session_type"=>"real",
+       "info"=>"<roundnum id=\"709640453\"></roundnum><giftspin gift_id=\"18\"></giftspin>",
+       "roundnum"=>709640453,
+       "eapi_session_id"=>"test",
+       "type"=>"giftspin",
+       "currency"=>"EUR",
+       "courses"=>{"EUR"=>"1.0", "NGN"=>"402.7818871582", "NOK"=>"10.1745883192", "PLN"=>"4.2788622234", "RUB"=>"70.9193807518", "SEK"=>"10.7375715846", "USD"=>"1.1141564721"},
+       "data"=>{"provider"=>"playson", "roulette_numbers_covered"=>"0"},
+       "bet"=>0.12e4,
+       "win"=>0.3e3,
+       "new_balance"=>0.1036e6,
+       "total_win"=>0.3e3,
+       "jurisdiction"=>"CW",
+       "finish_time"=> Time.current.to_s,
+       "status"=>"finished",
+       "bonus_bet"=>0.0,
+       "bonus_win"=>0.3e3,
+       "total_bonus_win"=>0.3e3,
+       "parent_id_new"=>nil,
+       "roundnum_new"=>"709640453"
+      }
+    end
+
+    it "allocates limited amount of objects" do
+
+      expect {
+        TableSync::Publisher.new(model_name, attributes, options).send :filter_safe_for_serialization, attributes
+      }.to perform_allocation({Array => 1, Object => 2}).objects
+    end
+  end
 end

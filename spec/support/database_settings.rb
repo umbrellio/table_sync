@@ -2,6 +2,7 @@
 
 require "sequel"
 require "active_record"
+require "rspec-benchmark"
 
 Sequel.extension :pg_json_ops
 DB_NAME = (ENV["DB_NAME"] || "table_sync_test").freeze
@@ -93,6 +94,8 @@ DB.run <<~SQL
 SQL
 
 RSpec.configure do |config|
+  config.include RSpec::Benchmark::Matchers
+
   config.before do
     schemas_tables = DB[:pg_tables].where(schemaname: %w[public custom_schema])
                                    .select_hash(:tablename, :schemaname)

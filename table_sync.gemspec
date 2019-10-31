@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "coveralls", "~> 0.8"
   spec.add_development_dependency "rspec", "~> 3.8"
+  spec.add_development_dependency "rspec-benchmark"
   spec.add_development_dependency "rubocop-config-umbrellio", "~> 0.74"
   spec.add_development_dependency "simplecov", "~> 0.16"
 
