@@ -224,25 +224,33 @@ The following options are available inside the block:
 - `additional_data` - additional data for insert or update (e.g. `project_id`)
 - `default_values` - values for insert if a row is not found
 - `partitions` - proc that is used to obtain partitioned data to support table partitioning. Must return a hash which
- keys are names of partitions of partitioned table and values - arrays of attributes to be inserted into particular
- partition `{ measurements_2018_01: [ { attrs }, ... ], measurements_2018_02: [ { attrs }, ... ], ...}`.
- While the proc is called inside an upsert transaction it is suitable place for creating partitions for new data.
- Note that transaction of proc is a TableSynk.orm transaction.
+  keys are names of partitions of partitioned table and values - arrays of attributes to be inserted into particular
+  partition `{ measurements_2018_01: [ { attrs }, ... ], measurements_2018_02: [ { attrs }, ... ], ...}`.
+  While the proc is called inside an upsert transaction it is suitable place for creating partitions for new data.
+  Note that transaction of proc is a TableSynk.orm transaction.
+  ```ruby
+  partitions do |data:|
+    data.group_by { |d| "measurements_#{d[:time].year}_#{d[:time].month}" }
+        .tap { |data| data.keys.each { |table| DB.run("CREATE TABLE IF NOT EXISTS #{table} PARTITION OF measurements") } }
+  end
+  ```
 - `wrap_reciving` - proc that is used to wrap the receiving logic by custom block of code. Receives `data` and `receiving` attributes
   (received event data and receiving logic proc respectively). `receiving.call` runs receiving process (you should use it manually).
     - example (concurrent receiving):
     ```ruby
       wrap_receiving do |data, receiving|
-        Locking.acquire("lock-key-#{data[:some_uniq_attr]}") { receiving.call }
+        Locking.acquire("some-lock-key") { receiving.call }
       end
     ```
-
-```ruby
-partitions do |data:|
-  data.group_by { |d| "measurements_#{d[:time].year}_#{d[:time].month}" }
-      .tap { |data| data.keys.each { |table| DB.run("CREATE TABLE IF NOT EXISTS #{table} PARTITION OF measurements") } }
-end
-```
+  - `data` attribute:
+    - for `destroy` event - an instance of `TableSync::EventActions::DataWrapping::Destroy`;
+    - for `update` event - an instance of `TableSync::EventActions::DataWrapping::Update`;
+    - `#event_data` - raw recevied event data:
+      - for `destroy` event - simple `Hash`
+      - for `update` event - `Hash` with `Hash<ModelKlass, Array<Hash<Symbol, Object>>>` signature;
+    - `#destroy?` / `#update?` - corresponding predicates;
+    - `type` - indicates a type of data (`:destroy` and `:update` respectively);
+    - `#each` - iterates over `#event_data` elements (acts like an iteration over an array of elements);
 
 Each of options can receive static value or code block which will be called for each event with the following arguments:
 - `event` - type of event (`:update` or `:destroy`)
