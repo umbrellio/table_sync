@@ -62,19 +62,24 @@ describe "Wrap receiving logic" do
     specify "destroy event" do
       expect { handler.new(destroy_event).call }.to change { DB[:players].count }.by(-1)
 
-      expect(RECEIVING_WRAPPER_RESULTS).to contain_exactly(
-        external_id: 123, rest: {}, version: 123,
-      )
+      expect(RECEIVING_WRAPPER_RESULTS.count).to eq(1)
+      received_data = RECEIVING_WRAPPER_RESULTS.first
+
+      expect(received_data.destroy?).to eq(true)
+      expect(received_data.update?).to eq(false)
+
+      expect(received_data.event_data).to match(external_id: 123, rest: {}, version: 123)
     end
 
     specify "create event" do
       expect { handler.new(create_event).call }.to change { DB[:players].count }.by(1)
       expect(RECEIVING_WRAPPER_RESULTS.count).to eq(1)
+      received_data = RECEIVING_WRAPPER_RESULTS.first
+      expect(received_data.update?).to eq(true)
+      expect(received_data.destroy?).to eq(false)
 
-      receiving_data = RECEIVING_WRAPPER_RESULTS.first.values.first.first # omg...
-      # NOTE: [{ TableSync::Model::Sequel/ActiveRecord => [{ ...data... }] }]
-
-      expect(receiving_data).to match(
+      data = received_data.event_data.values.first.first # omg...
+      expect(data).to match(
         external_id: 1234, rest: {}, version: 456, email: "kek@pek.test", online_status: false,
       )
     end
@@ -97,19 +102,25 @@ describe "Wrap receiving logic" do
     specify "destroy event" do
       expect { handler.new(destroy_event).call }.not_to change { DB[:players].count }
 
-      expect(RECEIVING_WRAPPER_RESULTS).to contain_exactly(
-        external_id: 123, rest: {}, version: 123,
-      )
+      expect(RECEIVING_WRAPPER_RESULTS.count).to eq(1)
+      received_data = RECEIVING_WRAPPER_RESULTS.first
+
+      expect(received_data.destroy?).to eq(true)
+      expect(received_data.update?).to eq(false)
+
+      expect(received_data.event_data).to match(external_id: 123, rest: {}, version: 123)
     end
 
     specify "create event" do
       expect { handler.new(create_event).call }.not_to change { DB[:players].count }
 
       expect(RECEIVING_WRAPPER_RESULTS.count).to eq(1)
-      receiving_data = RECEIVING_WRAPPER_RESULTS.first.values.first.first # omg...
-      # NOTE: [{ TableSync::Model::Sequel/ActiveRecord => [{ ...data... }] }]
+      received_data = RECEIVING_WRAPPER_RESULTS.first
+      expect(received_data.update?).to eq(true)
+      expect(received_data.destroy?).to eq(false)
 
-      expect(receiving_data).to match(
+      data = received_data.event_data.values.first.first # omg...
+      expect(data).to match(
         external_id: 1234, rest: {}, version: 456, email: "kek@pek.test", online_status: false,
       )
     end

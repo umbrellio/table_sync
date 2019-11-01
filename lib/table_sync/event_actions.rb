@@ -9,7 +9,9 @@ module TableSync
         end
       end
 
-      with_wrapping(data) { process_upsert(data) }
+      with_wrapping(DataWrapping::Update.new(data)) do
+        process_upsert(data)
+      end
     end
 
     def destroy(data)
@@ -17,7 +19,9 @@ module TableSync
       target_attributes = attributes.select { |key, _value| target_keys.include?(key) }
       prevent_incomplete_event!(target_attributes)
 
-      with_wrapping(attributes) { process_destroy(attributes, target_attributes) }
+      with_wrapping(DataWrapping::Destroy.new(attributes)) do
+        process_destroy(attributes, target_attributes)
+      end
     end
 
     def process_upsert(data) # rubocop:disable Metrics/MethodLength
