@@ -249,7 +249,7 @@ The following options are available inside the block:
       - for `destroy` event - simple `Hash`
       - for `update` event - `Hash` with `Hash<ModelKlass, Array<Hash<Symbol, Object>>>` signature;
     - `#destroy?` / `#update?` - corresponding predicates;
-    - `type` - indicates a type of data (`:destroy` and `:update` respectively);
+    - `#type` - indicates a type of data (`:destroy` and `:update` respectively);
     - `#each` - iterates over `#event_data` elements (acts like an iteration over an array of elements);
 
 Each of options can receive static value or code block which will be called for each event with the following arguments:
