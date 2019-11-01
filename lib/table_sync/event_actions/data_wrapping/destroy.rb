@@ -5,8 +5,8 @@ class TableSync::EventActions::DataWrapping::Destroy < TableSync::EventActions::
     :destroy
   end
 
-  def each(&block)
-    [event_data].each(&block)
+  def each
+    yield(event_data)
   end
 
   def destroy?
