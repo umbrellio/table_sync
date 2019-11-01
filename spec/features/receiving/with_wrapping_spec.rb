@@ -103,7 +103,7 @@ describe "Wrap receiving logic" do
       expect(received_data.update?).to eq(false)
       expect(received_data.destroy?).to eq(true)
 
-      received_data.each { |data| expect(data).to be_a(Hash) }
+      expect(received_data).to all(be_a(Hash))
     end
   end
 
