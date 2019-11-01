@@ -44,6 +44,32 @@ describe "Wrap receiving logic" do
     )
   end
 
+  shared_examples "event data behavior" do |model_klass:|
+    specify "iterable upsert-event data" do
+      handler.new(upsert_event).call
+      received_data = RECEIVING_WRAPPER_RESULTS.first
+
+      expect(received_data.update?).to eq(true)
+      expect(received_data.destroy?).to eq(false)
+
+      received_data.each do |model, data|
+        expect(model).to be_a(model_klass)
+        expect(data).to be_a(Array)
+        expect(data.first).to be_a(Hash)
+      end
+    end
+
+    specify "iterable destroy-event data" do
+      handler.new(destroy_event).call
+      received_data = RECEIVING_WRAPPER_RESULTS.first
+
+      expect(received_data.update?).to eq(false)
+      expect(received_data.destroy?).to eq(true)
+
+      expect(received_data).to all(be_a(Hash))
+    end
+  end
+
   shared_examples "invokable receiving" do |model_klass:|
     let(:handler) do
       Class.new(TableSync::ReceivingHandler) do
@@ -82,32 +108,10 @@ describe "Wrap receiving logic" do
       )
     end
 
-    specify "iterable upsert-event data" do
-      handler.new(upsert_event).call
-      received_data = RECEIVING_WRAPPER_RESULTS.first
-
-      expect(received_data.update?).to eq(true)
-      expect(received_data.destroy?).to eq(false)
-
-      received_data.each do |model, data|
-        expect(model).to be_a(model_klass)
-        expect(data).to be_a(Array)
-        expect(data.first).to be_a(Hash)
-      end
-    end
-
-    specify "iterable destroy-event data" do
-      handler.new(destroy_event).call
-      received_data = RECEIVING_WRAPPER_RESULTS.first
-
-      expect(received_data.update?).to eq(false)
-      expect(received_data.destroy?).to eq(true)
-
-      expect(received_data).to all(be_a(Hash))
-    end
+    it_behaves_like "event data behavior", model_klass: model_klass
   end
 
-  shared_examples "non-invokable receiving" do
+  shared_examples "non-invokable receiving" do |model_klass:|
     let(:handler) do
       Class.new(TableSync::ReceivingHandler) do
         receive("Player", to_table: :players) do
@@ -127,9 +131,6 @@ describe "Wrap receiving logic" do
       expect(RECEIVING_WRAPPER_RESULTS.count).to eq(1)
       received_data = RECEIVING_WRAPPER_RESULTS.first
 
-      expect(received_data.destroy?).to eq(true)
-      expect(received_data.update?).to eq(false)
-
       expect(received_data.event_data).to match(external_id: 123, rest: {}, version: 123)
     end
 
@@ -137,15 +138,14 @@ describe "Wrap receiving logic" do
       expect { handler.new(upsert_event).call }.not_to change { DB[:players].count }
 
       expect(RECEIVING_WRAPPER_RESULTS.count).to eq(1)
-      received_data = RECEIVING_WRAPPER_RESULTS.first
-      expect(received_data.update?).to eq(true)
-      expect(received_data.destroy?).to eq(false)
+      received_data = RECEIVING_WRAPPER_RESULTS.first.event_data.values.first.first # omg
 
-      data = received_data.event_data.values.first.first # omg...
-      expect(data).to match(
+      expect(received_data).to match(
         external_id: 1234, rest: {}, version: 456, email: "kek@pek.test", online_status: false,
       )
     end
+
+    it_behaves_like "event data behavior", model_klass: model_klass
   end
 
   it_behaves_like "invokable receiving", model_klass: TableSync::Model::Sequel do
