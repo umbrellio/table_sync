@@ -246,7 +246,7 @@ The following options are available inside the block:
     - for `destroy` event - an instance of `TableSync::EventActions::DataWrapping::Destroy`;
     - for `update` event - an instance of `TableSync::EventActions::DataWrapping::Update`;
     - `#event_data` - raw recevied event data:
-      - for `destroy` event - simple `Hash`
+      - for `destroy` event - simple `Hash`;
       - for `update` event - `Hash` with `Hash<ModelKlass, Array<Hash<Symbol, Object>>>` signature;
     - `#destroy?` / `#update?` - corresponding predicates;
     - `#type` - indicates a type of data (`:destroy` and `:update` respectively);

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# froezn_string_literal: true
-
 class TableSync::EventActions::DataWrapping::Base
   include Enumerable
 
@@ -12,7 +10,7 @@ class TableSync::EventActions::DataWrapping::Base
   end
 
   def type
-    NoMethodError # NOTE: for clarity
+    raise NoMethodError # NOTE: for clarity
   end
 
   def destroy?
