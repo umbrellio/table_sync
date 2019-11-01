@@ -8,7 +8,7 @@ class TableSync::EventActions::DataWrapping::Destroy < TableSync::EventActions::
   end
 
   def each(&block)
-    event_data.each(&block)
+    [event_data].each(&block)
   end
 
   def destroy?

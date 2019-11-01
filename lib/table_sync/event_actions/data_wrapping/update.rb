@@ -8,10 +8,8 @@ class TableSync::EventActions::DataWrapping::Update < TableSync::EventActions::D
   end
 
   def each
-    event_data.each do |attribute_set|
-      attribute_set.each_pair do |model_klass, changed_models_attrs|
-        yield(model_klass, changed_models_attrs)
-      end
+    event_data.each_pair do |model_klass, changed_models_attrs|
+      yield([model_klass, changed_models_attrs])
     end
   end
 
