@@ -243,8 +243,8 @@ The following options are available inside the block:
       end
     ```
   - `data` attribute:
-    - for `destroy` event - an instance of `TableSync::EventActions::DataWrapping::Destroy`;
-    - for `update` event - an instance of `TableSync::EventActions::DataWrapping::Update`;
+    - for `destroy` event - an instance of `TableSync::EventActions::DataWrapper::Destroy`;
+    - for `update` event - an instance of `TableSync::EventActions::DataWrapper::Update`;
     - `#event_data` - raw recevied event data:
       - for `destroy` event - simple `Hash`;
       - for `update` event - `Hash` with `Hash<ModelKlass, Array<Hash<Symbol, Object>>>` signature;

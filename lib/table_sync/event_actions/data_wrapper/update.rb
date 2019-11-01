@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TableSync::EventActions::DataWrapping::Update < TableSync::EventActions::DataWrapping::Base
+class TableSync::EventActions::DataWrapper::Update < TableSync::EventActions::DataWrapper::Base
   def type
     :update
   end

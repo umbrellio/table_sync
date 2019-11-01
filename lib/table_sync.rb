@@ -10,7 +10,7 @@ module TableSync
   require_relative "./table_sync/version"
   require_relative "./table_sync/errors"
   require_relative "./table_sync/event_actions"
-  require_relative "./table_sync/event_actions/data_wrapping"
+  require_relative "./table_sync/event_actions/data_wrapper"
   require_relative "./table_sync/config"
   require_relative "./table_sync/config/callback_registry"
   require_relative "./table_sync/config_decorator"

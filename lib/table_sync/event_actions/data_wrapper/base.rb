@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TableSync::EventActions::DataWrapping::Base
+class TableSync::EventActions::DataWrapper::Base
   include Enumerable
 
   attr_reader :event_data

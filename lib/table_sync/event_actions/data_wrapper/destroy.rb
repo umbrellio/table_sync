@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TableSync::EventActions::DataWrapping::Destroy < TableSync::EventActions::DataWrapping::Base
+class TableSync::EventActions::DataWrapper::Destroy < TableSync::EventActions::DataWrapper::Base
   def type
     :destroy
   end
