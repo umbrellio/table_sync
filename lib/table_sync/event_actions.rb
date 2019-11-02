@@ -2,13 +2,29 @@
 
 module TableSync
   module EventActions
-    def update(data) # rubocop:disable Metrics/MethodLength
+    def update(data)
       data.each_value do |attribute_set|
         attribute_set.each do |attributes|
           prevent_incomplete_event!(attributes)
         end
       end
 
+      with_wrapping(DataWrapper::Update.new(data)) do
+        process_upsert(data)
+      end
+    end
+
+    def destroy(data)
+      attributes = data.first || {}
+      target_attributes = attributes.select { |key, _value| target_keys.include?(key) }
+      prevent_incomplete_event!(target_attributes)
+
+      with_wrapping(DataWrapper::Destroy.new(attributes)) do
+        process_destroy(attributes, target_attributes)
+      end
+    end
+
+    def process_upsert(data) # rubocop:disable Metrics/MethodLength
       model.transaction do
         args = {
           data: data,
@@ -37,11 +53,7 @@ module TableSync
       end
     end
 
-    def destroy(data)
-      attributes = data.first || {}
-      target_attributes = attributes.select { |key, _value| target_keys.include?(key) }
-      prevent_incomplete_event!(target_attributes)
-
+    def process_destroy(attributes, target_attributes)
       model.transaction do
         @config.callback_registry.get_callbacks(kind: :before_commit, event: :destroy).each do |cb|
           cb[attributes]
@@ -60,6 +72,14 @@ module TableSync
             cb[results]
           end
         end
+      end
+    end
+
+    def with_wrapping(data = {}, &block)
+      if @config.wrap_receiving
+        @config.wrap_receiving.call(data, block)
+      else
+        yield
       end
     end
 

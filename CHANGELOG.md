@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- Wrapping interface around receiving logic (`wrap_receiving`);
+
 ## [1.12.1] - 2019-09-27
 ### Fixed
 - The `default_values` option no longer overrides original values.

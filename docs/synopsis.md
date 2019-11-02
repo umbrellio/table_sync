@@ -84,7 +84,7 @@ to default Rabbit gem configuration).
 
 # Manual publishing
 
-`TableSync::Publisher.new(object_class, original_attributes, confirm: true, state: :updated, debounce_time: 45)` 
+`TableSync::Publisher.new(object_class, original_attributes, confirm: true, state: :updated, debounce_time: 45)`
 where state is one of `:created / :updated / :destroyed` and `confirm` is Rabbit's confirm delivery flag and optional param `debounce_time` determines debounce time in seconds, 1 minute by default.
 
 # Manual publishing with batches
@@ -224,17 +224,33 @@ The following options are available inside the block:
 - `additional_data` - additional data for insert or update (e.g. `project_id`)
 - `default_values` - values for insert if a row is not found
 - `partitions` - proc that is used to obtain partitioned data to support table partitioning. Must return a hash which
- keys are names of partitions of partitioned table and values - arrays of attributes to be inserted into particular
- partition `{ measurements_2018_01: [ { attrs }, ... ], measurements_2018_02: [ { attrs }, ... ], ...}`.
- While the proc is called inside an upsert transaction it is suitable place for creating partitions for new data.
- Note that transaction of proc is a TableSynk.orm transaction.
-
-```ruby
-partitions do |data:|
-  data.group_by { |d| "measurements_#{d[:time].year}_#{d[:time].month}" }
-      .tap { |data| data.keys.each { |table| DB.run("CREATE TABLE IF NOT EXISTS #{table} PARTITION OF measurements") } }
-end
-```
+  keys are names of partitions of partitioned table and values - arrays of attributes to be inserted into particular
+  partition `{ measurements_2018_01: [ { attrs }, ... ], measurements_2018_02: [ { attrs }, ... ], ...}`.
+  While the proc is called inside an upsert transaction it is suitable place for creating partitions for new data.
+  Note that transaction of proc is a TableSynk.orm transaction.
+  ```ruby
+  partitions do |data:|
+    data.group_by { |d| "measurements_#{d[:time].year}_#{d[:time].month}" }
+        .tap { |data| data.keys.each { |table| DB.run("CREATE TABLE IF NOT EXISTS #{table} PARTITION OF measurements") } }
+  end
+  ```
+- `wrap_reciving` - proc that is used to wrap the receiving logic by custom block of code. Receives `data` and `receiving` attributes
+  (received event data and receiving logic proc respectively). `receiving.call` runs receiving process (you should use it manually).
+    - example (concurrent receiving):
+    ```ruby
+      wrap_receiving do |data, receiving|
+        Locking.acquire("some-lock-key") { receiving.call }
+      end
+    ```
+  - `data` attribute:
+    - for `destroy` event - an instance of `TableSync::EventActions::DataWrapper::Destroy`;
+    - for `update` event - an instance of `TableSync::EventActions::DataWrapper::Update`;
+    - `#event_data` - raw recevied event data:
+      - for `destroy` event - simple `Hash`;
+      - for `update` event - `Hash` with `Hash<ModelKlass, Array<Hash<Symbol, Object>>>` signature;
+    - `#destroy?` / `#update?` - corresponding predicates;
+    - `#type` - indicates a type of data (`:destroy` and `:update` respectively);
+    - `#each` - iterates over `#event_data` elements (acts like an iteration over an array of elements);
 
 Each of options can receive static value or code block which will be called for each event with the following arguments:
 - `event` - type of event (`:update` or `:destroy`)
@@ -283,7 +299,7 @@ You have access to the payload, which contains  `event`, `direction`, `table`, `
   :event => :update,       # one of update / destroy
   :direction => :publish,  # one of publish / receive
   :table => "users",
-  :schema => "public",  
+  :schema => "public",
   :count => 1
 }
 ```
