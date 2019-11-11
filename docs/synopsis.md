@@ -251,7 +251,19 @@ The following options are available inside the block:
     - `#destroy?` / `#update?` - corresponding predicates;
     - `#type` - indicates a type of data (`:destroy` and `:update` respectively);
     - `#each` - iterates over `#event_data` elements (acts like an iteration over an array of elements);
+ 
+ - `inside_transaction` -  proc that is used to execute  logic by custom block of code inside database transaction.
+  Remember, the data used inside the block is not persistent. You can use it for consistent create or update third-party entities or something else.
+  Allowed  two types of arguments: :before_event and :after_event - this provides the ability to execute a block of code before or after the main action within a transaction.
+   - example:
+   ```ruby
+     inside_transaction(:after_event) do |usable_data|
+       AwesomeDataManipulator.call(usable_data)
+     end
+   ```
+                          
 
+ 
 Each of options can receive static value or code block which will be called for each event with the following arguments:
 - `event` - type of event (`:update` or `:destroy`)
 - `model` - source model (`Project`, `News`, `User` in example)
