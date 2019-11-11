@@ -6,7 +6,8 @@ module TableSync
     include ::TableSync::EventActions
     extend Forwardable
 
-    def_delegators :@config, :on_destroy, :wrap_receiving
+    def_delegators :@config, :on_destroy, :wrap_receiving,
+                   :inside_transaction_after, :inside_transaction_before
 
     def initialize(config, handler)
       @config = config

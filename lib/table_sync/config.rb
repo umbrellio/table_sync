@@ -20,6 +20,8 @@ module TableSync
       @first_sync_time_key = nil
       @on_destroy = nil
       @wrap_receiving = nil
+      @inside_transaction_before = nil
+      @inside_transaction_after = nil
       target_keys(model.primary_keys)
     end
 
@@ -75,6 +77,25 @@ module TableSync
     def wrap_receiving(&block)
       block_given? ? @wrap_receiving = block : @wrap_receiving
     end
+
+    def inside_transaction(context, &block)
+      available_contexts = %i[before_event after_event]
+
+      unless available_contexts.include?(context)
+        raise(
+          IncorrectInsideTransactionContextError,
+          "Wrong context, available contexts are: #{available_contexts}",
+        )
+      end
+
+      if block_given?
+        @inside_transaction_before = block if context == :before_event
+        @inside_transaction_after  = block if context == :after_event
+      end
+    end
+
+    attr_reader :inside_transaction_before
+    attr_reader :inside_transaction_after
 
     check_and_set_column_key = proc do |key|
       key = key.to_sym

@@ -3,6 +3,8 @@
 module TableSync
   Error = Class.new(StandardError)
 
+  ArgumentError = Class.new(::ArgumentError)
+
   class UpsertError < Error
     def initialize(data:, target_keys:, version_key:, first_sync_time_key:, default_values:)
       super <<~MSG
@@ -38,4 +40,6 @@ module TableSync
       MSG
     end
   end
+
+  IncorrectInsideTransactionContextError = Class.new(ArgumentError)
 end
