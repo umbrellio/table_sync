@@ -150,7 +150,7 @@ describe "Receiving inside transaction logic" do
         end
       end.to raise_error(
         TableSync::IncorrectInsideTransactionContextError,
-        "Wrong context, available contexts are: [:before_receive, :after_receive]",
+        "Wrong context kek_event. Available contexts are: [:before_receive, :after_receive]",
       )
     end
   end

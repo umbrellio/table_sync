@@ -3,6 +3,7 @@
 module TableSync
   class Config
     AVAILABLE_INSIDE_TRANSACTION_CONTEXTS = %i[before_receive after_receive].freeze
+
     attr_reader :model, :events, :callback_registry
 
     def initialize(model:, events: nil)
@@ -83,7 +84,8 @@ module TableSync
       unless AVAILABLE_INSIDE_TRANSACTION_CONTEXTS.include?(context)
         raise(
           IncorrectInsideTransactionContextError,
-          "Wrong context, available contexts are: #{AVAILABLE_INSIDE_TRANSACTION_CONTEXTS}",
+          "Wrong context #{context}."\
+            " Available contexts are: #{AVAILABLE_INSIDE_TRANSACTION_CONTEXTS}",
         )
       end
 
