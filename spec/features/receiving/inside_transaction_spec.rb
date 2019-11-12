@@ -1,23 +1,7 @@
 # frozen_string_literal: true
 
-class InsideTransactionHandler
-  attr_reader :rows
-
-  def initialize(rows)
-    @rows = rows
-  end
-
-  def collect_data
-    rows.each do |row|
-      STORAGE << [row[:external_id], row[:project_id]]
-    end
-    STORAGE
-  end
-end
-
 describe "Receiving inside transaction logic" do
   before do
-    allow(TableSync).to receive(:orm).and_return(TableSync::ORMAdapter::Sequel)
     stub_const("STORAGE", [])
     DB[:players].delete
   end
@@ -27,10 +11,10 @@ describe "Receiving inside transaction logic" do
   rescue StandardError
   end
 
-  shared_examples "update is successful" do |expected_storage:|
+  shared_examples "update is successful" do
     specify do
       expect { handle(event) }.to change { DB[:players].count }.from(0).to(2)
-      expect(STORAGE).to eq(expected_storage)
+      expect(STORAGE).to eq([[1234, "project_1"], [5678, "project_1"]])
     end
   end
 
@@ -46,9 +30,11 @@ describe "Receiving inside transaction logic" do
       receive("Player", to_table: :players) do
         target_keys [:external_id]
         mapping_overrides id: :external_id
-        inside_transaction(:after_event) do |wrapped_data|
+        inside_transaction :after_receive do |wrapped_data|
           wrapped_data.each do |(_model_class, changed_rows)|
-            InsideTransactionHandler.new(changed_rows).collect_data
+            changed_rows.each do |row|
+              STORAGE << [row[:external_id], row[:project_id]]
+            end
           end
         end
       end
@@ -81,21 +67,66 @@ describe "Receiving inside transaction logic" do
   end
 
   describe "inside transaction logic executed successful" do
-    it_behaves_like "update is successful",
-                    expected_storage: [[1234, "project_1"], [5678, "project_1"]] do
+    it_behaves_like "update is successful" do
       before { allow(TableSync).to receive(:orm).and_return(TableSync::ORMAdapter::ActiveRecord) }
     end
 
-    it_behaves_like "update is successful",
-                    expected_storage: [[1234, "project_1"], [5678, "project_1"]] do
+    it_behaves_like "update is successful" do
       before { allow(TableSync).to receive(:orm).and_return(TableSync::ORMAdapter::Sequel) }
     end
   end
 
-  describe "inside transaction block contains error and fails whole transaction " do
+  describe "inside transaction block can be defined multiple times" do
     before do
-      allow(InsideTransactionHandler)
-        .to receive_message_chain(:new, :collect_data).and_raise(StandardError)
+      allow(TableSync).to receive(:orm).and_return(TableSync::ORMAdapter::Sequel)
+      stub_const("OTHER_STORAGE", [])
+    end
+
+    let(:handler) do
+      Class.new(TableSync::ReceivingHandler) do
+        receive("Player", to_table: :players) do
+          target_keys [:external_id]
+          mapping_overrides id: :external_id
+          inside_transaction :after_receive do |wrapped_data|
+            wrapped_data.each do |(_model_class, changed_rows)|
+              changed_rows.each do |row|
+                STORAGE << [row[:external_id], row[:project_id]]
+              end
+            end
+          end
+
+          inside_transaction :after_receive do |wrapped_data|
+            wrapped_data.each do |(_model_class, changed_rows)|
+              changed_rows.each do |row|
+                OTHER_STORAGE << [row[:external_id], row[:project_id]]
+              end
+            end
+          end
+        end
+      end
+    end
+
+    specify do
+      expect { handle(event) }.to change { DB[:players].count }.from(0).to(2)
+      expect(STORAGE).to eq([[1234, "project_1"], [5678, "project_1"]])
+      expect(OTHER_STORAGE).to eq([[1234, "project_1"], [5678, "project_1"]])
+      expect(OTHER_STORAGE).to eq(STORAGE)
+    end
+  end
+
+  describe "inside transaction block contains error and fails whole transaction " do
+    let(:handler) do
+      Class.new(TableSync::ReceivingHandler) do
+        receive("Player", to_table: :players) do
+          target_keys [:external_id]
+          mapping_overrides id: :external_id
+          inside_transaction :after_receive do |wrapped_data|
+            wrapped_data.each do |(_model_class, _changed_rows)|
+              raise StandardError
+            end
+          end
+        end
+      end
     end
 
     it_behaves_like "update is fails" do
@@ -108,7 +139,9 @@ describe "Receiving inside transaction logic" do
   end
 
   describe "wrong context" do
-    specify "raise TableSync:IncorrectInsideTransactionContextError" do
+    before { allow(TableSync).to receive(:orm).and_return(TableSync::ORMAdapter::Sequel) }
+
+    specify "fails with corresponding error" do
       expect do
         Class.new(TableSync::ReceivingHandler) do
           receive("Player", to_table: :players) do
@@ -117,7 +150,7 @@ describe "Receiving inside transaction logic" do
         end
       end.to raise_error(
         TableSync::IncorrectInsideTransactionContextError,
-        "Wrong context, available contexts are: [:before_event, :after_event]",
+        "Wrong context, available contexts are: [:before_receive, :after_receive]",
       )
     end
   end

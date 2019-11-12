@@ -2,6 +2,7 @@
 
 module TableSync
   class Config
+    AVAILABLE_INSIDE_TRANSACTION_CONTEXTS = %i[before_receive after_receive].freeze
     attr_reader :model, :events, :callback_registry
 
     def initialize(model:, events: nil)
@@ -20,8 +21,8 @@ module TableSync
       @first_sync_time_key = nil
       @on_destroy = nil
       @wrap_receiving = nil
-      @inside_transaction_before = nil
-      @inside_transaction_after = nil
+      @inside_transaction_before = []
+      @inside_transaction_after = []
       target_keys(model.primary_keys)
     end
 
@@ -79,18 +80,16 @@ module TableSync
     end
 
     def inside_transaction(context, &block)
-      available_contexts = %i[before_event after_event]
-
-      unless available_contexts.include?(context)
+      unless AVAILABLE_INSIDE_TRANSACTION_CONTEXTS.include?(context)
         raise(
           IncorrectInsideTransactionContextError,
-          "Wrong context, available contexts are: #{available_contexts}",
+          "Wrong context, available contexts are: #{AVAILABLE_INSIDE_TRANSACTION_CONTEXTS}",
         )
       end
 
       if block_given?
-        @inside_transaction_before = block if context == :before_event
-        @inside_transaction_after  = block if context == :after_event
+        @inside_transaction_before << block if context == :before_receive
+        @inside_transaction_after <<  block if context == :after_receive
       end
     end
 

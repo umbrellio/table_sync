@@ -20,9 +20,9 @@ class TableSync::ReceivingHandler < Rabbit::EventHandler
       when :update
         config.model.transaction do
           wrapped_data = TableSync::EventActions::DataWrapper::Update.new(data)
-          config.inside_transaction_before&.call(wrapped_data)
+          config.inside_transaction_before.each { |proc| proc.call(wrapped_data) }
           config.update(data)
-          config.inside_transaction_after&.call(wrapped_data)
+          config.inside_transaction_after.each { |proc| proc.call(wrapped_data) }
         end
       when :destroy
         config.destroy(data.values.first)
