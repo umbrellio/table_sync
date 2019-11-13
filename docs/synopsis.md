@@ -254,6 +254,9 @@ The following options are available inside the block:
  
  - `inside_transaction` -  proc that is used to execute  logic by custom block of code inside database transaction.
   Remember, the data used inside the block is not persistent. You can use it for consistent create or update third-party entities or something else.
+   
+   Feature enabled for "update" and "destroy" events.
+  
   Allowed  two types of arguments: :before_receive and :after_receive - this provides the ability to execute a block of code before or after the main action within a transaction.
    - example:
    ```ruby
