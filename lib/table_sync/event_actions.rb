@@ -26,7 +26,6 @@ module TableSync
 
     def process_upsert(data) # rubocop:disable Metrics/MethodLength
       model.transaction do
-        # тут надо на конфиге бефор инсайд транзакт
         upsert_data = TableSync::EventActions::DataWrapper::Update.new(data)
         @config.inside_transaction_before.each { |block| block.call(upsert_data) }
 
@@ -73,7 +72,7 @@ module TableSync
         else
           results = model.destroy(target_attributes)
           return if results.empty?
-          raise TableSync::DestroyError.new(attributes) if results.size != 1
+          raise TableSync::DestroyError.new(target_attributes) if results.size != 1
         end
 
         @config.inside_transaction_after.each { |block| block.call(destroy_data) }

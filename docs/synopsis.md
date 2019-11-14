@@ -254,17 +254,21 @@ The following options are available inside the block:
  
  - `inside_transaction` -  proc that is used to execute  logic by custom block of code inside database transaction.
   Remember, the data used inside the block is not persistent. You can use it for consistent create or update third-party entities or something else.
-   
-   Feature enabled for "update" and "destroy" events.
+  Feature enabled for "update" and "destroy" events.
   
-  Allowed  two types of arguments: :before_receive and :after_receive - this provides the ability to execute a block of code before or after the main action within a transaction.
-   - example:
+ Allowed  two types of arguments: :before_receive and :after_receive - this provides the ability to execute a block of code before or after the main action within a transaction.
+ - `data` attribute:
+   - for `destroy` event - an instance of `TableSync::EventActions::DataWrapper::Destroy`;
+   - for `update` event - an instance of `TableSync::EventActions::DataWrapper::Update`;
+   - `#event_data` - raw recevied event data
+    
+  - example:
    ```ruby
      inside_transaction(:after_receive) do |usable_data|
        AwesomeDataManipulator.call(usable_data)
      end
    ```
-   Also, you can define inside transaction block multiple times, but remember, if one of them contains error - whole transaction will fail.
+ Also, you can define inside transaction block multiple times, but remember, if one of them contains error - whole transaction will fail.
    - example:
    ```ruby
      inside_transaction(:after_receive) do |usable_data|
@@ -275,8 +279,6 @@ The following options are available inside the block:
        AnotherAwesomeDataManipulator.call(usable_data)
      end
    ```
-                          
-
  
 Each of options can receive static value or code block which will be called for each event with the following arguments:
 - `event` - type of event (`:update` or `:destroy`)
