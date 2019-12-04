@@ -2,7 +2,7 @@
 
 DB Table synchronization between microservices based on Model's event system and RabbitMQ messaging
 
-## Instalation
+## Installation
 
 ```ruby
 gem 'table_sync'
