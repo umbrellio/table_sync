@@ -57,7 +57,7 @@ class TableSync::BatchPublisher < TableSync::BasePublisher
     {}
   end
 
-  def attr_for_metadata
+  def attrs_for_metadata
     {}
   end
 
