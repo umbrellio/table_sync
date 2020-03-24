@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.13.1] - 2019-03-24
+### Fixed
+- **TableSync::BatchPublisher**: incorrect `attrs_for_metadata` definition (typo in method name);
+
 ## [1.13.0] - 2019-11-02
 ### Added
 - Wrapping interface around receiving logic (`wrap_receiving`);

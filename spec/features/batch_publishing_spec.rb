@@ -47,7 +47,7 @@ describe TableSync::BatchPublisher do
     )
   end
 
-  context "#publish" do
+  describe "#publish" do
     before { TableSync.routing_key_callable = -> (klass, _) { klass } }
 
     context "updating" do
@@ -126,15 +126,17 @@ describe TableSync::BatchPublisher do
     end
   end
 
-  context "#publish_now" do
-    let(:user) { double(:user) }
+  describe "#publish_now" do
+    shared_context "user sync context" do
+      let(:user) { double(:user) }
 
-    before do
-      allow(TestUser).to receive(:find_by).with(id: id).and_return(user)
-      TableSync.routing_key_callable = -> (klass, _) { klass }
+      before do
+        allow(TestUser).to receive(:find_by).with(id: id).and_return(user)
+        TableSync.routing_key_callable = -> (klass, _) { klass }
+      end
     end
 
-    context "with overriden_routing_key" do
+    shared_context "publishing configuration" do
       let(:custom_key)     { "CustomKey" }
       let(:options)        { { routing_key: custom_key } }
       let(:expected_attrs) { [{ "test_attr" => "test_value" }] }
@@ -142,6 +144,11 @@ describe TableSync::BatchPublisher do
       before do
         allow(user).to receive(:attributes).and_return(expected_attrs.first)
       end
+    end
+
+    context "with overriden_routing_key" do
+      include_context "user sync context"
+      include_context "publishing configuration"
 
       it "has correct routing key" do
         expect_message(expected_attrs, "TestUser", custom_key)
@@ -149,7 +156,38 @@ describe TableSync::BatchPublisher do
       end
     end
 
+    context "custom meta attributes" do
+      include_context "user sync context"
+      include_context "publishing configuration"
+
+      let(:custom_metadata) { { "my_data" => "your_data", "test" => true, "advanced" => 123 } }
+
+      before do
+        expect_message(expected_attrs, "TestUser", custom_key)
+        allow_any_instance_of(TableSync::BatchPublisher).to receive(:attrs_for_metadata) do
+          custom_metadata
+        end
+      end
+
+      specify "routing_metadata_callable is a callable" do
+        expect(TableSync).to receive(:routing_metadata_callable)
+        publisher.publish_now
+      end
+
+      it "provides custom attributes for routing_metadata_callable" do
+        allow(TableSync).to receive(:routing_metadata_callable) do
+          lambda do |_klass, attributes|
+            expect(attributes).to match(custom_metadata)
+          end
+        end
+
+        publisher.publish_now
+      end
+    end
+
     context "updated (alias for not destroyed)" do
+      include_context "user sync context"
+
       context "doesn't respond to #attributes_for_sync" do
         before do
           allow(user).to receive(:attributes).and_return("test_attr" => "test_value")
@@ -163,6 +201,8 @@ describe TableSync::BatchPublisher do
     end
 
     context "responds to #attributes_for_sync" do
+      include_context "user sync context"
+
       before do
         allow(TestUser).to receive(:method_defined?).with(:attributes_for_sync).and_return(true)
 
@@ -177,6 +217,8 @@ describe TableSync::BatchPublisher do
     end
 
     context "doesn't find any object with that pk" do
+      include_context "user sync context"
+
       before do
         allow(TestUser).to receive(:find_by).with(id: id).and_return(nil)
       end
@@ -188,6 +230,8 @@ describe TableSync::BatchPublisher do
     end
 
     context "responds to #table_sync_model_name" do
+      include_context "user sync context"
+
       let(:model_name) { "TestUserWithCustomStuff" }
 
       before do
@@ -202,6 +246,8 @@ describe TableSync::BatchPublisher do
     end
 
     context "inserts original attributes" do
+      include_context "user sync context"
+
       before do
         allow(user).to receive(:attributes).and_return("kek" => "pek")
       end
