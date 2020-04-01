@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [2.0.0] - 2019-04-01
 ### Changed
-- Published: When using Sequel all events checks `if` and `unless` predicates.
+- Sequel publishing hooks: checking for `:destroy` events inside `:if`/`:unless` predicates
 
 ## [1.13.1] - 2019-03-24
 ### Fixed
