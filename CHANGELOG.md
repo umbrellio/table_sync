@@ -1,7 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.13.1] - 2019-03-24
+## [2.0.0] - 2020-04-01
+### Changed
+- Sequel publishing hooks: checking for `:destroy` events inside `:if`/`:unless` predicates
+
+## [1.13.1] - 2020-03-24
 ### Fixed
 - **TableSync::BatchPublisher**: incorrect `attrs_for_metadata` definition (typo in method name);
 

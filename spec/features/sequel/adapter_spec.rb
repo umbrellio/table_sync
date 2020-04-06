@@ -69,7 +69,7 @@ RSpec.describe TableSync::ORMAdapter::Sequel, :sequel do
 
     it { ignores { create } }
     it { ignores { update } }
-    it("also enqueues after destroy") { enqueues { destroy } }
+    it { ignores { destroy } }
   end
 
   context "with both predicates" do

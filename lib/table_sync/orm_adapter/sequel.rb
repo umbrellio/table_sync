@@ -40,24 +40,21 @@ module TableSync::ORMAdapter
     end
 
     def register_callbacks(klass, if_predicate, unless_predicate, debounce_time)
-      { create: :created, update: :updated }.each do |event, state|
+      { create: :created, update: :updated, destroy: :destroyed }.each do |event, state|
         klass.send(:define_method, :"after_#{event}") do
           if instance_eval(&if_predicate) && !instance_eval(&unless_predicate)
             db.after_commit do
-              TableSync::Publisher.new(self.class.name, values,
-                                       state: state, debounce_time: debounce_time).publish
+              TableSync::Publisher.new(
+                self.class.name,
+                values,
+                state: state,
+                debounce_time: debounce_time,
+              ).publish
             end
           end
+
           super()
         end
-      end
-
-      klass.send(:define_method, :after_destroy) do
-        # publish anyway
-        db.after_commit do
-          TableSync::Publisher.new(self.class.name, values, state: :destroyed).publish
-        end
-        super()
       end
     end
   end
