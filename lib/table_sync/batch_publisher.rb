@@ -2,13 +2,16 @@
 
 class TableSync::BatchPublisher < TableSync::BasePublisher
   def initialize(object_class, original_attributes_array, **options)
-    @object_class = object_class.constantize
     @original_attributes_array = original_attributes_array.map do |hash|
       filter_safe_for_serialization(hash.deep_symbolize_keys)
     end
-    @confirm = options[:confirm] || true
-    @routing_key = options[:routing_key] || resolve_routing_key
+
+    @object_class             = object_class.constantize
+    @confirm                  = options[:confirm] || true
+    @routing_key              = options[:routing_key] || resolve_routing_key
     @push_original_attributes = options[:push_original_attributes] || false
+    @headers                  = options[:headers]
+    @event                    = options[:event] || :update
   end
 
   def publish
@@ -27,7 +30,7 @@ class TableSync::BatchPublisher < TableSync::BasePublisher
 
   private
 
-  attr_reader :original_attributes_array, :routing_key
+  attr_reader :original_attributes_array, :routing_key, :headers, :event
 
   def push_original_attributes?
     @push_original_attributes
@@ -64,7 +67,7 @@ class TableSync::BatchPublisher < TableSync::BasePublisher
   def params
     {
       **super,
-      headers: nil,
+      headers: headers,
     }
   end
 
@@ -78,10 +81,6 @@ class TableSync::BatchPublisher < TableSync::BasePublisher
       event: event,
       metadata: {},
     }
-  end
-
-  def event
-    :update
   end
 
   def attributes_for_sync
