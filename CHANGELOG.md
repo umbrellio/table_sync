@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2020-04-09
+### Added
+- **TableSync::BatchPublisher**: custom headers;
+- **TableSync::BatchPublisher**: custom events;
+
+### Changed
+- Slight changes to specs
+
 ## [2.0.0] - 2020-04-06
 ### Changed
 - Sequel publishing hooks: checking for `:destroy` events inside `:if`/`:unless` predicates

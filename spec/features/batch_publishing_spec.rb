@@ -30,16 +30,16 @@ describe TableSync::BatchPublisher do
     expect(job[:at]).to be_nil
   end
 
-  def expect_message(attributes, model_name = "TestUser", routing_key = "TestUser")
+  def expect_message(attributes, **options)
     expect_rabbit_message(
-      routing_key: routing_key,
+      routing_key: options[:routing_key] || "TestUser",
       event: :table_sync,
       confirm_select: true,
       realtime: true,
-      headers: nil,
+      headers: options[:headers],
       data: {
-        event: :update,
-        model: model_name,
+        event: options[:event] || :update,
+        model: options[:model_name] || "TestUser",
         attributes: attributes,
         version: Time.now.to_f,
         metadata: {},
@@ -137,8 +137,6 @@ describe TableSync::BatchPublisher do
     end
 
     shared_context "publishing configuration" do
-      let(:custom_key)     { "CustomKey" }
-      let(:options)        { { routing_key: custom_key } }
       let(:expected_attrs) { [{ "test_attr" => "test_value" }] }
 
       before do
@@ -150,8 +148,34 @@ describe TableSync::BatchPublisher do
       include_context "user sync context"
       include_context "publishing configuration"
 
+      let(:options) { { routing_key: "CustomKey" } }
+
       it "has correct routing key" do
-        expect_message(expected_attrs, "TestUser", custom_key)
+        expect_message(expected_attrs, routing_key: options[:routing_key])
+        publisher.publish_now
+      end
+    end
+
+    context "with custom headers" do
+      include_context "user sync context"
+      include_context "publishing configuration"
+
+      let(:options) { { headers: { kek: "purum" } } }
+
+      it "has correct headers" do
+        expect_message(expected_attrs, headers: options[:headers])
+        publisher.publish_now
+      end
+    end
+
+    context "with custom event" do
+      include_context "user sync context"
+      include_context "publishing configuration"
+
+      let(:options) { { event: :destroy } }
+
+      it "has correct event" do
+        expect_message(expected_attrs, event: options[:event])
         publisher.publish_now
       end
     end
@@ -163,7 +187,7 @@ describe TableSync::BatchPublisher do
       let(:custom_metadata) { { "my_data" => "your_data", "test" => true, "advanced" => 123 } }
 
       before do
-        expect_message(expected_attrs, "TestUser", custom_key)
+        expect_message(expected_attrs)
         allow_any_instance_of(TableSync::BatchPublisher).to receive(:attrs_for_metadata) do
           custom_metadata
         end
@@ -240,7 +264,7 @@ describe TableSync::BatchPublisher do
       end
 
       it "publishes" do
-        expect_message(["test_attr" => "test_value"], "SomeFancyName")
+        expect_message(["test_attr" => "test_value"], model_name: "SomeFancyName")
         publisher.publish_now
       end
     end

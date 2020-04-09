@@ -103,11 +103,21 @@ And `TableSync.routing_metadata_callable` is not called at all: header value is 
 - `routing_key`, which is a custom key used (if given) to override one from `TableSync.routing_key_callable`, `nil` by default
 - `push_original_attributes` (default value is `false`), if this option is set to `true`,
 original_attributes_array will be pushed to Rabbit instead of fetching records from database and sending their mapped attributes.
+- `headers`, which is an option for custom headers (can be used for headers exchanges routes), `nil` by default
+- `event`, which is an option for event specification (`:destroy` or `:update`), `:update` by default
 
 Example:
 
 ```ruby
-TableSync::BatchPublisher.new("SomeClass", [{ id: 1 }, { id: 2 }], confirm: false, routing_key: "custom_routing_key")
+TableSync::BatchPublisher.new(
+  "SomeClass",
+  [{ id: 1 }, { id: 2 }],
+  confirm: false,
+  routing_key: "custom_routing_key",
+  push_original_attributes: true,
+  headers: { key: :value },
+  event: :destroy,
+)
 ```
 
 # Manual publishing with batches (Russian)
@@ -125,11 +135,21 @@ TableSync::BatchPublisher.new("SomeClass", [{ id: 1 }, { id: 2 }], confirm: fals
 - `confirm`, флаг для RabbitMQ, по умолчанию - `true`
 - `routing_key`, ключ, который (если указан) замещает ключ, получаемый из `TableSync.routing_key_callable`, по умолчанию - `nil`
 - `push_original_attributes` (значение по умолчанию `false`), если для этой опции задано значение true, в Rabbit будут отправлены original_attributes_array, вместо получения значений записей из базы непосредственно перед отправкой.
+- `headers`, опция для задания headers (можно использовать для задания маршрутов в headers exchange'ах), `nil` по умолчанию
+- `event`, опция для указания типа события (`:destroy` или `:update`), `:update` по умолчанию
 
 Example:
 
 ```ruby
-TableSync::BatchPublisher.new("SomeClass", [{ id: 1 }, { id: 2 }], confirm: false, routing_key: "custom_routing_key")
+TableSync::BatchPublisher.new(
+  "SomeClass",
+  [{ id: 1 }, { id: 2 }],
+  confirm: false,
+  routing_key: "custom_routing_key",
+  push_original_attributes: true,
+  headers: { key: :value },
+  event: :destroy,
+)
 ```
 
 # Receiving changes
