@@ -17,7 +17,8 @@ Example:
 # 1) creation (lib/plugins/global_method.rb)
 class TableSync::Plugins::GlobalMethod < TableSync::Plugins::Abstract
   class << self
-    def install! # 2) plugin loader method implementation
+    # 2) plugin loader method implementation
+    def install!
       ::TableSync.extend(Module.new do
         def global_method
           :works!
@@ -30,10 +31,13 @@ end
 # 3) plugin registration
 TableSync.register('global_method', TableSync::Plugins::GlobalMethod)
 
-# 4) usage :)
+# 4) enable registerd plugin
 TableSync.plugin(:global_method) # string is supported too
 # --- or ---
 TableSync.enable(:global_method) # string is supported too
 # --- or ---
 TableSync.load(:global_method) # string is supported too
+
+# Your new functionality
+TableSync.global_method # => :works!
 ```
