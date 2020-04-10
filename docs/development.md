@@ -2,9 +2,9 @@
 
 ## Table of Content
 
-- [Creation and registering of the new plugin](#creation-and-registering-of-the-new-plugin)
+- [Creation and registration of the new plugin](#creation-and-registration-of-the-new-plugin)
 
-### Creation and registering of the new plugin
+### Creation and registration of the new plugin
 
 * Create a class inherited from `TableSync::Plugins::Abstract` (recomendation: place it in the plugins directory (`lib/plugins/`));
 * Implement `.install!` method (`TableSync::Plugins::Abstract.install!`)
