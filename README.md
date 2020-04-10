@@ -21,6 +21,7 @@ require 'table_sync'
 ## Usage
 
 - [Documentation](docs/synopsis.md)
+- [Development](docs/development.md)
 
 ## Contributing
 
