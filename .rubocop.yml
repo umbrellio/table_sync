@@ -10,3 +10,7 @@ AllCops:
     - Gemfile
     - Rakefile
     - table_sync.gemspec
+
+Style/Alias:
+  Enabled: true
+  EnforcedStyle: prefer_alias_method

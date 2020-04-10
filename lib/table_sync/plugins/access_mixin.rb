@@ -13,8 +13,8 @@ module TableSync::Plugins::AccessMixin
   def plugin(plugin_name)
     TableSync::Plugins.load(plugin_name)
   end
-  alias enable plugin
-  alias load plugin
+  alias_method :enable, :plugin
+  alias_method :load, :plugin
 
   # @return [Array<String>]
   #
@@ -33,7 +33,7 @@ module TableSync::Plugins::AccessMixin
   def loaded_plugins
     TableSync::Plugins.loaded_plugins
   end
-  alias enabled_plugins loaded_plugins
+  alias_method :enabled_plugins, :loaded_plugins
 
   # @param plugin_name [String, Symbol]
   # @param plugin_klass [Class<TableSync::Plugins::Abstract>]

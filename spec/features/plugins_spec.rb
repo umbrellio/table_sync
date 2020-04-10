@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 describe "Plugins" do
+  # rubocop:disable RSpec/LeakyConstantDeclaration
   specify "plguin regsitration, load and resolving" do
     # plugins are not registered
     expect(TableSync::Plugins.names).not_to include("internal_test_plugin", "external_test_plugin")
@@ -86,4 +87,5 @@ describe "Plugins" do
       TableSync.plugin(:kek_test_plugin)
     end.to raise_error(TableSync::UnregisteredPluginError)
   end
+  # rubocop:enable RSpec/LeakyConstantDeclaration
 end

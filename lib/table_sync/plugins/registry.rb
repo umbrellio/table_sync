@@ -32,7 +32,7 @@ class TableSync::Plugins::Registry
   def register(plugin_name, plugin_module)
     thread_safe { apply(plugin_name, plugin_module) }
   end
-  alias []= register
+  alias_method :[]=, :register
 
   # @return [Array<String>]
   #
