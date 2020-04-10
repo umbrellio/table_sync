@@ -8,7 +8,7 @@
 
 * Create a class inherited from `TableSync::Plugins::Abstract` (recomendation: place it in the plugins directory (`lib/plugins/`));
 * Implement `.install!` method (`TableSync::Plugins::Abstract.install!`)
-* Register new created class in plugins ecosystem (`TableSync.register_plugin('plugin_name', PluginClass))`);
+* Register the new created class in plugins ecosystem (`TableSync.register_plugin('plugin_name', PluginClass))`);
 * Usage: `TableSync.enable(:plugin_name)` / `TableSync.plugin(:plugin_name)` / `TableSync.load(:plugin_name)` (string name is supported too);
 
 Example:
