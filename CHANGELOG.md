@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- Introduce Plugin ecosystem (**TableSync::Plugins**);
+
 ## [2.1.0] - 2020-04-09
 ### Added
 - **TableSync::BatchPublisher**: custom headers;
