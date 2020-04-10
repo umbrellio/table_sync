@@ -39,8 +39,12 @@ module TableSync
     end
   end
 
+  # @api public
+  # @since 2.3.0
   PluginError = Class.new(Error)
 
+  # @api public
+  # @since 2.3.0
   class UnregisteredPluginError < PluginError
     # @param plugin_name [Any]
     def initialize(plugin_name)
@@ -48,6 +52,8 @@ module TableSync
     end
   end
 
+  # @api public
+  # @since 2.3.0
   class AlreadyRegisteredPluginError < PluginError
     # @param plugin_name [Any]
     def initialize(plugin_name)
