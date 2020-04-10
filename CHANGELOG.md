@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.1] - 2020-04-10
+### Fixed
+- Updated docs for batch_publishing to fully reflect changes in 2.1.0
+
 ## [2.1.0] - 2020-04-09
 ### Added
 - **TableSync::BatchPublisher**: custom headers;
