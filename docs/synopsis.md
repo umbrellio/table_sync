@@ -90,11 +90,10 @@ where state is one of `:created / :updated / :destroyed` and `confirm` is Rabbit
 # Manual publishing with batches
 
 You can use `TableSync::BatchPublisher` to publish changes in batches (array of hashes in `attributes`).
-For now, only the following changes in the table can be published: `create` and` update`.
 
 When using `TableSync::BatchPublisher`,` TableSync.routing_key_callable` is called as follows:
 `TableSync.routing_key_callable.call(klass, {})`, i.e. empty hash is passed instead of attributes.
-And `TableSync.routing_metadata_callable` is not called at all: header value is set to empty hash.
+And `TableSync.routing_metadata_callable` is not called at all: metadata is set to empty hash.
 
 `TableSync::BatchPublisher.new(object_class, original_attributes_array, **options)`, where `original_attributes_array` is an array with hash of attributes of published objects and `options` is a hash of options.
 
@@ -123,11 +122,10 @@ TableSync::BatchPublisher.new(
 # Manual publishing with batches (Russian)
 
 С помощью класса `TableSync::BatchPublisher` вы можете опубликовать изменения батчами (массивом в `attributes`).
-Пока можно публиковать только следующие изменения в таблице: `создание записи` и `обновление записи`.
 
 При использовании `TableSync::BatchPublisher`, `TableSync.routing_key_callable` вызывается следующим образом:
 `TableSync.routing_key_callable.call(klass, {})`, то есть вместо аттрибутов передается пустой хэш.
-А `TableSync.routing_metadata_callable` не вызывается вовсе: в хидерах устанавливается пустой хэш.
+А `TableSync.routing_metadata_callable` не вызывается вовсе: в метадате устанавливается пустой хэш.
 
 `TableSync::BatchPublisher.new(object_class, original_attributes_array, **options)`, где `original_attributes_array` - массив с аттрибутами публикуемых объектов и `options`- это хэш с дополнительными опциями.
 
