@@ -30,7 +30,7 @@ module TableSync
   require_relative "table_sync/naming_resolver/sequel"
 
   # @api public
-  # @since 2.3.0
+  # @since 2.2.0
   extend Plugins::AccessMixin
 
   class << self

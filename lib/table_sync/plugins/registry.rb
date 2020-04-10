@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 # @api private
-# @since 2.3.0
+# @since 2.2.0
 class TableSync::Plugins::Registry
   include Enumerable
 
   # @return [void]
   #
   # @api private
-  # @since 2.3.0
+  # @since 2.2.0
   def initialize
     @plugin_set = {}
     @access_lock = Mutex.new
@@ -18,7 +18,7 @@ class TableSync::Plugins::Registry
   # @return [TableSync::Plugins::Abstract]
   #
   # @api private
-  # @since 2.3.0
+  # @since 2.2.0
   def [](plugin_name)
     thread_safe { fetch(plugin_name) }
   end
@@ -28,7 +28,7 @@ class TableSync::Plugins::Registry
   # @return [void]
   #
   # @api private
-  # @since 2.3.0
+  # @since 2.2.0
   def register(plugin_name, plugin_module)
     thread_safe { apply(plugin_name, plugin_module) }
   end
@@ -37,7 +37,7 @@ class TableSync::Plugins::Registry
   # @return [Array<String>]
   #
   # @api private
-  # @since 2.3.0
+  # @since 2.2.0
   def names
     thread_safe { plugin_names }
   end
@@ -46,7 +46,7 @@ class TableSync::Plugins::Registry
   # @return [Enumerable]
   #
   # @api private
-  # @since 2.3.0
+  # @since 2.2.0
   def each(&block)
     thread_safe { iterate(&block) }
   end
@@ -56,19 +56,19 @@ class TableSync::Plugins::Registry
   # @return [Hash]
   #
   # @api private
-  # @since 2.3.0
+  # @since 2.2.0
   attr_reader :plugin_set
 
   # @return [Mutex]
   #
   # @api private
-  # @since 2.3.0
+  # @since 2.2.0
   attr_reader :access_lock
 
   # @return [void]
   #
   # @api private
-  # @since 2.3.0
+  # @since 2.2.0
   def thread_safe
     access_lock.synchronize { yield if block_given? }
   end
@@ -76,7 +76,7 @@ class TableSync::Plugins::Registry
   # @return [Array<String>]
   #
   # @api private
-  # @since 2.3.0
+  # @since 2.2.0
   def plugin_names
     plugin_set.keys
   end
@@ -85,7 +85,7 @@ class TableSync::Plugins::Registry
   # @return [Enumerable]
   #
   # @api private
-  # @since 2.3.0
+  # @since 2.2.0
   def iterate(&block)
     block_given? ? plugin_set.each_pair(&block) : plugin_set.each_pair
   end
@@ -94,7 +94,7 @@ class TableSync::Plugins::Registry
   # @return [Boolean]
   #
   # @api private
-  # @since 2.3.0
+  # @since 2.2.0
   def registered?(plugin_name)
     plugin_set.key?(plugin_name)
   end
@@ -106,7 +106,7 @@ class TableSync::Plugins::Registry
   # @raise [TableSync::AlreadyRegisteredPluginError]
   #
   # @api private
-  # @since 2.3.0
+  # @since 2.2.0
   def apply(plugin_name, plugin_module)
     plugin_name = indifferently_accessable_plugin_name(plugin_name)
     raise(TableSync::AlreadyRegisteredPluginError.new(plugin_name)) if registered?(plugin_name)
@@ -119,7 +119,7 @@ class TableSync::Plugins::Registry
   # @raise [TableSync::UnregisteredPluginError]
   #
   # @api private
-  # @since 2.3.0
+  # @since 2.2.0
   def fetch(plugin_name)
     plugin_name = indifferently_accessable_plugin_name(plugin_name)
     raise(TableSync::UnregisteredPluginError.new(plugin_name)) unless registered?(plugin_name)
@@ -130,7 +130,7 @@ class TableSync::Plugins::Registry
   # @return [String]
   #
   # @api private
-  # @since 2.3.0
+  # @since 2.2.0
   def indifferently_accessable_plugin_name(plugin_name)
     plugin_name.to_s
   end

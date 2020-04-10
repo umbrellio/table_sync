@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 # @api public
-# @since 2.3.0
+# @since 2.2.0
 module TableSync::Plugins
   require_relative "plugins/registry"
   require_relative "plugins/access_mixin"
   require_relative "plugins/abstract"
 
-  # @since 2.3.0
+  # @since 2.2.0
   @plugin_registry = Registry.new
-  # @since 2.3.0
+  # @since 2.2.0
   @access_lock = Mutex.new
 
   class << self
@@ -17,7 +17,7 @@ module TableSync::Plugins
     # @return [void]
     #
     # @api public
-    # @since 2.3.0
+    # @since 2.2.0
     def load(plugin_name)
       thread_safe { plugin_registry[plugin_name].load! }
     end
@@ -25,7 +25,7 @@ module TableSync::Plugins
     # @return [Array<String>]
     #
     # @api public
-    # @since 2.3.0
+    # @since 2.2.0
     def loaded_plugins
       thread_safe do
         # rubocop:disable Style/MultilineBlockChain
@@ -41,7 +41,7 @@ module TableSync::Plugins
     # @return [Array<String>]
     #
     # @api public
-    # @since 2.3.0
+    # @since 2.2.0
     def names
       thread_safe { plugin_registry.names }
     end
@@ -50,7 +50,7 @@ module TableSync::Plugins
     # @return [void]
     #
     # @api private
-    # @since 2.3.0
+    # @since 2.2.0
     def register_plugin(plugin_name, plugin_module)
       thread_safe { plugin_registry[plugin_name] = plugin_module }
     end
@@ -60,19 +60,19 @@ module TableSync::Plugins
     # @return [TableSync::Plugins::Registry]
     #
     # @api private
-    # @since 2.3.0
+    # @since 2.2.0
     attr_reader :plugin_registry
 
     # @return [Mutex]
     #
     # @api private
-    # @since 2.3.0
+    # @since 2.2.0
     attr_reader :access_lock
 
     # @return [void]
     #
     # @api private
-    # @since 2.3.0
+    # @since 2.2.0
     def thread_safe
       access_lock.synchronize { yield if block_given? }
     end

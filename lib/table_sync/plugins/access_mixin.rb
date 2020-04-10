@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # @api private
-# @since 2.3.0
+# @since 2.2.0
 module TableSync::Plugins::AccessMixin
   # @param plugin_name [Symbol, String]
   # @return [void]
@@ -9,7 +9,7 @@ module TableSync::Plugins::AccessMixin
   # @see TableSync::Plugins
   #
   # @api public
-  # @since 2.3.0
+  # @since 2.2.0
   def plugin(plugin_name)
     TableSync::Plugins.load(plugin_name)
   end
@@ -21,7 +21,7 @@ module TableSync::Plugins::AccessMixin
   # @see TableSync::Plugins
   #
   # @api public
-  # @since 2.3.0
+  # @since 2.2.0
   def plugins
     TableSync::Plugins.names
   end
@@ -29,7 +29,7 @@ module TableSync::Plugins::AccessMixin
   # @return [Array<String>]
   #
   # @api private
-  # @since 2.3.0
+  # @since 2.2.0
   def loaded_plugins
     TableSync::Plugins.loaded_plugins
   end
@@ -42,7 +42,7 @@ module TableSync::Plugins::AccessMixin
   # @see TableSync::Plugins
   #
   # @api public
-  # @since 2.3.0
+  # @since 2.2.0
   def register_plugin(plugin_name, plugin_klass)
     TableSync::Plugins.register_plugin(plugin_name, plugin_klass)
   end
