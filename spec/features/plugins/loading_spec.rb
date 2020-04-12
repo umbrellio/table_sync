@@ -28,8 +28,6 @@ TableSync.register_plugin(:d_load_test, TableSync::Plugins::DLoadTest)
 describe "Plugins" do
   before do
     interceptor = Class.new { def invoke; end }
-    stub_const("A_TEST_INTERCEPTOR", interceptor.new)
-    stub_const("B_TEST_INTERCEPTOR", interceptor.new)
     stub_const("C_TEST_INTERCEPTOR", interceptor.new)
     stub_const("D_TEST_INTERCEPTOR", interceptor.new)
   end
