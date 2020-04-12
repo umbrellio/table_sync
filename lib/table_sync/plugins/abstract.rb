@@ -10,7 +10,8 @@ class TableSync::Plugins::Abstract
     # @api private
     # @since 2.2.0
     def inherited(child_klass)
-      child_klass.instance_variable_set(:@loaded, false)
+      child_klass.instance_variable_set(:@__loaded__, false)
+      child_klass.instance_variable_set(:@__lock__, Mutex.new)
       super
     end
 
@@ -19,8 +20,12 @@ class TableSync::Plugins::Abstract
     # @api private
     # @since 2.2.0
     def load!
-      @loaded = true
-      install!
+      __thread_safe__ do
+        unless @__loaded__
+          @__loaded__ = true
+          install!
+        end
+      end
     end
 
     # @return [Boolean]
@@ -28,7 +33,7 @@ class TableSync::Plugins::Abstract
     # @api private
     # @since 2.2.0
     def loaded?
-      @loaded
+      __thread_safe__ { @__loaded__ }
     end
 
     private
@@ -38,5 +43,13 @@ class TableSync::Plugins::Abstract
     # @api private
     # @since 2.2.0
     def install!; end
+
+    # @return [Any]
+    #
+    # @api private
+    # @since 2.2.0
+    def __thread_safe__
+      @__lock__.synchronize { yield }
+    end
   end
 end
