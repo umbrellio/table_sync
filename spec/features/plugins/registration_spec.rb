@@ -25,7 +25,7 @@ describe "Plugins" do
   end
 
   describe "incompatability-related failures" do
-    specify 'plugin registration which name is conflict with already registered plugin' do
+    specify "plugin registration which name is conflict with already registered plugin" do
       expect do
         TableSync::Plugins.register_plugin(:existence_test, Object)
       end.to raise_error(TableSync::AlreadyRegisteredPluginError)
@@ -34,7 +34,7 @@ describe "Plugins" do
       end.to raise_error(TableSync::AlreadyRegisteredPluginError)
     end
 
-    specify 'loading of unregistered plugin' do
+    specify "loading of unregistered plugin" do
       expect do
         TableSync::Plugins.load(:kek_test_plugin)
       end.to raise_error(TableSync::UnregisteredPluginError)
