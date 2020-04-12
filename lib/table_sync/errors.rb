@@ -38,4 +38,26 @@ module TableSync
       MSG
     end
   end
+
+  # @api public
+  # @since 2.2.0
+  PluginError = Class.new(Error)
+
+  # @api public
+  # @since 2.2.0
+  class UnregisteredPluginError < PluginError
+    # @param plugin_name [Any]
+    def initialize(plugin_name)
+      super("#{plugin_name} plugin is not registered")
+    end
+  end
+
+  # @api public
+  # @since 2.2.0
+  class AlreadyRegisteredPluginError < PluginError
+    # @param plugin_name [Any]
+    def initialize(plugin_name)
+      super("#{plugin_name} plugin already exists")
+    end
+  end
 end
