@@ -24,27 +24,29 @@ describe "Plugins" do
     expect(TableSync.plugins).to include("a_reg_test", "b_reg_test")
   end
 
-  specify "incompatabilities" do
-    # fails when there is an attempt to register a plugin which already exists
-    expect do
-      TableSync::Plugins.register_plugin(:existence_test, Object)
-    end.to raise_error(TableSync::AlreadyRegisteredPluginError)
-    expect do
-      TableSync.register_plugin(:existence_test, Object)
-    end.to raise_error(TableSync::AlreadyRegisteredPluginError)
+  describe "incompatability-related failures" do
+    specify 'plugin registration which name is conflict with already registered plugin' do
+      expect do
+        TableSync::Plugins.register_plugin(:existence_test, Object)
+      end.to raise_error(TableSync::AlreadyRegisteredPluginError)
+      expect do
+        TableSync.register_plugin(:existence_test, Object)
+      end.to raise_error(TableSync::AlreadyRegisteredPluginError)
+    end
 
-    # fails when there is an attempt to load an unregistered plugin
-    expect do
-      TableSync::Plugins.load(:kek_test_plugin)
-    end.to raise_error(TableSync::UnregisteredPluginError)
-    expect do
-      TableSync.plugin(:kek_test_plugin)
-    end.to raise_error(TableSync::UnregisteredPluginError)
-    expect do
-      TableSync.load(:kek_test_plugin)
-    end.to raise_error(TableSync::UnregisteredPluginError)
-    expect do
-      TableSync.enable(:kek_test_plugin)
-    end.to raise_error(TableSync::UnregisteredPluginError)
+    specify 'loading of unregistered plugin' do
+      expect do
+        TableSync::Plugins.load(:kek_test_plugin)
+      end.to raise_error(TableSync::UnregisteredPluginError)
+      expect do
+        TableSync.plugin(:kek_test_plugin)
+      end.to raise_error(TableSync::UnregisteredPluginError)
+      expect do
+        TableSync.load(:kek_test_plugin)
+      end.to raise_error(TableSync::UnregisteredPluginError)
+      expect do
+        TableSync.enable(:kek_test_plugin)
+      end.to raise_error(TableSync::UnregisteredPluginError)
+    end
   end
 end
