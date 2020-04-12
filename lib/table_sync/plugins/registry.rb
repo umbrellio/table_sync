@@ -108,7 +108,7 @@ class TableSync::Plugins::Registry
   # @api private
   # @since 2.2.0
   def apply(plugin_name, plugin_module)
-    plugin_name = indifferently_accessable_plugin_name(plugin_name)
+    plugin_name = indifferently_accessible_plugin_name(plugin_name)
     raise(TableSync::AlreadyRegisteredPluginError.new(plugin_name)) if registered?(plugin_name)
     plugin_set[plugin_name] = plugin_module
   end
@@ -121,7 +121,7 @@ class TableSync::Plugins::Registry
   # @api private
   # @since 2.2.0
   def fetch(plugin_name)
-    plugin_name = indifferently_accessable_plugin_name(plugin_name)
+    plugin_name = indifferently_accessible_plugin_name(plugin_name)
     raise(TableSync::UnregisteredPluginError.new(plugin_name)) unless registered?(plugin_name)
     plugin_set[plugin_name]
   end
@@ -131,7 +131,7 @@ class TableSync::Plugins::Registry
   #
   # @api private
   # @since 2.2.0
-  def indifferently_accessable_plugin_name(plugin_name)
+  def indifferently_accessible_plugin_name(plugin_name)
     plugin_name.to_s
   end
 end

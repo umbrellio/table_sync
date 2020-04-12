@@ -57,7 +57,7 @@ module TableSync
   class AlreadyRegisteredPluginError < PluginError
     # @param plugin_name [Any]
     def initialize(plugin_name)
-      super("#{plugin_name} plugin already exist")
+      super("#{plugin_name} plugin already exists")
     end
   end
 end
