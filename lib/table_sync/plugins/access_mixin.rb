@@ -26,7 +26,7 @@ module TableSync::Plugins::AccessMixin
     TableSync::Plugins.names
   end
 
-  # @return [Array<String>]
+  # @return [Hash<String,Class<TableSync::Plugins::Abstract>]
   #
   # @api private
   # @since 2.2.0

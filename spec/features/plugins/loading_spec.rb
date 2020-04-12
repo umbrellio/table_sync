@@ -1,15 +1,11 @@
 # frozen_string_literal: true
 
 class TableSync::Plugins::ALoadTest < TableSync::Plugins::Abstract
-  def self.install!
-    A_TEST_INTERCEPTOR.invoke
-  end
+  def self.install!; end
 end
 
 class TableSync::Plugins::BLoadTest < TableSync::Plugins::Abstract
-  def self.install!
-    B_TEST_INTERCEPTOR.invoke
-  end
+  def self.install!; end
 end
 
 class TableSync::Plugins::CLoadTest < TableSync::Plugins::Abstract
