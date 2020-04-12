@@ -42,6 +42,14 @@ class TableSync::Plugins::Registry
     thread_safe { plugin_names }
   end
 
+  # @return [Hash<String,Class<TableSync::Plugins::Abstract>>]
+  #
+  # @api private
+  # @since 2.2.0
+  def loaded
+    thread_safe { loaded_plugins }
+  end
+
   # @param block [Block]
   # @return [Enumerable]
   #
@@ -97,6 +105,14 @@ class TableSync::Plugins::Registry
   # @since 2.2.0
   def registered?(plugin_name)
     plugin_set.key?(plugin_name)
+  end
+
+  # @return [Array<TableSync::Plugins::Abstract>]
+  #
+  # @api private
+  # @since 2.2.0
+  def loaded_plugins
+    plugin_set.select { |_plugin_name, plugin_module| plugin_module.loaded? }
   end
 
   # @param plugin_name [Symbol, String]
