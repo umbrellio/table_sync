@@ -43,8 +43,8 @@ module TableSync
     attr_accessor :routing_metadata_callable
     attr_accessor :notifier
 
-    def sync(*args)
-      orm.setup_sync(*args)
+    def sync(klass, **opts)
+      orm.setup_sync(klass, opts)
     end
 
     def orm=(val)

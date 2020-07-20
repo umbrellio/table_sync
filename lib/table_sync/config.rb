@@ -44,7 +44,7 @@ module TableSync
 
           # wrapper for proc-value, this wrapper receives all params (model, version, project_id...)
           # and filters them for proc-value
-          unified_block = proc { |hash = {}| block.call(hash.slice(*params)) }
+          unified_block = proc { |hash = {}| block.call(**hash.slice(*params)) }
 
           # set wrapped proc-value as ivar value
           instance_variable_set(ivar, unified_block)

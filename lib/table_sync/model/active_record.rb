@@ -115,7 +115,7 @@ module TableSync::Model
     end
 
     def row_to_hash(row)
-      row.attributes.each_with_object({}) { |(k, v), o| o[k.to_sym] = v }
+      row.attributes.transform_keys(&:to_sym)
     end
   end
 end
