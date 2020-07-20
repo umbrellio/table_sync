@@ -3,6 +3,17 @@ All notable changes to this project will be documented in this file.
 
 ## [2.2.0] - 2020-04-12
 ### Added
+- ruby 2.7 in Travis
+- Gemfile.lock
+
+### Changed
+- some fixes to get rid of warnings for ruby 2.7 (implicit conversion of hashes into kwargs will be dropped)
+
+### Removed
+- ruby 2.3, 2.4 from Travis
+
+## [2.2.0] - 2020-04-12
+### Added
 - Introduce Plugin ecosystem (**TableSync::Plugins**);
 
 ## [2.1.1] - 2020-04-10
