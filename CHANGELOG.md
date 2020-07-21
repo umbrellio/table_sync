@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - some fixes to get rid of warnings for ruby 2.7 (implicit conversion of hashes into kwargs will be dropped)
+- TableSync.sync now explicitly expects klass and kwargs (it converts them into hash)
+- TableSync::Instrument.notify now explicitly expects kwargs and delegates them further as kwargs
 
 ### Removed
 - ruby 2.3, 2.4 from Travis
