@@ -20,7 +20,7 @@ module TableSync::ORMAdapter
       object.values
     end
 
-    def setup_sync(klass, **opts)
+    def setup_sync(klass, opts)
       if_predicate     = to_predicate(opts.delete(:if), true)
       unless_predicate = to_predicate(opts.delete(:unless), false)
       debounce_time    = opts.delete(:debounce_time)

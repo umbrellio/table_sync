@@ -9,5 +9,4 @@
 /spec/reports/
 /tmp/
 .ruby-version
-Gemfile.lock
 *.gem

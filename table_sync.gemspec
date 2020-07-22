@@ -5,7 +5,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "table_sync/version"
 
 Gem::Specification.new do |spec|
-  spec.required_ruby_version = ">= 2.3.8"
+  spec.required_ruby_version = ">= 2.5.6"
 
   spec.name        = "table_sync"
   spec.version     = TableSync::VERSION
@@ -35,8 +35,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rubocop-config-umbrellio", "~> 0.81"
   spec.add_development_dependency "simplecov", "~> 0.16"
 
-  spec.add_development_dependency "activejob", ">= 4.2.11"
-  spec.add_development_dependency "activerecord"
+  spec.add_development_dependency "activejob", ">= 6.0"
+  spec.add_development_dependency "activerecord", ">= 6.0"
   spec.add_development_dependency "pg", "~> 0.18"
   spec.add_development_dependency "sequel"
   spec.add_development_dependency "timecop"

@@ -7,7 +7,7 @@ describe TableSync::BatchPublisher do
   let(:attributes) { [{ "id" => id, "email" => email }] }
   let(:options)    { {} }
   let(:model_name) { "TestUser" }
-  let(:publisher)  { described_class.new(model_name, attributes, options) }
+  let(:publisher)  { described_class.new(model_name, attributes, **options) }
 
   let(:push_original_attributes) { false }
 
@@ -31,7 +31,7 @@ describe TableSync::BatchPublisher do
   end
 
   def expect_message(attributes, **options)
-    expect_rabbit_message(
+    args = {
       routing_key: options[:routing_key] || "TestUser",
       event: :table_sync,
       confirm_select: true,
@@ -44,7 +44,9 @@ describe TableSync::BatchPublisher do
         version: Time.now.to_f,
         metadata: {},
       },
-    )
+    }
+
+    expect_rabbit_message(args)
   end
 
   describe "#publish" do

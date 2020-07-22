@@ -47,6 +47,10 @@ RSpec.describe TableSync::Publisher do
 
   before { Timecop.freeze("2010-01-01 12:00 UTC") }
 
+  def aj_keys
+    RUBY_VERSION >= "2.7" && Rails.version >= "6.0.3" ? "_aj_ruby2_keywords" : "_aj_symbol_keys"
+  end
+
   describe "#publish" do
     def publish
       described_class.new(
@@ -61,7 +65,7 @@ RSpec.describe TableSync::Publisher do
       job_params = {
         "state" => state.to_s,
         "confirm" => true,
-        "_aj_symbol_keys" => %w[state confirm],
+        aj_keys => %w[state confirm],
       }
 
       expect(job[:job]).to eq(TestJob)
@@ -146,18 +150,22 @@ RSpec.describe TableSync::Publisher do
     end
 
     def expect_message(event, attributes, created:)
-      expect_rabbit_message(routing_key: routing_key,
-                            event: :table_sync,
-                            confirm_select: true,
-                            realtime: true,
-                            headers: headers,
-                            data: {
-                              event: event,
-                              model: expected_model_name,
-                              attributes: attributes,
-                              version: Time.now.to_f,
-                              metadata: { created: created },
-                            })
+      args = {
+        routing_key: routing_key,
+        event: :table_sync,
+        confirm_select: true,
+        realtime: true,
+        headers: headers,
+        data: {
+          event: event,
+          model: expected_model_name,
+          attributes: attributes,
+          version: Time.now.to_f,
+          metadata: { created: created },
+        },
+      }
+
+      expect_rabbit_message(args)
     end
 
     let(:user)                { double(:user) }

@@ -20,7 +20,7 @@ module TableSync::ORMAdapter
       object.attributes
     end
 
-    def setup_sync(klass, **opts)
+    def setup_sync(klass, opts)
       debounce_time = opts.delete(:debounce_time)
 
       klass.instance_exec do
