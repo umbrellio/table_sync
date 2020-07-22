@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.3.0] - 2020-07-21
+## [2.3.0] - 2020-07-22
 ### Added
 - ruby 2.7 in Travis
 - Gemfile.lock
