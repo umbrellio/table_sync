@@ -440,7 +440,7 @@
           },
         ])
 
-        result = clients.destroy(client_id: 111, project_id: 111)
+        result = clients.destroy([{ client_id: 111, project_id: 111 }])
         expect(result).to eq([{
           client_id: 111,
           project_id: 111,
@@ -452,7 +452,7 @@
         }])
       end
 
-      it "destroys im table without composite primary keys" do
+      it "destroys in table without composite primary keys" do
         DB[:players].multi_insert([
           {
             external_id: 111,
@@ -472,7 +472,7 @@
           },
         ])
 
-        result = players.destroy(external_id: 222, project_id: "pid2")
+        result = players.destroy([{ external_id: 222, project_id: "pid2" }])
         expect(result).to eq([{
           external_id: 222,
           project_id: "pid2",
@@ -481,6 +481,37 @@
           version: 122.565,
           rest: nil,
         }])
+      end
+
+      context "multidestroy" do
+        it "destroy all rows in attributes" do
+          data = [
+            {
+              external_id: 111,
+              project_id: "pid1",
+              email: "435",
+              online_status: true,
+              version: 12.343,
+              rest: nil,
+            },
+            {
+              external_id: 222,
+              project_id: "pid2",
+              email: "fghgf",
+              online_status: false,
+              version: 122.565,
+              rest: nil,
+            },
+          ]
+
+          DB[:players].multi_insert(data)
+
+          result = players.destroy(
+            data.map { |d| d.slice(:external_id, :project_id) },
+          )
+
+          expect(result).to eq(data)
+        end
       end
     end
 
@@ -492,7 +523,7 @@
       it "fails transaction" do
         begin
           items.transaction do
-            expect(items.destroy(id: 1)).to eq([{ id: 1, name: "test", price: 123 }])
+            expect(items.destroy([{ id: 1 }])).to eq([{ id: 1, name: "test", price: 123 }])
             items.after_commit { checks[0] = "test_after_commit" }
             raise "test error"
           end
@@ -506,7 +537,7 @@
 
       it "calls callbacks" do
         items.transaction do
-          expect(items.destroy(id: 1)).to eq([{ id: 1, name: "test", price: 123 }])
+          expect(items.destroy([{ id: 1 }])).to eq([{ id: 1, name: "test", price: 123 }])
           items.after_commit { checks[0] = "test_after_commit" }
         end
         expect(checks).to eq(["test_after_commit"])

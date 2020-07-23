@@ -488,12 +488,12 @@ describe TableSync::ReceivingHandler do
         let(:expected_on_destroy_attrs) do
           {
             target_keys: [:external_id],
-            attributes: {
+            attributes: [{
               external_id: 33,
               rest: {},
               version: nil,
               project_id: "PID",
-            },
+            }],
           }
         end
 

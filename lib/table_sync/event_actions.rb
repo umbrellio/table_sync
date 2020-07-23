@@ -3,11 +3,7 @@
 module TableSync
   module EventActions
     def update(data)
-      data.each_value do |attribute_set|
-        attribute_set.each do |attributes|
-          prevent_incomplete_event!(attributes)
-        end
-      end
+      prevent_incomplete_event!(data.values.flatten)
 
       with_wrapping(DataWrapper::Update.new(data)) do
         process_upsert(data)
@@ -15,12 +11,14 @@ module TableSync
     end
 
     def destroy(data)
-      attributes = data.first || {}
-      target_attributes = attributes.select { |key, _value| target_keys.include?(key) }
+      prevent_empty_destroy_event!(data)
+
+      target_attributes = data.map { |attrs| attrs.slice(*target_keys) }
+
       prevent_incomplete_event!(target_attributes)
 
-      with_wrapping(DataWrapper::Destroy.new(attributes)) do
-        process_destroy(attributes, target_attributes)
+      with_wrapping(DataWrapper::Destroy.new(data)) do
+        process_destroy(data, target_attributes)
       end
     end
 
@@ -63,8 +61,12 @@ module TableSync
           results = on_destroy.call(attributes: attributes, target_keys: target_keys)
         else
           results = model.destroy(target_attributes)
+
           return if results.empty?
-          raise TableSync::DestroyError.new(target_attributes) if results.size != 1
+
+          if results.size > size_of_attrs(target_attributes)
+            raise TableSync::DestroyError.new(target_attributes)
+          end
         end
 
         @config.model.after_commit do
@@ -75,7 +77,11 @@ module TableSync
       end
     end
 
-    def with_wrapping(data = {}, &block)
+    def size_of_attrs(attrs)
+      attrs.is_a?(Array) ? attrs.size : 1
+    end
+
+    def with_wrapping(data = [], &block)
       if @config.wrap_receiving
         @config.wrap_receiving.call(data, block)
       else
@@ -87,10 +93,16 @@ module TableSync
       query_results.uniq { |d| d.slice(*target_keys) }.size == query_results.size
     end
 
-    def prevent_incomplete_event!(attributes)
-      unless target_keys.all?(&attributes.keys.method(:include?))
-        raise TableSync::UnprovidedEventTargetKeysError.new(target_keys, attributes)
+    def prevent_incomplete_event!(data)
+      keys = data.map(&:keys).uniq
+
+      unless keys.all? { |key_set| (target_keys - key_set).empty? }
+        raise TableSync::UnprovidedEventTargetKeysError.new(target_keys, keys)
       end
+    end
+
+    def prevent_empty_destroy_event!(data)
+      raise TableSync::EmptyAttributesError.new(data) if data.any?(&:empty?)
     end
   end
 end

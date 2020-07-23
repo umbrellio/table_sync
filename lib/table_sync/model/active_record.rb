@@ -82,8 +82,11 @@ module TableSync::Model
 
     def destroy(data)
       result = transaction do
-        row = raw_model.lock("FOR UPDATE").find_by(data)&.destroy!
-        [row_to_hash(row)]
+        data.map do |dat|
+          row_to_hash(
+            raw_model.lock("FOR UPDATE").find_by(dat)&.destroy!,
+          )
+        end
       end
 
       TableSync::Instrument.notify(

@@ -16,12 +16,19 @@ class TableSync::ReceivingHandler < Rabbit::EventHandler
       data = processed_data(config)
       next if data.empty?
 
+      # attributes in data will always be wrapped in array
+      # regardless of whether it's a batch or single event
+
       case event
       when :update
+        # give whole data (hash where keys are models and values are arrays of attributes)
+        # { TableSync::Model::Sequel => [{ id: 1 }]
+        # needed further down the line in process_upsert
         config.model.transaction do
           config.update(data)
         end
       when :destroy
+        # give only array of attributes => [{ id: 1}, { id: 2 }]
         config.destroy(data.values.first)
       else
         raise "Unknown event: #{event}"

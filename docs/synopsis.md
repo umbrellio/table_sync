@@ -231,7 +231,7 @@ The following options are available inside the block:
       end
     ```
   - `target_keys:` - primary keys or unique keys;
-  - `attributes:` - received model attributes;
+  - `attributes:` - array of received model attributes;
 - `only` - whitelist for receiving attributes
 - `skip` - return truthy value to skip the row
 - `target_keys` - primary keys or unique keys
@@ -252,7 +252,7 @@ The following options are available inside the block:
         .tap { |data| data.keys.each { |table| DB.run("CREATE TABLE IF NOT EXISTS #{table} PARTITION OF measurements") } }
   end
   ```
-- `wrap_reciving` - proc that is used to wrap the receiving logic by custom block of code. Receives `data` and `receiving` attributes
+- `wrap_receiving` - proc that is used to wrap the receiving logic by custom block of code. Receives `data` and `receiving` attributes
   (received event data and receiving logic proc respectively). `receiving.call` runs receiving process (you should use it manually).
     - example (concurrent receiving):
     ```ruby
@@ -264,8 +264,8 @@ The following options are available inside the block:
     - for `destroy` event - an instance of `TableSync::EventActions::DataWrapper::Destroy`;
     - for `update` event - an instance of `TableSync::EventActions::DataWrapper::Update`;
     - `#event_data` - raw recevied event data:
-      - for `destroy` event - simple `Hash`;
-      - for `update` event - `Hash` with `Hash<ModelKlass, Array<Hash<Symbol, Object>>>` signature;
+      - for `destroy` event - array of simple `Hash`'es;
+      - for `update` event - array of `Hash`'es' with `Hash<ModelKlass, Array<Hash<Symbol, Object>>>` signature;
     - `#destroy?` / `#update?` - corresponding predicates;
     - `#type` - indicates a type of data (`:destroy` and `:update` respectively);
     - `#each` - iterates over `#event_data` elements (acts like an iteration over an array of elements);

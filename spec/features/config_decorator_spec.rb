@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe TableSync::ConfigDecorator do
-  let(:upsert_results) { [] }
+  let(:upsert_results)  { [] }
   let(:destroy_results) { [] }
 
   let(:model) do
@@ -120,35 +120,69 @@ describe TableSync::ConfigDecorator do
 
     before do
       config.after_commit(on: :destroy) { |data| checks[0] = data }
-      config.after_commit(on: :destroy) { |data| checks[1] = data }
     end
 
-    describe "destroy returns []" do
-      let(:destroy_results) { [] }
-
-      it "does nothing" do
-        decorated_config.destroy([{ id: 1, projects_id: "pid" }])
-        expect(checks).to eq([])
+    context "destroy states" do
+      shared_examples "does_nothing" do
+        specify do
+          decorated_config.destroy(target_attributes)
+          expect(checks).to eq([])
+        end
       end
-    end
 
-    describe "destroy returns one row" do
-      let(:destroy_results) { [{ a: 1, b: 2 }] }
-
-      it "calls callbacks" do
-        decorated_config.destroy([{ id: 1, projects_id: "pid" }])
-        expect(checks[0]).to eq([{ a: 1, b: 2 }])
-        expect(checks[1]).to eq([{ a: 1, b: 2 }])
+      shared_examples "throws DestroyError" do
+        specify do
+          expect do
+            decorated_config.destroy(target_attributes)
+          end.to raise_error(TableSync::DestroyError)
+        end
       end
-    end
 
-    describe "destroy returns more than one row" do
-      let(:destroy_results) { [{ a: 1 }, { a: 2 }] }
+      shared_examples "calls after_commit for destroyed rows" do
+        specify do
+          decorated_config.destroy(target_attributes)
+          expect(checks[0]).to eq(destroy_results)
+        end
+      end
 
-      it "calls callbacks" do
-        expect { decorated_config.destroy([{ id: 1, projects_id: "pid" }]) }.to raise_error(
-          TableSync::DestroyError,
-        )
+      context "batch" do
+        let(:target_attributes) { [{ id: 1, projects_id: 1 }, { id: 2, projects_id: 2 }] }
+
+        context "destroyed nothing" do
+          include_examples "does_nothing"
+        end
+
+        context "destroyed more rows than the size of target_attributes" do
+          let(:destroy_results) { [{ id: 1 }, { id: 2 }, { id: 3 }] }
+
+          include_examples "throws DestroyError"
+        end
+
+        context "destroyed less rows than the size of target attributes" do
+          let(:destroy_results)   { [{ id: 1 }] }
+
+          include_examples "calls after_commit for destroyed rows"
+        end
+
+        context "destroyed number of rows equal to the size of target attributes" do
+          let(:destroy_results)   { [{ id: 1 }, { id: 2 }] }
+
+          include_examples "calls after_commit for destroyed rows"
+        end
+      end
+
+      context "single" do
+        let(:target_attributes) { [{ id: 1, projects_id: 1 }] }
+
+        context "destroyed nothing" do
+          include_examples "does_nothing"
+        end
+
+        context "destroyed more rows than the size of target_attributes" do
+          let(:destroy_results) { [{ id: 1, projects_id: 1 }, { id: 2, projects_id: 2 }] }
+
+          include_examples "throws DestroyError"
+        end
       end
     end
   end

@@ -24,7 +24,13 @@ module TableSync
 
   class DestroyError < Error
     def initialize(data)
-      super("Destroy has changed more than 1 row; data: #{data.inspect}")
+      super("Destroy has changed too many rows; data: #{data.inspect}")
+    end
+  end
+
+  class EmptyAttributesError < Error
+    def initialize(data)
+      "Destroy event includes empty attributes; data: #{data.inspect}"
     end
   end
 
@@ -34,7 +40,7 @@ module TableSync
     def initialize(target_keys, target_attributes)
       super(<<~MSG.squish)
         Some target keys not found in received attributes!
-        (Expects: #{target_keys}, Actual: #{target_attributes.keys})
+        (Expects: #{target_keys}, Actual: #{target_attributes})
       MSG
     end
   end

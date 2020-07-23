@@ -42,7 +42,7 @@ module TableSync::Model
     end
 
     def destroy(data)
-      result = dataset.returning.where(data).delete
+      result = dataset.returning.where(::Sequel.|(*data)).delete
       TableSync::Instrument.notify table: model_naming.table, schema: model_naming.schema,
                                    count: result.count,
                                    event: :destroy, direction: :receive

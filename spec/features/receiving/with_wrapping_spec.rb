@@ -66,7 +66,7 @@ describe "Wrap receiving logic" do
       expect(received_data.update?).to eq(false)
       expect(received_data.destroy?).to eq(true)
 
-      expect(received_data).to all(be_a(Hash))
+      expect(received_data).to all(be_a(Array))
     end
   end
 
@@ -94,7 +94,7 @@ describe "Wrap receiving logic" do
       expect(received_data.destroy?).to eq(true)
       expect(received_data.update?).to eq(false)
 
-      expect(received_data.event_data).to match(external_id: 123, rest: {}, version: 123)
+      expect(received_data.event_data).to match([{ external_id: 123, rest: {}, version: 123 }])
     end
 
     specify "upsert event" do
@@ -131,7 +131,7 @@ describe "Wrap receiving logic" do
       expect(RECEIVING_WRAPPER_RESULTS.count).to eq(1)
       received_data = RECEIVING_WRAPPER_RESULTS.first
 
-      expect(received_data.event_data).to match(external_id: 123, rest: {}, version: 123)
+      expect(received_data.event_data).to match([{ external_id: 123, rest: {}, version: 123 }])
     end
 
     specify "upsert event" do
@@ -141,7 +141,7 @@ describe "Wrap receiving logic" do
       received_data = RECEIVING_WRAPPER_RESULTS.first.event_data.values.first.first # omg
 
       expect(received_data).to match(
-        external_id: 1234, rest: {}, version: 456, email: "kek@pek.test", online_status: false,
+        email: "kek@pek.test", external_id: 1234, online_status: false, rest: {}, version: 456,
       )
     end
 
