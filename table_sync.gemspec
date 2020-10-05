@@ -29,10 +29,11 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "memery"
   spec.add_runtime_dependency "rabbit_messaging", "~> 0.3"
   spec.add_runtime_dependency "rails"
+  spec.add_runtime_dependency "self_data"
 
   spec.add_development_dependency "coveralls", "~> 0.8"
   spec.add_development_dependency "rspec", "~> 3.8"
-  spec.add_development_dependency "rubocop-config-umbrellio", "~> 0.81"
+  spec.add_development_dependency "rubocop-config-umbrellio"
   spec.add_development_dependency "simplecov", "~> 0.16"
 
   spec.add_development_dependency "activejob", ">= 6.0"

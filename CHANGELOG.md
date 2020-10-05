@@ -1,6 +1,29 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0] - 2020-09-05
+### Added
+- option `except`
+- `to_model` in receive method
+- TableSync::Utils::InterfaceChecker
+
+### Changed
+- .rubocop.yml
+- documentation
+- modules hierarchy (split receiving and publishing)
+- made data batches processing as native
+- implemented callbacks as options
+- implemented `wrap_receiving` as option
+- type checking in options
+
+### Removed
+- TableSync::Config::CallbackRegistry
+- TableSync::EventActions
+- TableSync::EventActions::DataWrapper
+- config option `on_destroy`
+- config option `partitions`
+- config option `first_sync_time_key`
+
 ## [2.3.0] - 2020-07-22
 ### Added
 - ruby 2.7 in Travis
