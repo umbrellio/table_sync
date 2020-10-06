@@ -11,8 +11,6 @@ module TableSync
     end
 
     def destroy(data)
-      prevent_empty_destroy_event!(data)
-
       target_attributes = data.map { |attrs| attrs.slice(*target_keys) }
 
       prevent_incomplete_event!(target_attributes)
@@ -22,7 +20,7 @@ module TableSync
       end
     end
 
-    def process_upsert(data) # rubocop:disable Metrics/MethodLength
+    def process_upsert(data)
       model.transaction do
         args = {
           data: data,
@@ -32,9 +30,7 @@ module TableSync
           default_values: default_values,
         }
 
-        @config.callback_registry.get_callbacks(kind: :before_commit, event: :update).each do |cb|
-          cb[data.values.flatten]
-        end
+        run_callbacks(:before_commit, :update, data.values.flatten)
 
         results = data.reduce([]) do |upserts, (part_model, part_data)|
           upserts + part_model.upsert(**args, data: part_data)
@@ -44,41 +40,29 @@ module TableSync
         raise TableSync::UpsertError.new(**args) unless expected_update_result?(results)
 
         @config.model.after_commit do
-          @config.callback_registry.get_callbacks(kind: :after_commit, event: :update).each do |cb|
-            cb[results]
-          end
+          run_callbacks(:after_commit, :update, results)
         end
       end
     end
 
     def process_destroy(attributes, target_attributes)
       model.transaction do
-        @config.callback_registry.get_callbacks(kind: :before_commit, event: :destroy).each do |cb|
-          cb[attributes]
-        end
+        run_callbacks(:before_commit, :destroy, attributes)
 
         if on_destroy
           results = on_destroy.call(attributes: attributes, target_keys: target_keys)
         else
           results = model.destroy(target_attributes)
-
-          return if results.empty?
-
-          if results.size > size_of_attrs(target_attributes)
-            raise TableSync::DestroyError.new(target_attributes)
-          end
         end
 
-        @config.model.after_commit do
-          @config.callback_registry.get_callbacks(kind: :after_commit, event: :destroy).each do |cb|
-            cb[results]
+        if results.any?
+          prevent_inconsistent_destroy!(results, target_attributes)
+
+          @config.model.after_commit do
+            run_callbacks(:after_commit, :destroy, results)
           end
         end
       end
-    end
-
-    def size_of_attrs(attrs)
-      attrs.is_a?(Array) ? attrs.size : 1
     end
 
     def with_wrapping(data = [], &block)
@@ -86,6 +70,12 @@ module TableSync
         @config.wrap_receiving.call(data, block)
       else
         yield
+      end
+    end
+
+    def prevent_inconsistent_destroy!(destroy_result, target_attributes)
+      if destroy_result.size > Array(target_attributes).size
+        raise TableSync::DestroyError.new(target_attributes)
       end
     end
 
@@ -101,8 +91,10 @@ module TableSync
       end
     end
 
-    def prevent_empty_destroy_event!(data)
-      raise TableSync::EmptyAttributesError.new(data) if data.any?(&:empty?)
+    def run_callbacks(kind, event, data)
+      @config.callback_registry.get_callbacks(kind: kind, event: event).each do |cb|
+        cb[data]
+      end
     end
   end
 end

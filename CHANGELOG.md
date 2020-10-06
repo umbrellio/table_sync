@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [3.0.0] - 2020-08-08
+## [3.0.0] - 2020-10-06
 ### Changed
 - Changes to the way destruction works: now can destroy in batches
 - For Sequel destroys in one query
