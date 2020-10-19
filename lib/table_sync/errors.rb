@@ -5,19 +5,17 @@ module TableSync
 
   class UpsertError < Error
     def initialize(data:, target_keys:, result:)
-      super "data: #{data.inspect}, target_keys: #{target_keys.inspect}, result: #{result.inspect}"
+      super("data: #{data.inspect}, target_keys: #{target_keys.inspect}, result: #{result.inspect}")
     end
   end
 
   class DestroyError < Error
     def initialize(data:, target_keys:, result:)
-      super "data: #{data.inspect}, target_keys: #{target_keys.inspect}, result: #{result.inspect}"
+      super("data: #{data.inspect}, target_keys: #{target_keys.inspect}, result: #{result.inspect}")
     end
   end
 
   class DataError < Error
-    # @param target_keys [Array<Symbol,String>]
-    # @param target_attributes [Hash<Symbol|String,Any>]
     def initialize(data, target_keys, description)
       super(<<~MSG.squish)
         #{description}

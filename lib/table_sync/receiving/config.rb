@@ -4,12 +4,12 @@ module TableSync::Receiving
   class Config
     attr_reader :model, :events
 
-    def initialize(model:, events: [:update, :destroy])
+    def initialize(model:, events: AVAILABLE_EVENTS)
       @model = model
 
       @events = [events].flatten.map(&:to_sym)
 
-      unless @events.all?(&[:update, :destroy].method(:include?))
+      unless @events.all? { |event| AVAILABLE_EVENTS.include?(event) }
         raise TableSync::UndefinedEvent.new(events)
       end
 
@@ -21,12 +21,12 @@ module TableSync::Receiving
     class << self
       attr_reader :default_values_for_options
 
-      # In a configs this options is requested as it is
+      # In a configs this options are requested as they are
       # config.option - get value
       # config.option(args) - set static value
       # config.option { ... } - set proc as value
       #
-      # In `Receiving::Handler` or `Receiving::EventActions` this options is requested
+      # In `Receiving::Handler` or `Receiving::EventActions` this options are requested
       # through `Receiving::ConfigDecorator#method_missing` which always executes `config.option`
 
       def add_option(name, value_setter_wrapper:, value_as_proc_setter_wrapper:, default:)

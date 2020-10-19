@@ -49,12 +49,12 @@ In this case:
 - `MainProject` - event source.
 - `Rabbit::Handler` - module for our handlers of events from RabbitMQ (there might be others)
 
-Method `queue_as` allow you to set custom queue.
+Method `queue_as` allows you to set custom queue.
 
 ### Recieving handler batch processing
 
 Receiving handler supports array of attributes in a single update or destroy event. Corresponding
-upsert-style logic in ActiveRecord and Sequel orm handlers is provided.
+upsert-style logic in ActiveRecord and Sequel orm handlers are provided.
 
 ### Config
 ```ruby
@@ -154,7 +154,7 @@ version_key do |data:|
   instance of Symbol
 end
 ```
-default value is :version
+default value is `:version`
 
 #### except
 Blacklist for receiving attributes.
@@ -220,11 +220,11 @@ default value is `{}`
 Return truthy value to skip the row.
 
 ```ruby
-default_values(instance of TrueClass or FalseClass)
+skip(instance of TrueClass or FalseClass)
 ```
 
 ```ruby
-default_values do |data:|
+skip do |data:|
   return instance of TrueClass or FalseClass
 end
 ```
@@ -240,12 +240,10 @@ wrap_receiving do |data:, target_keys:, version_key:, default_values: {}, &block
 end
 ```
 
-`default_values` defined only for `:update` event
-
 default value is `proc { |&block| block.call }`
 
 #### before_update
-Perform code before update data in databse.
+Perform code before updating data in the database.
 
 ```ruby
 before_update do |data:, target_keys:, version_key:, default_values:|
@@ -257,7 +255,7 @@ before_update do |data:, target_keys:, version_key:, default_values:|
 end
 ```
 
-can be defined several times.
+Сan be defined several times. Execution order guaranteed.
 
 #### after_commit_on_update
 Perform code after updated data was committed.
@@ -272,10 +270,10 @@ after_commit_on_update do |data:, target_keys:, version_key:, default_values:|
 end
 ```
 
-can be defined several times.
+Сan be defined several times. Execution order guaranteed.
 
 #### before_destroy
-Perform code before destroy data in databse.
+Perform code before destroying data in database.
 
 ```ruby
 before_destroy do |data:, target_keys:, version_key:|
@@ -287,10 +285,10 @@ before_destroy do |data:, target_keys:, version_key:|
 end
 ```
 
-can be defined several times.
+Сan be defined several times. Execution order guaranteed.
 
 #### after_commit_on_destroy
-Perform code after destroy data was committed.
+Perform code after destroyed data was committed.
 
 ```ruby
 after_commit_on_destroy do |data:, target_keys:, version_key:|
@@ -302,7 +300,7 @@ after_commit_on_destroy do |data:, target_keys:, version_key:|
 end
 ```
 
-can be defined several times.
+Сan be defined several times. Execution order guaranteed.
 
 ### Custom model
 You can use custom model for receiving.
@@ -312,7 +310,7 @@ class Rabbit::Handler::MainProject::TableSync < TableSync::ReceivingHandler
 end
 ```
 
-this model have to implement next intrface:
+This model has to implement next interface:
 ```
 def columns
   return all columns from table
