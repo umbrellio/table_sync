@@ -7,16 +7,9 @@ Sequel.extension :pg_json_ops
 DB_NAME = (ENV["DB_NAME"] || "table_sync_test").freeze
 db_url = "postgres:///#{DB_NAME}"
 
-def connect(db_url)
-  Sequel.connect(db_url).tap(&:tables)
-rescue Sequel::DatabaseConnectionError => error
-  raise unless error.message.include? "database \"#{DB_NAME}\" does not exist"
+`createdb #{DB_NAME} 2> /dev/null`
 
-  `createdb #{DB_NAME}`
-  Sequel.connect(db_url)
-end
-
-DB = connect(db_url)
+DB = Sequel.connect(db_url).tap(&:tables)
 DB.loggers << Logger.new("log/sequel.log")
 Sequel::Model.db.extension(:pg_json)
 ActiveRecord::Base.establish_connection(db_url)
