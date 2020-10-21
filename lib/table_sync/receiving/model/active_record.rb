@@ -86,7 +86,7 @@ module TableSync::Receiving::Model
       sanitized_data = data.map { |attr| attr.select { |key, _value| target_keys.include?(key) } }
 
       query = nil
-      sanitized_data.each.with_index do |row, index|
+      sanitized_data.each_with_index do |row, index|
         if index == 0
           query = raw_model.lock("FOR UPDATE").where(row)
         else
