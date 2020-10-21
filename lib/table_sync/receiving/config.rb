@@ -56,7 +56,6 @@ module TableSync::Receiving
     end
 
     def allow_event?(name)
-      return true if events.nil?
       events.include?(name)
     end
   end

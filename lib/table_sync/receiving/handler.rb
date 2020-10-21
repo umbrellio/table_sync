@@ -114,8 +114,6 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
 
         results = model.upsert(**params)
 
-        return if results.empty?
-
         model.after_commit do
           config.after_commit_on_update(**params.merge(results: results))
         end
@@ -123,8 +121,6 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
         config.before_destroy(**params)
 
         results = model.destroy(**params)
-
-        return if results.empty?
 
         model.after_commit do
           config.after_commit_on_destroy(**params.merge(results: results))

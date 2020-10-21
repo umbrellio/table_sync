@@ -74,7 +74,7 @@ You can use one `source` for a lot of `to_table` or `to_moel`.
 
 ### Options:
 
-Most of the options can be set as a static value or as a process.
+Most of the options can be set as computed value or as a process.
 
 ```ruby
 option(value)
@@ -137,7 +137,7 @@ rest_key(instance of Symbol)
 
 ```ruby
 rest_key do |row:, rest:|
-  instance of Symbol
+  return instance of Symbol
 end
 ```
 default value is `:rest`
@@ -151,7 +151,7 @@ version_key(instance of Symbol)
 
 ```ruby
 version_key do |data:|
-  instance of Symbol
+  return instance of Symbol
 end
 ```
 default value is `:version`
@@ -235,8 +235,9 @@ default value is `false`
 Proc that is used to wrap the receiving logic by custom block of code.
 
 ```ruby
-wrap_receiving do |data:, target_keys:, version_key:, default_values: {}, &block|
-  block.call
+wrap_receiving do |data:, target_keys:, version_key:, default_values: {}, &receiving_logic|
+  receiving_logic.call
+  return makes no sense
 end
 ```
 
