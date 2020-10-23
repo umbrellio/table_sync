@@ -55,5 +55,19 @@ describe TableSync::Receiving::DSL do
 
       expect { handler1.receive("User", to_model: model) }.to raise_error(TableSync::InterfaceError)
     end
+
+    describe "inherited handler" do
+      before { handler1.receive("User", to_table: :clients) }
+
+      let!(:handler3) { Class.new(handler1) }
+
+      it "inherits configuration" do
+        handler3.receive("User", to_table: :players)
+        expect(handler1.configs["User"]).to be_an(Array)
+        expect(handler3.configs["User"]).to be_an(Array)
+        expect(handler1.configs["User"].size).to eq(1)
+        expect(handler3.configs["User"].size).to eq(2)
+      end
+    end
   end
 end

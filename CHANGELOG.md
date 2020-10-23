@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [4.0.0] - 2020-10-23
+### Returned
+- config inheritance
+
+### Removed
+- TableSync::Plugins
+
 ## [3.0.0] - 2020-09-05
 ### Added
 - option `except`

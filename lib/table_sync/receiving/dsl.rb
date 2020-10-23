@@ -2,6 +2,11 @@
 
 module TableSync::Receiving
   module DSL
+    def inherited(klass)
+      klass.instance_variable_set(:@configs, configs.deep_dup)
+      super
+    end
+
     def configs
       @configs ||= Hash.new { |hash, key| hash[key] = [] }
     end
