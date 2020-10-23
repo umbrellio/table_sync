@@ -20,7 +20,10 @@ require 'table_sync'
 
 ## Usage
 
-- [Documentation](docs/synopsis.md)
+- [Message protocol](docs/message_protocol.md)
+- [Publising](docs/publishing.md)
+- [Receiving](docs/receiving.md)
+- [Notifications](docs/notifications.md)
 - [Development](docs/development.md)
 
 ## Contributing

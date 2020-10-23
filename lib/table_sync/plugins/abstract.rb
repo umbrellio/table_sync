@@ -48,8 +48,8 @@ class TableSync::Plugins::Abstract
     #
     # @api private
     # @since 2.2.0
-    def __thread_safe__
-      @__lock__.synchronize { yield }
+    def __thread_safe__(&block)
+      @__lock__.synchronize(&block)
     end
   end
 end

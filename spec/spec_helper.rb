@@ -19,7 +19,7 @@ require "rabbit_messaging" # NOTE: runtime dependency
 require "rabbit/test_helpers" # NOTE: from rabbit_messaging
 require "table_sync"
 
-require_relative "support/spec_support"
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |file| require file }
 
 RSpec.configure do |config|
   config.include Rabbit::TestHelpers

@@ -14,3 +14,24 @@ AllCops:
 Style/Alias:
   Enabled: true
   EnforcedStyle: prefer_alias_method
+
+RSpec/ExampleLength:
+  Enabled: false
+
+Lint/UnusedBlockArgument:
+  AllowUnusedKeywordArguments: true
+
+Lint/UnusedMethodArgument:
+  AllowUnusedKeywordArguments: true
+
+Style/AccessorGrouping:
+  Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+Lint/MissingSuper:
+  Enabled: false
+
+Style/MissingRespondToMissing:
+  Enabled: false
