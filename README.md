@@ -24,7 +24,6 @@ require 'table_sync'
 - [Publising](docs/publishing.md)
 - [Receiving](docs/receiving.md)
 - [Notifications](docs/notifications.md)
-- [Development](docs/development.md)
 
 ## Contributing
 

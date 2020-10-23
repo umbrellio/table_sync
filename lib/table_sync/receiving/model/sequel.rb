@@ -40,7 +40,7 @@ module TableSync::Receiving::Model
 
     def destroy(data:, target_keys:, version_key:)
       sanitized_data = data.map { |attr| attr.select { |key, _value| target_keys.include?(key) } }
-
+      sanitized_data = type_cast(sanitized_data)
       result = dataset.returning.where(::Sequel.|(*sanitized_data)).delete
 
       if result.size > data.size

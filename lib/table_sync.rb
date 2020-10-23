@@ -11,17 +11,12 @@ module TableSync
   require_relative "table_sync/utils"
   require_relative "table_sync/version"
   require_relative "table_sync/errors"
-  require_relative "table_sync/plugins"
   require_relative "table_sync/instrument"
   require_relative "table_sync/instrument_adapter/active_support"
   require_relative "table_sync/naming_resolver/active_record"
   require_relative "table_sync/naming_resolver/sequel"
   require_relative "table_sync/receiving"
   require_relative "table_sync/publishing"
-
-  # @api public
-  # @since 2.2.0
-  extend Plugins::AccessMixin
 
   class << self
     attr_accessor :publishing_job_class_callable
