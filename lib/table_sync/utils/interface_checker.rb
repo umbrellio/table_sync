@@ -95,3 +95,9 @@ __END__
   :primary_keys:
     :parameters: []
     :description: "returns an array with the primary_keys"
+  :table:
+    :parameters: []
+    :description: "returns an instance of Symbol"
+  :schema:
+    :parameters: []
+    :description: "returns an instance of Symbol"

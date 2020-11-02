@@ -18,11 +18,18 @@ module TableSync::Receiving::Model
       def trigger_transactional_callbacks?(*); end
     end
 
+    attr_reader :table, :schema
+
     def initialize(table_name)
       @raw_model = Class.new(::ActiveRecord::Base) do
         self.table_name = table_name
         self.inheritance_column = nil
       end
+
+      model_naming = ::TableSync::NamingResolver::ActiveRecord.new(table_name: table_name)
+
+      @table = model_naming.table.to_sym
+      @schema = model_naming.schema.to_sym
     end
 
     def columns
@@ -45,15 +52,15 @@ module TableSync::Receiving::Model
           AND kcu.constraint_name = tc.constraint_name
         WHERE
           t.table_schema NOT IN ('pg_catalog', 'information_schema')
-          AND t.table_schema = '#{model_naming.schema}'
-          AND t.table_name = '#{model_naming.table}'
+          AND t.table_schema = '#{schema}'
+          AND t.table_name = '#{table}'
         ORDER BY
           kcu.ordinal_position
       SQL
     end
 
     def upsert(data:, target_keys:, version_key:, default_values:)
-      result = data.map do |datum|
+      data.map do |datum|
         conditions = datum.select { |k| target_keys.include?(k) }
 
         row = raw_model.lock("FOR NO KEY UPDATE").where(conditions)
@@ -75,11 +82,6 @@ module TableSync::Receiving::Model
 
         row_to_hash(row)
       end.compact
-
-      TableSync::Instrument.notify(table: model_naming.table, schema: model_naming.schema,
-                                   event: :update, count: result.count, direction: :receive)
-
-      result
     end
 
     def destroy(data:, target_keys:, version_key:)
@@ -100,11 +102,6 @@ module TableSync::Receiving::Model
         raise TableSync::DestroyError.new(data: data, target_keys: target_keys, result: result)
       end
 
-      TableSync::Instrument.notify(
-        table: model_naming.table, schema: model_naming.schema,
-        event: :destroy, count: result.count, direction: :receive
-      )
-
       result
     end
 
@@ -121,11 +118,7 @@ module TableSync::Receiving::Model
     attr_reader :raw_model
 
     def db
-      @raw_model.connection
-    end
-
-    def model_naming
-      ::TableSync::NamingResolver::ActiveRecord.new(table_name: raw_model.table_name)
+      raw_model.connection
     end
 
     def row_to_hash(row)
