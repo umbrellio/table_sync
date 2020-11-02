@@ -353,7 +353,7 @@ describe TableSync::Receiving::Handler do
           Class.new(TableSync.receiving_model) do
             def destroy(data:, target_keys:, version_key:)
               DESTROY_INTERCEPTOR.push(data: data, target_keys: target_keys)
-              "on_destroy_completed" # returning value
+              [{ text: "on_destroy_completed" }] # returning value
             end
           end.new(:players)
         end
@@ -384,7 +384,7 @@ describe TableSync::Receiving::Handler do
         end
 
         let(:expected_on_destroy_results) do
-          "on_destroy_completed"
+          [{ text: "on_destroy_completed" }]
         end
 
         specify "uses custom destroying logic instead of the real destroying" do

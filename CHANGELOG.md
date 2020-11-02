@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [4.1.0] - 2020-11-02
+### Changed
+- move `TableSync::Instrument.notify` from models to the handler
+- fire `TableSync::Instrument.notify` after commit insted of in transaction
+
 ## [4.0.0] - 2020-10-23
 ### Returned
 - config inheritance

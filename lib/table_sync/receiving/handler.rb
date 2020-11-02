@@ -109,22 +109,23 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
     model = config.model
 
     model.transaction do
+      results = if event == :update
+                  config.before_update(**params)
+                  model.upsert(**params)
+                else
+                  config.before_destroy(**params)
+                  model.destroy(**params)
+                end
+
+      model.after_commit do
+        TableSync::Instrument.notify table: model.table, schema: model.schema,
+                                     count: results.count, event: event, direction: :receive
+      end
+
       if event == :update
-        config.before_update(**params)
-
-        results = model.upsert(**params)
-
-        model.after_commit do
-          config.after_commit_on_update(**params.merge(results: results))
-        end
+        model.after_commit { config.after_commit_on_update(**params.merge(results: results)) }
       else
-        config.before_destroy(**params)
-
-        results = model.destroy(**params)
-
-        model.after_commit do
-          config.after_commit_on_destroy(**params.merge(results: results))
-        end
+        model.after_commit { config.after_commit_on_destroy(**params.merge(results: results)) }
       end
     end
   end

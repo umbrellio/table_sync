@@ -22,7 +22,7 @@ class Rabbit::Handler::MainProject::TableSync < TableSync::ReceivingHandler
   receive "User", to_table: :clients, events: %i[update destroy] do
     mapping_overrides email: :project_user_email, id: :project_user_id
 
-    only :project_user_email, :project_user_id
+    only :project_user_email, :project_user_id, :project_id
     target_keys :project_id, :project_user_id
     rest_key :project_user_rest
     version_key :project_user_version
@@ -37,7 +37,7 @@ class Rabbit::Handler::MainProject::TableSync < TableSync::ReceivingHandler
   end
 
   receive "User", to_model: CustomModel.new(:users) do
-    rest_key nil
+    rest_key false
   end
 end
 ```
