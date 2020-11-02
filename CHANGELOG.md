@@ -2,8 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [4.0.1] - 2020-11-02
-### Move
-- TableSync::Instrument.notify from models to the handler
+### Changed
+- move `TableSync::Instrument.notify` from models to the handler
 
 ## [4.0.0] - 2020-10-23
 ### Returned
