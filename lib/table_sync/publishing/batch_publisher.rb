@@ -12,6 +12,7 @@ class TableSync::Publishing::BatchPublisher < TableSync::Publishing::BasePublish
     @push_original_attributes = options[:push_original_attributes] || false
     @headers                  = options[:headers]
     @event                    = options[:event] || :update
+    @message_id               = TableSync::Publishing::MessageID.new
   end
 
   def publish
@@ -20,17 +21,16 @@ class TableSync::Publishing::BatchPublisher < TableSync::Publishing::BasePublish
 
   def publish_now
     return unless need_publish?
+
     Rabbit.publish(params)
 
-    model_naming = TableSync.publishing_adapter.model_naming(object_class)
-    TableSync::Instrument.notify table: model_naming.table, schema: model_naming.schema,
-                                 event: event,
-                                 count: publishing_data[:attributes].size, direction: :publish
+    message_id.inc_numerical_id!
+    notify
   end
 
   private
 
-  attr_reader :original_attributes_array, :routing_key, :headers, :event
+  attr_reader :original_attributes_array, :routing_key, :headers, :event, :message_id
 
   def push_original_attributes?
     @push_original_attributes
@@ -68,6 +68,7 @@ class TableSync::Publishing::BatchPublisher < TableSync::Publishing::BasePublish
     {
       **super,
       headers: headers,
+      message_id: message_id.generate,
     }
   end
 
@@ -83,7 +84,7 @@ class TableSync::Publishing::BatchPublisher < TableSync::Publishing::BasePublish
     }
   end
 
-  def attributes_for_sync
+  memoize def attributes_for_sync
     return original_attributes_array if push_original_attributes?
 
     objects.map do |object|

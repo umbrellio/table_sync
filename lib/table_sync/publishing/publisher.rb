@@ -17,6 +17,8 @@ class TableSync::Publishing::Publisher < TableSync::Publishing::BasePublisher
       # TODO Legacy job support, remove
       @state = opts[:destroyed] ? :destroyed : :updated
     end
+
+    @message_id = TableSync::Publishing::MessageID.new
   end
 
   def publish
@@ -34,9 +36,9 @@ class TableSync::Publishing::Publisher < TableSync::Publishing::BasePublisher
     return if !object && !destroyed?
 
     Rabbit.publish(params)
-    model_naming = TableSync.publishing_adapter.model_naming(object_class)
-    TableSync::Instrument.notify table: model_naming.table, schema: model_naming.schema,
-                                 event: event, direction: :publish
+
+    message_id.inc_numerical_id!
+    notify
   end
 
   private
@@ -44,6 +46,7 @@ class TableSync::Publishing::Publisher < TableSync::Publishing::BasePublisher
   attr_reader :original_attributes
   attr_reader :state
   attr_reader :debounce_time
+  attr_reader :message_id
 
   def attrs_for_callables
     original_attributes
@@ -85,7 +88,11 @@ class TableSync::Publishing::Publisher < TableSync::Publishing::BasePublisher
     }
   end
 
-  def attributes_for_sync
+  def params
+    super.merge(message_id: message_id.generate)
+  end
+
+  memoize def attributes_for_sync
     if destroyed?
       if object_class.respond_to?(:table_sync_destroy_attributes)
         object_class.table_sync_destroy_attributes(original_attributes)

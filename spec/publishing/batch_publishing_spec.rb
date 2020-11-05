@@ -11,9 +11,13 @@ describe TableSync::Publishing::BatchPublisher do
 
   let(:push_original_attributes) { false }
 
-  before { Timecop.freeze("2018-01-01 12:00 UTC") }
+  before do
+    Timecop.freeze("2018-01-01 12:00 UTC")
 
-  before { TableSync.batch_publishing_job_class_callable = -> { TestJob } }
+    TableSync.batch_publishing_job_class_callable = -> { TestJob }
+
+    Thread.current[:ts_message_id] = 45
+  end
 
   def assert_last_job
     job = ActiveJob::Base.queue_adapter.enqueued_jobs.last
@@ -30,6 +34,10 @@ describe TableSync::Publishing::BatchPublisher do
     expect(job[:at]).to be_nil
   end
 
+  def message_id
+    "#{Process.pid}-#{Thread.current.object_id}-46"
+  end
+
   def expect_message(attributes, **options)
     args = {
       routing_key: options[:routing_key] || "TestUser",
@@ -37,6 +45,7 @@ describe TableSync::Publishing::BatchPublisher do
       confirm_select: true,
       realtime: true,
       headers: options[:headers],
+      message_id: message_id,
       data: {
         event: options[:event] || :update,
         model: options[:model_name] || "TestUser",

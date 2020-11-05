@@ -45,7 +45,15 @@ RSpec.describe TableSync::Publishing::Publisher do
   let!(:pk)           { "id" }
   let(:debounce_time) { nil }
 
-  before { Timecop.freeze("2010-01-01 12:00 UTC") }
+  before do
+    Timecop.freeze("2010-01-01 12:00 UTC")
+
+    Thread.current[:ts_message_id] = 45
+  end
+
+  def message_id
+    "#{Process.pid}-#{Thread.current.object_id}-46"
+  end
 
   def aj_keys
     RUBY_VERSION >= "2.7" && Rails.version >= "6.0.3" ? "_aj_ruby2_keywords" : "_aj_symbol_keys"
@@ -156,6 +164,7 @@ RSpec.describe TableSync::Publishing::Publisher do
         confirm_select: true,
         realtime: true,
         headers: headers,
+        message_id: message_id,
         data: {
           event: event,
           model: expected_model_name,

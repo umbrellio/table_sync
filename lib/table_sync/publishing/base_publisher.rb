@@ -111,4 +111,24 @@ class TableSync::Publishing::BasePublisher
 
     params
   end
+
+  # NOTIFY
+
+  def notify
+    TableSync::Instrument.notify(**notify_params)
+  end
+
+  def notify_params
+    {
+      table: model_naming.table,
+      schema: model_naming.schema,
+      event: event,
+      count: Array.wrap(attributes_for_sync).size,
+      direction: :publish,
+    }
+  end
+
+  def model_naming
+    TableSync.publishing_adapter.model_naming(object_class)
+  end
 end
