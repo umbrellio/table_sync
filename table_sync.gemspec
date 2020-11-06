@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_runtime_dependency "memery"
-  spec.add_runtime_dependency "rabbit_messaging", "~> 0.3"
+  spec.add_runtime_dependency "rabbit_messaging", "~> 0.8"
   spec.add_runtime_dependency "rails"
   spec.add_runtime_dependency "self_data"
 
