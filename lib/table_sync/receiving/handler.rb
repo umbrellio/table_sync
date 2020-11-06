@@ -23,6 +23,8 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
 
       validate_data(data, target_keys: target_keys)
 
+      data.sort_by! { |row| row.values_at(*target_keys) }
+
       params = { data: data, target_keys: target_keys, version_key: version_key }
 
       if event == :update
@@ -53,16 +55,20 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
   end
 
   def configs
-    @configs ||= self.class.configs[model]&.map do |config|
-      ::TableSync::Receiving::ConfigDecorator.new(
-        config: config,
-        # next parameters will be send to each proc-options from config
-        event: event,
-        model: model,
-        version: version,
-        project_id: project_id,
-        raw_data: data,
-      )
+    @configs ||= begin
+      configs = self.class.configs[model]
+      configs = configs.sort_by { |config| "#{config.model.schema}.#{config.model.table}" }
+      configs.map do |config|
+        ::TableSync::Receiving::ConfigDecorator.new(
+          config: config,
+          # next parameters will be send to each proc-options from config
+          event: event,
+          model: model,
+          version: version,
+          project_id: project_id,
+          raw_data: data,
+        )
+      end
     end
   end
 
@@ -99,9 +105,7 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
     end
 
     if data.uniq { |row| row.slice(*target_keys) }.size != data.size
-      raise TableSync::DataError.new(
-        data, target_keys, "Duplicate rows found!"
-      )
+      raise TableSync::DataError.new(data, target_keys, "Duplicate rows found!")
     end
   end
 

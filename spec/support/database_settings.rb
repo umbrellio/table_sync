@@ -33,19 +33,6 @@ DB.run <<~SQL
     "rest" jsonb
   );
 
-  DROP TABLE IF EXISTS "simple_players";
-  CREATE TABLE "simple_players" (
-    "external_id" int,
-    "internal_id" int,
-    "project_id" text,
-    "version" decimal,
-    "rest" jsonb,
-    PRIMARY KEY (external_id, internal_id)
-  );
-
-  DROP TABLE IF EXISTS "players_part_1";
-  CREATE TABLE "players_part_1" (like "players" INCLUDING ALL);
-
   DROP TABLE IF EXISTS "clients";
   CREATE TABLE "clients" (
     "client_id" int,
@@ -82,6 +69,22 @@ DB.run <<~SQL
     "position" int,
     "version" decimal,
     "rest" jsonb
+  );
+
+  DROP TABLE IF EXISTS "stat1";
+  CREATE TABLE "stat1" (
+    "id" int,
+    "value" int,
+    "version" decimal,
+    PRIMARY KEY (id)
+  );
+
+  DROP TABLE IF EXISTS "stat2";
+  CREATE TABLE "stat2" (
+    "id" int,
+    "value" int,
+    "version" decimal,
+    PRIMARY KEY (id)
   );
 SQL
 
