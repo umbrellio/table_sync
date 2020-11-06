@@ -522,7 +522,7 @@ describe TableSync::Receiving::Handler do
     end
   end
 
-  describe "dead locks"  do
+  describe "avoid dead locks" do
     let(:model) do
       Class.new(TableSync.receiving_model) do
         def upsert(data:, target_keys:, version_key:, default_values:)
@@ -566,8 +566,11 @@ describe TableSync::Receiving::Handler do
         )
       end
 
-      it do
-        DB[:stat1].multi_insert([{id: 1, value: 1, version: 1}, {id: 2, value: 1, version: 1}])
+      specify do
+        DB[:stat1].multi_insert([
+          { id: 1, value: 1, version: 1 },
+          { id: 2, value: 1, version: 1 },
+        ])
 
         threads = []
         threads << Thread.new(handler, update_event1) do |handler, event|
@@ -576,7 +579,7 @@ describe TableSync::Receiving::Handler do
         threads << Thread.new(handler, update_event2) do |handler, event|
           DB.transaction { handler.new(event).call }
         end
-        threads.each { |thread| thread.join }
+        threads.each(&:join)
       end
     end
 
@@ -605,9 +608,9 @@ describe TableSync::Receiving::Handler do
         )
       end
 
-      it do
-        DB[:stat1].insert({id: 1, value: 1, version: 1})
-        DB[:stat2].insert({id: 1, value: 1, version: 1})
+      specify do
+        DB[:stat1].insert({ id: 1, value: 1, version: 1 })
+        DB[:stat2].insert({ id: 1, value: 1, version: 1 })
 
         threads = []
         threads << Thread.new(handler1, update_event) do |handler, event|
@@ -616,7 +619,7 @@ describe TableSync::Receiving::Handler do
         threads << Thread.new(handler2, update_event) do |handler, event|
           DB.transaction { handler.new(event).call }
         end
-        threads.each { |thread| thread.join }
+        threads.each(&:join)
       end
     end
   end
