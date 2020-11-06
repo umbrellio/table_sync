@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [4.1.1] - 2020-11-06
 ### Fixed
-- dead locks in receiving module (see: spec/receiving/handler_spec.rb#avoid dead locks)
+- dead locks in receiving module (see: `spec/receiving/handler_spec.rb#avoid dead locks`)
 
 ## [4.1.0] - 2020-11-02
 ### Changed
