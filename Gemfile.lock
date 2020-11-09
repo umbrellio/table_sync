@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    table_sync (4.1.1)
+    table_sync (4.1.2)
       memery
-      rabbit_messaging (~> 0.3)
+      rabbit_messaging (~> 0.8.1)
       rails
       self_data
 
@@ -119,11 +119,11 @@ GEM
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    rabbit_messaging (0.7.1)
+    rabbit_messaging (0.8.1)
       bunny (~> 2.0)
       exception_notification
       lamian
-      rails
+      rails (>= 5.2)
       sneakers (~> 2.0)
       tainbox
     rack (2.2.3)

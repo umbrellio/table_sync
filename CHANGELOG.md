@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [4.1.2] - 2020-11-09
+### Changed
+- update rabbit_messaging to 0.8.1 (message_id, hooks, fixing connection leak)
+
 ## [4.1.1] - 2020-11-06
 ### Fixed
 - dead locks in receiving module (see: `spec/receiving/handler_spec.rb#avoid dead locks`)
