@@ -3,7 +3,7 @@ PATH
   specs:
     table_sync (4.1.2)
       memery
-      rabbit_messaging (~> 0.8.1)
+      rabbit_messaging (>= 0.8.1)
       rails
       self_data
 
