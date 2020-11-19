@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    table_sync (4.1.1)
+    table_sync (4.2.0)
       memery
       rabbit_messaging (~> 0.3)
       rails
@@ -84,7 +84,7 @@ GEM
     crass (1.0.6)
     diff-lcs (1.4.4)
     docile (1.3.2)
-    erubi (1.9.0)
+    erubi (1.10.0)
     exception_notification (4.4.3)
       actionmailer (>= 4.0, < 7)
       activesupport (>= 4.0, < 7)
@@ -119,11 +119,11 @@ GEM
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    rabbit_messaging (0.7.1)
+    rabbit_messaging (0.9.0)
       bunny (~> 2.0)
       exception_notification
       lamian
-      rails
+      rails (>= 5.2)
       sneakers (~> 2.0)
       tainbox
     rack (2.2.3)

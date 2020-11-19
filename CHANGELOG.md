@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [4.2.0] - 2020-11-19
+
+- No changes. Just stabilization release.
+
 ## [4.1.2] - 2020-11-19
 ### Fixed
 - bug with sorting data in handler
