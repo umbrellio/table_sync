@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [4.2.2] - 2020-11-20
+### Fixed
+- potential data corruption with batches
+
 ## [4.2.1] - 2020-11-20
 ### Fixed
 - bug with sorting data in handler, it was bad idea to use `.hash` replaced to `.to_s` 
