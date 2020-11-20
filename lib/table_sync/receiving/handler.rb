@@ -107,6 +107,17 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
     if data.uniq { |row| row.slice(*target_keys) }.size != data.size
       raise TableSync::DataError.new(data, target_keys, "Duplicate rows found!")
     end
+
+    keys_sample = data[0].keys
+    keys_diff = data.each_with_object(Set.new) do |row, set|
+      (row.keys - keys_sample | keys_sample - row.keys).each(&set.method(:add)) 
+    end
+
+    if keys_diff.size > 0
+      raise TableSync::DataError.new(data, target_keys, <<~MESSAGE)
+        Bad batch structure, check keys: #{keys_diff.to_a}
+      MESSAGE
+    end
   end
 
   def perform(config, params)

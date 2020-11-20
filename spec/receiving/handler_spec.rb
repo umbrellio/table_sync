@@ -520,6 +520,42 @@ describe TableSync::Receiving::Handler do
         expect { fire_update_event }.to raise_error(TableSync::DataError)
       end
     end
+
+    describe "error with data structure" do
+      let(:handler) do
+        Class.new(described_class).receive("User", to_table: :users) do
+          target_keys(:id)
+        end
+      end
+
+      let(:update_event) do
+        OpenStruct.new(
+          data: {
+            event: "update",
+            model: "User",
+            attributes: [
+              {
+                id: 1,
+                name: "test1",
+              },
+              {
+                id: 2,
+                name: "test2",
+                nickname: "test2",
+                balance: 123131,
+                email: "mail@example.com",
+              },
+            ],
+            version: 123.34534,
+          },
+          project_id: "pid",
+        )
+      end
+
+      it "raises TableSync::DataError" do
+        expect { fire_update_event }.to raise_error(TableSync::DataError)
+      end
+    end
   end
 
   describe "avoid dead locks" do
