@@ -1,6 +1,31 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [4.2.2] - 2020-11-20
+### Fixed
+- potential data corruption with batches
+
+## [4.2.1] - 2020-11-20
+### Fixed
+- bug with sorting data in handler, it was bad idea to use `.hash` replaced to `.to_s` 
+
+## [4.2.0] - 2020-11-19
+
+- No changes. Just stabilization release.
+
+## [4.1.2] - 2020-11-19
+### Fixed
+- bug with sorting data in handler
+
+## [4.1.1] - 2020-11-06
+### Fixed
+- dead locks in receiving module (see: `spec/receiving/handler_spec.rb#avoid dead locks`)
+
+## [4.1.0] - 2020-11-02
+### Changed
+- move `TableSync::Instrument.notify` from models to the handler
+- fire `TableSync::Instrument.notify` after commit insted of in transaction
+
 ## [4.0.0] - 2020-10-23
 ### Returned
 - config inheritance

@@ -23,6 +23,8 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
 
       validate_data(data, target_keys: target_keys)
 
+      data.sort_by! { |row| row.values_at(*target_keys).to_s }
+
       params = { data: data, target_keys: target_keys, version_key: version_key }
 
       if event == :update
@@ -53,16 +55,20 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
   end
 
   def configs
-    @configs ||= self.class.configs[model]&.map do |config|
-      ::TableSync::Receiving::ConfigDecorator.new(
-        config: config,
-        # next parameters will be send to each proc-options from config
-        event: event,
-        model: model,
-        version: version,
-        project_id: project_id,
-        raw_data: data,
-      )
+    @configs ||= begin
+      configs = self.class.configs[model]
+      configs = configs.sort_by { |config| "#{config.model.schema}.#{config.model.table}" }
+      configs.map do |config|
+        ::TableSync::Receiving::ConfigDecorator.new(
+          config: config,
+          # next parameters will be send to each proc-options from config
+          event: event,
+          model: model,
+          version: version,
+          project_id: project_id,
+          raw_data: data,
+        )
+      end
     end
   end
 
@@ -99,9 +105,18 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
     end
 
     if data.uniq { |row| row.slice(*target_keys) }.size != data.size
-      raise TableSync::DataError.new(
-        data, target_keys, "Duplicate rows found!"
-      )
+      raise TableSync::DataError.new(data, target_keys, "Duplicate rows found!")
+    end
+
+    keys_sample = data[0].keys
+    keys_diff = data.each_with_object(Set.new) do |row, set|
+      (row.keys - keys_sample | keys_sample - row.keys).each(&set.method(:add))
+    end
+
+    unless keys_diff.empty?
+      raise TableSync::DataError.new(data, target_keys, <<~MESSAGE)
+        Bad batch structure, check keys: #{keys_diff.to_a}
+      MESSAGE
     end
   end
 
@@ -109,22 +124,23 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
     model = config.model
 
     model.transaction do
+      results = if event == :update
+                  config.before_update(**params)
+                  model.upsert(**params)
+                else
+                  config.before_destroy(**params)
+                  model.destroy(**params)
+                end
+
+      model.after_commit do
+        TableSync::Instrument.notify table: model.table, schema: model.schema,
+                                     count: results.count, event: event, direction: :receive
+      end
+
       if event == :update
-        config.before_update(**params)
-
-        results = model.upsert(**params)
-
-        model.after_commit do
-          config.after_commit_on_update(**params.merge(results: results))
-        end
+        model.after_commit { config.after_commit_on_update(**params.merge(results: results)) }
       else
-        config.before_destroy(**params)
-
-        results = model.destroy(**params)
-
-        model.after_commit do
-          config.after_commit_on_destroy(**params.merge(results: results))
-        end
+        model.after_commit { config.after_commit_on_destroy(**params.merge(results: results)) }
       end
     end
   end

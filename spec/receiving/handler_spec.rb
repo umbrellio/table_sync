@@ -353,7 +353,7 @@ describe TableSync::Receiving::Handler do
           Class.new(TableSync.receiving_model) do
             def destroy(data:, target_keys:, version_key:)
               DESTROY_INTERCEPTOR.push(data: data, target_keys: target_keys)
-              "on_destroy_completed" # returning value
+              [{ text: "on_destroy_completed" }] # returning value
             end
           end.new(:players)
         end
@@ -384,7 +384,7 @@ describe TableSync::Receiving::Handler do
         end
 
         let(:expected_on_destroy_results) do
-          "on_destroy_completed"
+          [{ text: "on_destroy_completed" }]
         end
 
         specify "uses custom destroying logic instead of the real destroying" do
@@ -518,6 +518,144 @@ describe TableSync::Receiving::Handler do
 
       it "raises TableSync::DataError" do
         expect { fire_update_event }.to raise_error(TableSync::DataError)
+      end
+    end
+
+    describe "error with data structure" do
+      let(:handler) do
+        Class.new(described_class).receive("User", to_table: :users) do
+          target_keys(:id)
+        end
+      end
+
+      let(:update_event) do
+        OpenStruct.new(
+          data: {
+            event: "update",
+            model: "User",
+            attributes: [
+              {
+                id: 1,
+                name: "test1",
+              },
+              {
+                id: 2,
+                name: "test2",
+                nickname: "test2",
+                balance: 123131,
+                email: "mail@example.com",
+              },
+            ],
+            version: 123.34534,
+          },
+          project_id: "pid",
+        )
+      end
+
+      it "raises TableSync::DataError" do
+        expect { fire_update_event }.to raise_error(TableSync::DataError)
+      end
+    end
+  end
+
+  describe "avoid dead locks" do
+    let(:model) do
+      Class.new(TableSync.receiving_model) do
+        def upsert(data:, target_keys:, version_key:, default_values:)
+          data.each do |row|
+            conditions = row.select { |key| target_keys.include?(key) }
+            dataset.where(conditions).update(row)
+            sleep 2
+          end
+        end
+      end
+    end
+
+    context "by rows" do
+      let(:handler) do
+        Class.new(described_class).receive("Stat1", to_model: model.new(:stat1)) do
+          rest_key false
+        end
+      end
+
+      let(:update_event1) do
+        OpenStruct.new(
+          data: {
+            event: "update",
+            model: "Stat1",
+            attributes: [{ id: 1, value: 1 }, { id: 2, value: 1 }],
+            version: 2,
+          },
+          project_id: "pid",
+        )
+      end
+
+      let(:update_event2) do
+        OpenStruct.new(
+          data: {
+            event: "update",
+            model: "Stat1",
+            attributes: [{ id: 2, value: 1 }, { id: 1, value: 1 }],
+            version: 2,
+          },
+          project_id: "pid",
+        )
+      end
+
+      specify do
+        DB[:stat1].multi_insert([
+          { id: 1, value: 1, version: 1 },
+          { id: 2, value: 1, version: 1 },
+        ])
+
+        threads = []
+        threads << Thread.new(handler, update_event1) do |handler, event|
+          DB.transaction { handler.new(event).call }
+        end
+        threads << Thread.new(handler, update_event2) do |handler, event|
+          DB.transaction { handler.new(event).call }
+        end
+        threads.each(&:join)
+      end
+    end
+
+    context "by configs" do
+      let(:handler1) do
+        Class.new(described_class)
+          .receive("Stat", to_model: model.new(:stat1)) { rest_key false }
+          .receive("Stat", to_model: model.new(:stat2)) { rest_key false }
+      end
+
+      let(:handler2) do
+        Class.new(described_class)
+          .receive("Stat", to_model: model.new(:stat2)) { rest_key false }
+          .receive("Stat", to_model: model.new(:stat1)) { rest_key false }
+      end
+
+      let(:update_event) do
+        OpenStruct.new(
+          data: {
+            event: "update",
+            model: "Stat",
+            attributes: [{ id: 1, value: 1 }],
+            version: 2,
+          },
+          project_id: "pid",
+        )
+      end
+
+      specify do
+        DB[:stat1].insert({ id: 1, value: 1, version: 1 })
+        DB[:stat2].insert({ id: 1, value: 1, version: 1 })
+
+        threads = []
+        threads << Thread.new(handler1, update_event) do |handler, event|
+          DB.transaction { handler.new(event).call }
+        end
+        threads << Thread.new(handler2, update_event) do |handler, event|
+          DB.transaction { handler.new(event).call }
+        end
+        threads.each(&:join)
       end
     end
   end

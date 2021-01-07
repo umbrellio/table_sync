@@ -2,8 +2,18 @@
 
 module TableSync::Receiving::Model
   class Sequel
+    attr_reader :table, :schema
+
     def initialize(table_name)
       @raw_model = Class.new(::Sequel::Model(table_name)).tap(&:unrestrict_primary_key)
+
+      model_naming = ::TableSync::NamingResolver::Sequel.new(
+        table_name: table_name,
+        db: @raw_model.db,
+      )
+
+      @table = model_naming.table.to_sym
+      @schema = model_naming.schema.to_sym
     end
 
     def columns
@@ -15,7 +25,7 @@ module TableSync::Receiving::Model
     end
 
     def upsert(data:, target_keys:, version_key:, default_values:)
-      qualified_version = ::Sequel.qualify(table_name, version_key)
+      qualified_version = ::Sequel.qualify(raw_model.table_name, version_key)
       version_condition = ::Sequel.function(:coalesce, qualified_version, 0) <
                           ::Sequel.qualify(:excluded, version_key)
 
@@ -24,18 +34,10 @@ module TableSync::Receiving::Model
 
       insert_data = type_cast(data)
 
-      result = dataset.returning
-                      .insert_conflict(
-                        target: target_keys,
-                        update: upd_spec,
-                        update_where: version_condition,
-                      )
-                      .multi_insert(insert_data)
-
-      TableSync::Instrument.notify table: model_naming.table, schema: model_naming.schema,
-                                   count: result.count, event: :update, direction: :receive
-
-      result
+      dataset
+        .returning
+        .insert_conflict(target: target_keys, update: upd_spec, update_where: version_condition)
+        .multi_insert(insert_data)
     end
 
     def destroy(data:, target_keys:, version_key:)
@@ -46,10 +48,6 @@ module TableSync::Receiving::Model
       if result.size > data.size
         raise TableSync::DestroyError.new(data: data, target_keys: target_keys, result: result)
       end
-
-      TableSync::Instrument.notify table: model_naming.table, schema: model_naming.schema,
-                                   count: result.count,
-                                   event: :destroy, direction: :receive
 
       result
     end
@@ -65,14 +63,6 @@ module TableSync::Receiving::Model
     private
 
     attr_reader :raw_model
-
-    def table_name
-      raw_model.table_name
-    end
-
-    def model_naming
-      ::TableSync::NamingResolver::Sequel.new(table_name: table_name, db: db)
-    end
 
     def dataset
       raw_model.dataset
