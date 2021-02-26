@@ -46,17 +46,28 @@ class TableSync::Publishing::Publisher < TableSync::Publishing::BasePublisher
   attr_reader :debounce_time
 
   def attrs_for_callables
+    # attributes_for_sync
     original_attributes
   end
 
   def attrs_for_routing_key
     return object.attrs_for_routing_key if attrs_for_routing_key_defined?
     attrs_for_callables
+    # if attrs_for_routing_key_defined? && !destroyed?
+    #   object.attrs_for_routing_key
+    # else
+    #   attrs_for_callables
+    # end
   end
 
   def attrs_for_metadata
     return object.attrs_for_metadata if attrs_for_metadata_defined?
     attrs_for_callables
+    # if attrs_for_metadata_defined? && !destroyed?
+    #   object.attrs_for_metadata
+    # else
+    #   attrs_for_callables
+    # end
   end
 
   def job_callable
@@ -85,7 +96,7 @@ class TableSync::Publishing::Publisher < TableSync::Publishing::BasePublisher
     }
   end
 
-  def attributes_for_sync
+  memoize def attributes_for_sync
     if destroyed?
       if object_class.respond_to?(:table_sync_destroy_attributes)
         object_class.table_sync_destroy_attributes(original_attributes)
