@@ -42,7 +42,7 @@ jobs:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
 
-    - run: psql -c 'create database table_sync_test;'
+    - run: psql -c 'CREATE DATABASE table_sync_test'
     - run: bundle exec rake bundle:audit
     - run: bundle exec rubocop
     - run: bundle exec rspec
@@ -50,4 +50,3 @@ jobs:
     - uses: coverallsapp/github-action@v1.1.2
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-
