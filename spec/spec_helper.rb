@@ -23,7 +23,9 @@ Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |file| require file
 
 RSpec.configure do |config|
   config.include Rabbit::TestHelpers
-  Kernel.srand config.seed
+
+  Kernel.srand(config.seed)
+  config.order = :random
 
   config.disable_monkey_patching!
   config.mock_with(:rspec) { |mocks| mocks.verify_partial_doubles = true }
