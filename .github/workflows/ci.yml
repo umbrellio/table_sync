@@ -48,3 +48,8 @@ jobs:
     - run: bundle exec rake bundle:audit
     - run: bundle exec rubocop
     - run: bundle exec rspec
+
+    - uses: coverallsapp/github-action@v1.1.2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
