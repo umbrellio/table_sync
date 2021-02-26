@@ -21,7 +21,7 @@ require 'table_sync'
 ## Usage
 
 - [Message protocol](docs/message_protocol.md)
-- [Publising](docs/publishing.md)
+- [Publishing](docs/publishing.md)
 - [Receiving](docs/receiving.md)
 - [Notifications](docs/notifications.md)
 
