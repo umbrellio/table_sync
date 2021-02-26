@@ -22,27 +22,30 @@ class TestUser
 end
 
 class TestUserWithCustomStuff < TestUser
-  class << self
-    def table_sync_model_name
-      "SomeFancyName"
-    end
-
-    def table_sync_destroy_attributes(attrs)
-      {
-        id: attrs[:id],
-        mail_address: attrs[:email],
-      }
-    end
+  def self.table_sync_model_name
+    "SomeFancyName"
   end
+
+  def self.table_sync_destroy_attributes(attrs)
+    {
+      id: attrs[:id],
+      mail_address: attrs[:email],
+    }
+  end
+
+  def attrs_for_metadata; end
+
+  def attrs_for_routing_key; end
 end
 
 TestJob = Class.new(ActiveJob::Base)
 
 RSpec.describe TableSync::Publishing::Publisher do
-  let(:id)            { 1 }
-  let(:email)         { "example@example.org" }
-  let(:attributes)    { { "id" => id, "email" => email } }
-  let!(:pk)           { "id" }
+  let(:id) { 1 }
+  let(:email) { "example@example.org" }
+  let(:attributes) { { "id" => id, "email" => email } }
+  let(:user_attributes) { attributes.symbolize_keys }
+  let!(:pk) { "id" }
   let(:debounce_time) { nil }
 
   before { Timecop.freeze("2010-01-01 12:00 UTC") }
@@ -149,7 +152,7 @@ RSpec.describe TableSync::Publishing::Publisher do
       described_class.new(class_name, attributes, state: state).publish_now
     end
 
-    def expect_message(event, attributes, created:)
+    def expect_message(event, message_attributes, created:)
       args = {
         routing_key: routing_key,
         event: :table_sync,
@@ -159,7 +162,7 @@ RSpec.describe TableSync::Publishing::Publisher do
         data: {
           event: event,
           model: expected_model_name,
-          attributes: attributes,
+          attributes: message_attributes,
           version: Time.now.to_f,
           metadata: { created: created },
         },
@@ -178,10 +181,6 @@ RSpec.describe TableSync::Publishing::Publisher do
     let(:metadata_callable)    { -> (klass, attrs) { { klass => attrs[:email] } } }
 
     before do
-      [TestUser, TestUserWithCustomStuff].each do |klass|
-        allow(klass).to receive(:find_by).with(id: id).and_return(user)
-      end
-
       TableSync.routing_key_callable = routing_key_callable
       TableSync.routing_metadata_callable = metadata_callable
     end
@@ -190,13 +189,16 @@ RSpec.describe TableSync::Publishing::Publisher do
       let(:state) { :destroyed }
 
       it "publishes" do
-        expect_message(:destroy, { id: id }, created: false)
+        expect_message(:destroy, user_attributes, created: false)
         publish
       end
 
       context "class with custom destroy attributes" do
         let(:class_name) { "TestUserWithCustomStuff" }
         let(:expected_model_name) { "SomeFancyName" }
+
+        let(:routing_key_callable) { -> (klass, attrs) { "#{klass}-#{attrs[:mail_address]}" } }
+        let(:metadata_callable)    { -> (klass, attrs) { { klass => attrs[:mail_address] } } }
 
         it "uses that attributes" do
           expect_message(:destroy, { id: id, mail_address: "example@example.org" }, created: false)
@@ -214,20 +216,21 @@ RSpec.describe TableSync::Publishing::Publisher do
     context "not destroyed" do
       let(:state) { :created }
 
+      before do
+        allow(TestUser).to receive(:find_by).with(id: id).and_return(user)
+      end
+
       context "does not respond #attributes_for_sync" do
-        before do
-          allow(user).to receive(:attributes).and_return("db_attribute" => "db_value")
-        end
+        before { allow(user).to receive(:attributes).and_return(user_attributes) }
 
         it "publishes" do
-          expect_message(:update, { "db_attribute" => "db_value" }, created: true)
+          expect_message(:update, user_attributes, created: true)
           publish
         end
       end
 
       context "override methods" do
-        let(:default_attributes)  { { id: id } }
-        let(:expected_attributes) { default_attributes }
+        let(:expected_attributes) { user_attributes }
 
         let(:override_methods) do
           %i[attributes_for_sync attrs_for_metadata attrs_for_routing_key]
@@ -238,7 +241,7 @@ RSpec.describe TableSync::Publishing::Publisher do
             allow(TestUser).to receive(:method_defined?).with(m).and_return(false)
           end
 
-          allow(user).to receive(:attributes).and_return(default_attributes)
+          allow(user).to receive(:attributes).and_return(user_attributes)
         end
 
         shared_examples "responds_to" do |override_method|
@@ -255,7 +258,7 @@ RSpec.describe TableSync::Publishing::Publisher do
         end
 
         context "attributes_for_sync" do
-          let(:override_data)       { { "custom_attribute" => "custom_value" } }
+          let(:override_data)       { user_attributes.merge(custom_attribute: "custom_value") }
           let(:expected_attributes) { override_data }
 
           include_examples "responds_to", :attributes_for_sync
