@@ -38,7 +38,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "activejob", ">= 6.0"
   spec.add_development_dependency "activerecord", ">= 6.0"
-  spec.add_development_dependency "pg", "~> 0.18"
+  spec.add_development_dependency "pg"
   spec.add_development_dependency "sequel"
   spec.add_development_dependency "timecop"
 
