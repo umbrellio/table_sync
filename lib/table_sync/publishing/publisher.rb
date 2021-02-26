@@ -9,14 +9,8 @@ class TableSync::Publishing::Publisher < TableSync::Publishing::BasePublisher
     @original_attributes = filter_safe_for_serialization(original_attributes.deep_symbolize_keys)
     @confirm = opts.fetch(:confirm, true)
     @debounce_time = opts[:debounce_time]&.seconds || DEBOUNCE_TIME
-
-    if opts[:destroyed].nil?
-      @state = opts.fetch(:state, :updated).to_sym
-      validate_state
-    else
-      # TODO Legacy job support, remove
-      @state = opts[:destroyed] ? :destroyed : :updated
-    end
+    @state = opts.fetch(:state, :updated).to_sym
+    validate_state
   end
 
   def publish
