@@ -57,12 +57,16 @@ class TableSync::Publishing::BasePublisher
   def filter_safe_for_serialization(object)
     case object
     when Array
-      object.map { |x| filter_safe_for_serialization(x) }.select { |x| object_mapped?(x) }
+      object.each_with_object([]) do |value, memo|
+        value = filter_safe_for_serialization(value)
+        memo << value if object_mapped?(value)
+      end
     when Hash
-      object
-        .transform_keys { |x| filter_safe_for_serialization(x) }
-        .transform_values { |x| filter_safe_hash_values(x) }
-        .select { |*objects| objects.all? { |x| object_mapped?(x) } }
+      object.each_with_object({}) do |(key, value), memo|
+        key = filter_safe_for_serialization(key)
+        value = filter_safe_hash_values(value)
+        memo[key] = value if object_mapped?(key) && object_mapped?(value)
+      end
     when Float::INFINITY
       NOT_MAPPED
     when *BASE_SAFE_JSON_TYPES

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "setup"
+
 describe TableSync::Publishing::BatchPublisher do
   let(:pk)         { "id" }
   let(:id)         { 1 }
