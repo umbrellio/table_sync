@@ -119,7 +119,7 @@ describe TableSync::Publishing::BatchPublisher do
 
     context "with inserting original attributes" do
       let(:push_original_attributes) { true }
-      let(:options) { Hash[push_original_attributes: true] }
+      let(:options) { { push_original_attributes: true } }
 
       it "publish job with this option, setted to true" do
         publisher.publish
@@ -277,7 +277,7 @@ describe TableSync::Publishing::BatchPublisher do
         allow(user).to receive(:attributes).and_return("kek" => "pek")
       end
 
-      let(:options) { Hash[push_original_attributes: true] }
+      let(:options) { { push_original_attributes: true } }
 
       it "sends original attributes array instead of record attributes" do
         expect_message([{ id: 1, email: "example@example.org" }])

@@ -54,8 +54,8 @@ class TableSync::Utils::InterfaceChecker
   end
 
   def filter(parameters)
-    # for req and block parameters types we can ignore names
-    parameters.map { |param| %i[req block].include?(param.first) ? [param.first] : param }
+    ignored_keys = %i[req block] # for req and block parameters types we can ignore names
+    parameters.map { |param| ignored_keys.include?(param.first) ? [param.first] : param }
   end
 end
 
