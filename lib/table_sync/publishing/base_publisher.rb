@@ -57,17 +57,21 @@ class TableSync::Publishing::BasePublisher
   def filter_safe_for_serialization(object)
     case object
     when Array
-      object.map(&method(:filter_safe_for_serialization)).select(&method(:object_mapped?))
+      object.each_with_object([]) do |value, memo|
+        value = filter_safe_for_serialization(value)
+        memo << value if object_mapped?(value)
+      end
     when Hash
-      object
-        .transform_keys(&method(:filter_safe_for_serialization))
-        .transform_values(&method(:filter_safe_hash_values))
-        .select { |*objects| objects.all?(&method(:object_mapped?)) }
+      object.each_with_object({}) do |(key, value), memo|
+        key = filter_safe_for_serialization(key)
+        value = filter_safe_hash_values(value)
+        memo[key] = value if object_mapped?(key) && object_mapped?(value)
+      end
     when Float::INFINITY
       NOT_MAPPED
     when *BASE_SAFE_JSON_TYPES
       object
-    else
+    else # rubocop:disable Lint/DuplicateBranch
       NOT_MAPPED
     end
   end

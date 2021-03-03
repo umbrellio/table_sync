@@ -82,7 +82,7 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
         row[after] = row.delete(before)
       end
 
-      config.except(row: row).each(&row.method(:delete))
+      config.except(row: row).each { |x| row.delete(x) }
 
       row.merge!(config.additional_data(row: row))
 
@@ -98,7 +98,8 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
 
   def validate_data(data, target_keys:)
     data.each do |row|
-      next if target_keys.all?(&row.keys.method(:include?))
+      next if target_keys.all? { |x| row.key?(x) }
+
       raise TableSync::DataError.new(
         data, target_keys, "Some target keys not found in received attributes!"
       )
@@ -110,7 +111,7 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
 
     keys_sample = data[0].keys
     keys_diff = data.each_with_object(Set.new) do |row, set|
-      (row.keys - keys_sample | keys_sample - row.keys).each(&set.method(:add))
+      (row.keys - keys_sample | keys_sample - row.keys).each { |x| set.add(x) }
     end
 
     unless keys_diff.empty?
