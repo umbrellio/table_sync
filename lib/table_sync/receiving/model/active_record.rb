@@ -96,7 +96,7 @@ module TableSync::Receiving::Model
         end
       end
 
-      result = query.destroy_all.map(&method(:row_to_hash))
+      result = query.destroy_all.map { |x| row_to_hash(x) }
 
       if result.size > data.size
         raise TableSync::DestroyError.new(data: data, target_keys: target_keys, result: result)
