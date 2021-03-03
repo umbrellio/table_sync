@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "setup"
-
 RSpec.describe TableSync::Publishing::Publisher do
   let(:id) { 1 }
   let(:email) { "example@example.org" }
@@ -37,8 +35,6 @@ RSpec.describe TableSync::Publishing::Publisher do
       expect(job[:args]).to eq(["TestUser", object_attributes, job_params])
       expect(job[:at]).to eq(time.to_i)
     end
-
-    before { TableSync.publishing_job_class_callable = -> { TestJob } }
 
     context "destroying" do
       let(:state) { :destroyed }
