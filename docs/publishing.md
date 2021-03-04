@@ -1,7 +1,6 @@
 # Publishing changes
 
-Include `TableSync.sync(self)` into a Sequel or ActiveRecord model. `:if` and `:unless` are
-supported for Sequel and ActiveRecord
+Include `TableSync.sync(self)` into a Sequel or ActiveRecord model. `:if` and `:unless` are supported for Sequel and ActiveRecord
 
 Functioning `Rails.cache` is required
 
@@ -9,37 +8,33 @@ Example:
 
 ```ruby
 class SomeModel < Sequel::Model
-    TableSync.sync(self, { if: -> (*) { some_code } })
+  TableSync.sync(self, { if: -> (*) { some_code } })
 end
 ```
 
 #### #attributes_for_sync
 
-Models can implement `#attributes_for_sync` to override which attributes are published. If not
-present, all attributes are published
+Models can implement `#attributes_for_sync` to override which attributes are published. If not present, all attributes are published
 
 #### #attrs_for_routing_key
 
-Models can implement `#attrs_for_routing_key` to override which attributes are given to routing_key_callable. If not present, default attributes are given
+Models can implement `#attrs_for_routing_key` to override which attributes are given to `routing_key_callable`. If not present, published attributes are given
 
 #### #attrs_for_metadata
 
-Models can implement `#attrs_for_metadata` to override which attributes are given to metadata_callable. If not present, default attributes are given
+Models can implement `#attrs_for_metadata` to override which attributes are given to `metadata_callable`. If not present, published attributes are given
 
 #### .table_sync_model_name
 
-Models can implement `.table_sync_model_name` class method to override the model name used for
-publishing events. Default is model class name
+Models can implement `.table_sync_model_name` class method to override the model name used for publishing events. Default is model class name
 
 #### .table_sync_destroy_attributes(original_attributes)
 
-Models can implement `.table_sync_destroy_attributes` class method to override the attributes
-used for publishing destroy events. Default is object's primary key
+Models can implement `.table_sync_destroy_attributes` class method to override the attributes used for publishing destroy events. Default is object's original attributes
 
 ## Configuration
 
-- `TableSync.publishing_job_class_callable` is a callable which should resolve to a ActiveJob
-subclass that calls TableSync back to actually publish changes (required)
+- `TableSync.publishing_job_class_callable` is a callable which should resolve to a ActiveJob subclass that calls TableSync back to actually publish changes (required)
 
 Example:
 
@@ -51,11 +46,9 @@ class TableSync::Job < ActiveJob::Base
 end
 ```
 
-- `TableSync.batch_publishing_job_class_callable` is a callable which should resolve to a ActiveJob
-subclass that calls TableSync batch publisher back to actually publish changes (required for batch publisher)
+- `TableSync.batch_publishing_job_class_callable` is a callable which should resolve to a ActiveJob subclass that calls TableSync batch publisher back to actually publish changes (required for batch publisher)
 
-- `TableSync.routing_key_callable` is a callable which resolves which routing key to use when
-publishing changes. It receives object class and attributes (required)
+- `TableSync.routing_key_callable` is a callable which resolves which routing key to use when publishing changes. It receives object class and published attributes (required)
 
 Example:
 
@@ -63,9 +56,7 @@ Example:
 TableSync.routing_key_callable = -> (klass, attributes) { klass.gsub('::', '_').tableize }
 ```
 
-- `TableSync.routing_metadata_callable` is a callable that adds RabbitMQ headers which can be
-used in routing (optional). One possible way of using it is defining a headers exchange and
-routing rules based on key-value pairs (which correspond to sent headers)
+- `TableSync.routing_metadata_callable` is a callable that adds RabbitMQ headers which can be used in routing (optional). It receives object class and published attributes. One possible way of using it is defining a headers exchange and routing rules based on key-value pairs (which correspond to sent headers)
 
 Example:
 
@@ -73,8 +64,7 @@ Example:
 TableSync.routing_metadata_callable = -> (klass, attributes) { attributes.slice("project_id") }
 ```
 
-- `TableSync.exchange_name` defines the exchange name used for publishing (optional, falls back
-to default Rabbit gem configuration).
+- `TableSync.exchange_name` defines the exchange name used for publishing (optional, falls back to default Rabbit gem configuration).
 
 - `TableSync.notifier` is a module that provides publish and recieve notifications.
 
@@ -87,9 +77,7 @@ where state is one of `:created / :updated / :destroyed` and `confirm` is Rabbit
 
 You can use `TableSync::BatchPublisher` to publish changes in batches (array of hashes in `attributes`).
 
-When using `TableSync::BatchPublisher`,` TableSync.routing_key_callable` is called as follows:
-`TableSync.routing_key_callable.call(klass, {})`, i.e. empty hash is passed instead of attributes.
-And `TableSync.routing_metadata_callable` is not called at all: metadata is set to empty hash.
+When using `TableSync::BatchPublisher`,` TableSync.routing_key_callable` is called as follows: `TableSync.routing_key_callable.call(klass, {})`, i.e. empty hash is passed instead of attributes. And `TableSync.routing_metadata_callable` is not called at all: metadata is set to empty hash.
 
 `TableSync::BatchPublisher.new(object_class, original_attributes_array, **options)`, where `original_attributes_array` is an array with hash of attributes of published objects and `options` is a hash of options.
 
@@ -119,9 +107,7 @@ TableSync::BatchPublisher.new(
 
 С помощью класса `TableSync::BatchPublisher` вы можете опубликовать изменения батчами (массивом в `attributes`).
 
-При использовании `TableSync::BatchPublisher`, `TableSync.routing_key_callable` вызывается следующим образом:
-`TableSync.routing_key_callable.call(klass, {})`, то есть вместо аттрибутов передается пустой хэш.
-А `TableSync.routing_metadata_callable` не вызывается вовсе: в метадате устанавливается пустой хэш.
+При использовании `TableSync::BatchPublisher`, `TableSync.routing_key_callable` вызывается следующим образом: `TableSync.routing_key_callable.call(klass, {})`, то есть вместо аттрибутов передается пустой хэш. А `TableSync.routing_metadata_callable` не вызывается вовсе: в метадате устанавливается пустой хэш.
 
 `TableSync::BatchPublisher.new(object_class, original_attributes_array, **options)`, где `original_attributes_array` - массив с аттрибутами публикуемых объектов и `options`- это хэш с дополнительными опциями.
 
