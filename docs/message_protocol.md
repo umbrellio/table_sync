@@ -1,9 +1,9 @@
 # Messages protocol
 
-```
+```json
 {
-  project_id: "pid",
-  data: {
+  "project_id": "pid",
+  "data": {
     "event": "update",
     "model": "User",
     "version": 1.23,

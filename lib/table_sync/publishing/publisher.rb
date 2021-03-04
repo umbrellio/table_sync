@@ -9,14 +9,8 @@ class TableSync::Publishing::Publisher < TableSync::Publishing::BasePublisher
     @original_attributes = filter_safe_for_serialization(original_attributes.deep_symbolize_keys)
     @confirm = opts.fetch(:confirm, true)
     @debounce_time = opts[:debounce_time]&.seconds || DEBOUNCE_TIME
-
-    if opts[:destroyed].nil?
-      @state = opts.fetch(:state, :updated).to_sym
-      validate_state
-    else
-      # TODO Legacy job support, remove
-      @state = opts[:destroyed] ? :destroyed : :updated
-    end
+    @state = opts.fetch(:state, :updated).to_sym
+    validate_state
   end
 
   def publish
@@ -46,17 +40,23 @@ class TableSync::Publishing::Publisher < TableSync::Publishing::BasePublisher
   attr_reader :debounce_time
 
   def attrs_for_callables
-    original_attributes
+    attributes_for_sync
   end
 
   def attrs_for_routing_key
-    return object.attrs_for_routing_key if attrs_for_routing_key_defined?
-    attrs_for_callables
+    if object.respond_to?(:attrs_for_routing_key)
+      object.attrs_for_routing_key
+    else
+      attrs_for_callables
+    end
   end
 
   def attrs_for_metadata
-    return object.attrs_for_metadata if attrs_for_metadata_defined?
-    attrs_for_callables
+    if object.respond_to?(:attrs_for_metadata)
+      object.attrs_for_metadata
+    else
+      attrs_for_callables
+    end
   end
 
   def job_callable
@@ -85,12 +85,12 @@ class TableSync::Publishing::Publisher < TableSync::Publishing::BasePublisher
     }
   end
 
-  def attributes_for_sync
+  memoize def attributes_for_sync
     if destroyed?
       if object_class.respond_to?(:table_sync_destroy_attributes)
         object_class.table_sync_destroy_attributes(original_attributes)
       else
-        needle
+        original_attributes
       end
     elsif attributes_for_sync_defined?
       object.attributes_for_sync

@@ -29,14 +29,6 @@ class TableSync::Publishing::BasePublisher
     object_class.method_defined?(:attributes_for_sync)
   end
 
-  memoize def attrs_for_routing_key_defined?
-    object_class.method_defined?(:attrs_for_routing_key)
-  end
-
-  memoize def attrs_for_metadata_defined?
-    object_class.method_defined?(:attrs_for_metadata)
-  end
-
   def resolve_routing_key
     routing_key_callable.call(object_class.name, attrs_for_routing_key)
   end
