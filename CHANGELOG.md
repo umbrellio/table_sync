@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 - Fix `delete` events being broken when either `#attrs_for_routing_key` or `#attrs_for_metadata` was defined on a model.
 
 ### Changed
-- Instead of original attributes, use published attributes for `TableSync.routing_key_callable` and `TableSync.routing_metadata_callable`.
+- Instead of original attributes (default raw model attributes), use published attributes (as defined by `#attributes_for_sync` or `.table_sync_destroy_attributes`) for `TableSync.routing_key_callable` and `TableSync.routing_metadata_callable`.
 - Send all original attributes for `delete` events instead of just PK.
 
 ## [4.2.2] - 2020-11-20
