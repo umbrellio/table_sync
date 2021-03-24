@@ -1,16 +1,23 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [5.0.0] - 2021-03-04
+### Fixed
+- Fix `delete` events being broken when either `#attrs_for_routing_key` or `#attrs_for_metadata` was defined on a model.
+
+### Changed
+- Instead of original attributes (default raw model attributes), use published attributes (as defined by `#attributes_for_sync` or `.table_sync_destroy_attributes`) for `TableSync.routing_key_callable` and `TableSync.routing_metadata_callable`.
+- Send all original attributes for `delete` events instead of just PK.
+
 ## [4.2.2] - 2020-11-20
 ### Fixed
 - potential data corruption with batches
 
 ## [4.2.1] - 2020-11-20
 ### Fixed
-- bug with sorting data in handler, it was bad idea to use `.hash` replaced to `.to_s` 
+- bug with sorting data in handler, it was bad idea to use `.hash` replaced to `.to_s`
 
 ## [4.2.0] - 2020-11-19
-
 - No changes. Just stabilization release.
 
 ## [4.1.2] - 2020-11-19
@@ -42,9 +49,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - .rubocop.yml
 - documentation
-- modules hierarchy (split receiving and publishing)  
-  `TableSync::Publisher` -> `TableSync::Publishing::Publisher`  
-  `TableSync::BatchPublisher` -> `TableSync::Publishing::BatchPublisher`  
+- modules hierarchy (split receiving and publishing)
+  `TableSync::Publisher` -> `TableSync::Publishing::Publisher`
+  `TableSync::BatchPublisher` -> `TableSync::Publishing::BatchPublisher`
   `TableSync::ReceivingHandler` -> `TableSync::Receiving::Handler`
 - made data batches processing as native
 - implemented callbacks as options
@@ -52,10 +59,10 @@ All notable changes to this project will be documented in this file.
 - type checking in options
 - `before_commit on: event, &block` -> `before_update(&block)` or `before_destroy(&block)`
 - `after_commit on: event, &block` -> `after_commit_on_update(&block)` or `after_commit_on_destroy(&block)`
-- changed parameters in some options:  
-  add `raw_data`  
-  `current_row` -> `row`  
-  ...  
+- changed parameters in some options:
+  add `raw_data`
+  `current_row` -> `row`
+  ...
   see documents for details
 
 ### Removed

@@ -105,7 +105,7 @@ end
     context "when batch publish with #{publishing_adapter}" do
       let(:publisher_class) { TableSync::Publishing::BatchPublisher }
       let(:attributes) do
-        [1, 2, 3].map { |e| { "external_id" => e, "email" => "email#{e}@example.com" } }
+        Array.new(3) { |e| { "external_id" => e, "email" => "email#{e}@example.com" } }
       end
 
       context "default schema" do
