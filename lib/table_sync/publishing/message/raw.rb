@@ -3,11 +3,12 @@
 class TableSync::Publishing::Message::Raw
   include Tainbox
 
-  attribute :klass
-  attribute :attrs
-  attribute :state
+  attribute :object_class
+  attribute :original_attributes
   attribute :routing_key
   attribute :headers
+
+  attribute :event
 
   def publish
     Rabbit.publish(message_params)
@@ -21,13 +22,13 @@ class TableSync::Publishing::Message::Raw
 
   def data
     TableSync::Publishing::Data::Raw.new(
-      attributes_for_sync: attrs, state: state
+      attributes_for_sync: original_attributes, event: event,
     ).construct
   end
 
   def params
-    TableSync::Publishing::Params::Batch.new(
-      klass: klass, routing_key: routing_key, headers: headers,
+    TableSync::Publishing::Params::Raw.new(
+      object_class: object_class, routing_key: routing_key, headers: headers,
     ).construct
   end
 end

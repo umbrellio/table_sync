@@ -2,19 +2,21 @@
 
 class TableSync::Publishing::Message::Base
   include Tainbox
+  
+  NO_OBJECTS_FOR_SYNC = Class.new(StandardError)
 
   attr_reader :objects
 
-  attribute :klass
-  attribute :attrs
-  attribute :state
+  attribute :object_class
+  attribute :original_attributes
+  attribute :event
 
-  def initialize(**params)
-    super(**params)
+  def initialize(params)
+    super(params)
 
-    @objects = find_objects
+    @objects = find_or_init_objects
 
-    raise "Synced objects not found!" if objects.empty?
+    raise NO_OBJECTS_FOR_SYNC if objects.empty?
   end
 
   def publish
@@ -27,12 +29,16 @@ class TableSync::Publishing::Message::Base
 
   private
 
-  # find if update|create and new if destruction?
+  def find_or_init_objects
+    TableSync::Publishing::Helpers::Objects.new(
+      object_class: object_class, original_attributes: original_attributes, event: event,
+    ).construct_list
+  end
 
-  def find_objects
-    TableSync::Publishing::Message::FindObjects.new(
-      klass: klass, attrs: attrs
-    ).list
+  def data
+    TableSync::Publishing::Data::Objects.new(
+      objects: objects, event: event
+    ).construct
   end
 
   # MESSAGE PARAMS
@@ -42,7 +48,9 @@ class TableSync::Publishing::Message::Base
   end
 
   def data
-    raise NotImplementedError
+    TableSync::Publishing::Data::Objects.new(
+      objects: objects, event: event
+    ).construct
   end
 
   def params

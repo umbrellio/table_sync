@@ -3,6 +3,15 @@
 module TableSync
   Error = Class.new(StandardError)
 
+  class NoJobClassError < Error
+    def initialize(type)
+      super(<<~MSG)
+        Can't find job class for publishing!
+        Please initialize TableSync.#{type}_publishing_job with the required job class!
+      MSG
+    end
+  end
+
   class UpsertError < Error
     def initialize(data:, target_keys:, result:)
       super("data: #{data.inspect}, target_keys: #{target_keys.inspect}, result: #{result.inspect}")

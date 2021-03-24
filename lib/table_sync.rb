@@ -17,6 +17,9 @@ module TableSync
   require_relative "table_sync/naming_resolver/sequel"
   require_relative "table_sync/receiving"
   require_relative "table_sync/publishing"
+  require_relative "table_sync/setup/base"
+  require_relative "table_sync/setup/active_record"
+  require_relative "table_sync/setup/sequel"
 
   class << self
     attr_accessor :publishing_job_class_callable
@@ -25,22 +28,32 @@ module TableSync
     attr_accessor :exchange_name
     attr_accessor :routing_metadata_callable
     attr_accessor :notifier
+
     attr_reader :orm
     attr_reader :publishing_adapter
     attr_reader :receiving_model
+    attr_reader :setup
 
-    def sync(klass, **opts)
-      publishing_adapter.setup_sync(klass, opts)
+    def sync(object_class, on: nil, if_condition: nil, unless_condition: nil, debounce_time: nil)
+      setup.new(
+        object_class: object_class,
+        on: on,
+        if_condition: if_condition,
+        unless_condition: unless_condition,
+        debounce_time: debounce_time,
+      ).register_callbacks
     end
 
     def orm=(val)
       case val
       when :active_record
-        @publishing_adapter = Publishing::ORMAdapter::ActiveRecord
-        @receiving_model = Receiving::Model::ActiveRecord
+        @publishing_adapter = TableSync::ORMAdapter::ActiveRecord
+        @receiving_model    = Receiving::Model::ActiveRecord
+        @setup              = TableSync::Setup::ActiveRecord
       when :sequel
-        @publishing_adapter = Publishing::ORMAdapter::Sequel
-        @receiving_model = Receiving::Model::Sequel
+        @publishing_adapter = TableSync::ORMAdapter::Sequel
+        @receiving_model    = Receiving::Model::Sequel
+        @setup              = TableSync::Setup::Sequel
       else
         raise ORMNotSupported.new(val.inspect)
       end

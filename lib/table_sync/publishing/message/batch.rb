@@ -6,15 +6,9 @@ class TableSync::Publishing::Message::Batch < TableSync::Publishing::Message::Ba
 
   private
 
-  def data
-    TableSync::Publishing::Data::Batch.new(
-      objects: objects, state: state
-    ).construct
-  end
-
   def params
     TableSync::Publishing::Params::Batch.new(
-      klass: klass, headers: headers, routing_key: routing_key
+      object_class: object_class, headers: headers, routing_key: routing_key
     ).construct
   end
 end

@@ -28,8 +28,8 @@ class Player
 end
 
 [
-  TableSync::Publishing::ORMAdapter::ActiveRecord,
-  TableSync::Publishing::ORMAdapter::Sequel,
+  TableSync::ORMAdapter::ActiveRecord,
+  TableSync::ORMAdapter::Sequel,
 ].each do |publishing_adapter|
   describe TableSync::Instrument do
     before do
@@ -62,9 +62,9 @@ end
 
     shared_context "custom schema" do
       before do
-        if publishing_adapter == TableSync::Publishing::ORMAdapter::Sequel
+        if publishing_adapter == TableSync::ORMAdapter::Sequel
           table_name = Sequel[:custom_schema][:players]
-        elsif publishing_adapter == TableSync::Publishing::ORMAdapter::ActiveRecord
+        elsif publishing_adapter == TableSync::ORMAdapter::ActiveRecord
           table_name = "custom_schema.players"
         end
 

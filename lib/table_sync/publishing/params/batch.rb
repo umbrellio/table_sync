@@ -1,18 +1,11 @@
 # frozen_string_literal: true
 
-class TableSync::Publishing::Params::Batch
-  attribute :klass
+class TableSync::Publishing::Params::Batch < TableSync::Publishing::Params::Base
+  include Tainbox
 
-  attribute :routing_key, default: -> { calculated_routing_key }
-  attribute :headers,     default: -> { calculated_headers }
+  attribute :object_class
 
-  private
-
-  def attrs_for_routing_key
-    {}
-  end
-
-  def attrs_for_headers
-    {}
-  end
+  attribute :exchange_name, default: -> { TableSync.exchange_name }
+  attribute :routing_key,   default: -> { calculated_routing_key }
+  attribute :headers,       default: -> { calculated_headers }
 end

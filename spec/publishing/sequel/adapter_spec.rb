@@ -23,7 +23,7 @@ end
 
 TableSync.orm = :active_record
 
-RSpec.describe TableSync::Publishing::ORMAdapter::Sequel, :sequel do
+RSpec.describe TableSync::ORMAdapter::Sequel, :sequel do
   let(:item_class) { ItemWithoutPredicate }
   let(:attrs) { { name: "An item", price: 10 } }
   let(:queue_adapter) { ActiveJob::Base.queue_adapter }
