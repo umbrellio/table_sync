@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-class TableSync::Publishing::Message::Single < TableSync::Publishing::Message::Base
-  private
+module TableSync::Publishing::Message
+	class Single < Base
+	  private
 
-  def params
-    TableSync::Publishing::Params::Single.new(object: object).construct
-  end
+	  def params
+	    TableSync::Publishing::Params::Single.new(object: object).construct
+	  end
+	end
 end

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    table_sync (5.0.0)
+    table_sync (6.0)
       memery
       rabbit_messaging
       rails
@@ -99,15 +99,17 @@ GEM
       mini_mime (>= 0.1.1)
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
-    memery (1.3.0)
+    memery (1.4.0)
       ruby2_keywords (~> 0.0.2)
     method_source (1.0.0)
-    mimemagic (0.3.5)
-    mini_mime (1.0.2)
+    mimemagic (0.3.10)
+      nokogiri (~> 1)
+      rake
+    mini_mime (1.0.3)
     mini_portile2 (2.5.0)
     minitest (5.14.4)
     nio4r (2.5.7)
-    nokogiri (1.11.1)
+    nokogiri (1.11.2)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     parallel (1.20.1)
@@ -117,7 +119,7 @@ GEM
     pry (0.14.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    rabbit_messaging (0.9.0)
+    rabbit_messaging (0.10.0)
       bunny (~> 2.0)
       exception_notification
       lamian

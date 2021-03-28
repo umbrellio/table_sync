@@ -5,8 +5,8 @@ class TableSync::Publishing::Single
 
   attribute :object_class
   attribute :original_attributes
-  attribute :event
 
+  attribute :event,         default: :update
   attribute :debounce_time, default: 60
 
   def publish_later
@@ -14,6 +14,9 @@ class TableSync::Publishing::Single
   end
 
   def publish_now
+    # # Update request and object does not exist -> skip publishing
+    # return if !object && !destroyed?
+
     TableSync::Publishing::Message::Single.new(attributes).publish
   end
 
@@ -24,7 +27,7 @@ class TableSync::Publishing::Single
   # JOB
 
   def job
-    TableSync.single_publishing_job || raise NoJobClassError.new("single")
+    TableSync.single_publishing_job # || raise NoJobClassError.new("single")
   end
 
   def job_attributes

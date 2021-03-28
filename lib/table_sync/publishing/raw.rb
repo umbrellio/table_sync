@@ -9,7 +9,7 @@ class TableSync::Publishing::Raw
   attribute :routing_key
   attribute :headers
 
-  attribute :event
+  attribute :event, default: :update
 
   def publish_now
   	TableSync::Publishing::Message::Raw.new(attributes).publish

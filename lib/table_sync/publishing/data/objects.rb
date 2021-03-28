@@ -1,56 +1,58 @@
 # frozen_string_literal: true
 
-class TableSync::Publishing::Data::Objects
-  attr_reader :objects, :event
+module TableSync::Publishing::Data
+  class Objects
+    attr_reader :objects, :event
 
-  def initialize(objects:, event:)
-    @objects = objects
-    @event   = event
-  end
-
-  def construct
-    {
-      model:      model,
-      attributes: attributes_for_sync,
-      version:    version,
-      event:      event,
-      metadata:   metadata,
-    }
-  end
-
-  private
-
-  def model
-    if object_class.method_defined?(:table_sync_model_name)
-      object_class.table_sync_model_name
-    else
-      object_class.name
+    def initialize(objects:, event:)
+      @objects = objects
+      @event   = event
     end
-  end
 
-  def version
-    Time.current.to_f
-  end
+    def construct
+      {
+        model:      model,
+        attributes: attributes_for_sync,
+        version:    version,
+        event:      event,
+        metadata:   metadata,
+      }
+    end
 
-  def metadata
-    { created: event == :create } # remove? who needs this?
-  end
+    private
 
-  def object_class
-    objects.first.class
-  end
-
-  def attributes_for_sync
-    objects.map do |object|
-      if destruction?
-        object.attributes_for_destroy
+    def model
+      if object_class.method_defined?(:table_sync_model_name)
+        object_class.table_sync_model_name
       else
-        object.attributes_for_update
+        object_class.name
       end
     end
-  end
 
-  def destruction?
-    event == :destroy
+    def version
+      Time.current.to_f
+    end
+
+    def metadata
+      { created: event == :create } # remove? who needs this?
+    end
+
+    def object_class
+      objects.first.class
+    end
+
+    def attributes_for_sync
+      objects.map do |object|
+        if destruction?
+          object.attributes_for_destroy
+        else
+          object.attributes_for_update
+        end
+      end
+    end
+
+    def destruction?
+      event == :destroy
+    end
   end
 end

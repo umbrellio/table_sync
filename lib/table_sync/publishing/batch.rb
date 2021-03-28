@@ -9,7 +9,7 @@ class TableSync::Publishing::Batch
   attribute :routing_key
   attribute :headers
 
-  attribute :event
+  attribute :event, default: :update
 
   def publish_later
     job.perform_later(job_attributes)
@@ -24,7 +24,7 @@ class TableSync::Publishing::Batch
   # JOB
 
   def job
-    TableSync.batch_publishing_job || raise NoJobClassError.new("batch")
+    TableSync.batch_publishing_job # || raise NoJobClassError.new("batch")
   end
 
   def job_attributes

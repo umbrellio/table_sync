@@ -11,12 +11,20 @@ module TableSync
   require_relative "table_sync/utils"
   require_relative "table_sync/version"
   require_relative "table_sync/errors"
+
   require_relative "table_sync/instrument"
   require_relative "table_sync/instrument_adapter/active_support"
+
   require_relative "table_sync/naming_resolver/active_record"
   require_relative "table_sync/naming_resolver/sequel"
+
+  require_relative "table_sync/orm_adapter/base"
+  require_relative "table_sync/orm_adapter/active_record"
+  require_relative "table_sync/orm_adapter/sequel"
+
   require_relative "table_sync/receiving"
   require_relative "table_sync/publishing"
+
   require_relative "table_sync/setup/base"
   require_relative "table_sync/setup/active_record"
   require_relative "table_sync/setup/sequel"
