@@ -41,7 +41,7 @@ Example:
 ```ruby
 class TableSync::Job < ActiveJob::Base
   def perform(*args)
-    TableSync::Publisher.new(*args).publish_now
+    TableSync::Publishing::Publisher.new(*args).publish_now
   end
 end
 ```
@@ -70,16 +70,16 @@ TableSync.routing_metadata_callable = -> (klass, attributes) { attributes.slice(
 
 # Manual publishing
 
-`TableSync::Publisher.new(object_class, original_attributes, confirm: true, state: :updated, debounce_time: 45)`
+`TableSync::Publishing::Publisher.new(object_class, original_attributes, confirm: true, state: :updated, debounce_time: 45)`
 where state is one of `:created / :updated / :destroyed` and `confirm` is Rabbit's confirm delivery flag and optional param `debounce_time` determines debounce time in seconds, 1 minute by default.
 
 # Manual publishing with batches
 
-You can use `TableSync::BatchPublisher` to publish changes in batches (array of hashes in `attributes`).
+You can use `TableSync::Publishing::BatchPublisher` to publish changes in batches (array of hashes in `attributes`).
 
-When using `TableSync::BatchPublisher`,` TableSync.routing_key_callable` is called as follows: `TableSync.routing_key_callable.call(klass, {})`, i.e. empty hash is passed instead of attributes. And `TableSync.routing_metadata_callable` is not called at all: metadata is set to empty hash.
+When using `TableSync::Publishing::BatchPublisher`,` TableSync.routing_key_callable` is called as follows: `TableSync.routing_key_callable.call(klass, {})`, i.e. empty hash is passed instead of attributes. And `TableSync.routing_metadata_callable` is not called at all: metadata is set to empty hash.
 
-`TableSync::BatchPublisher.new(object_class, original_attributes_array, **options)`, where `original_attributes_array` is an array with hash of attributes of published objects and `options` is a hash of options.
+`TableSync::Publishing::BatchPublisher.new(object_class, original_attributes_array, **options)`, where `original_attributes_array` is an array with hash of attributes of published objects and `options` is a hash of options.
 
 `options` consists of:
 - `confirm`, which is a flag for RabbitMQ, `true` by default
@@ -92,7 +92,7 @@ original_attributes_array will be pushed to Rabbit instead of fetching records f
 Example:
 
 ```ruby
-TableSync::BatchPublisher.new(
+TableSync::Publishing::BatchPublisher.new(
   "SomeClass",
   [{ id: 1 }, { id: 2 }],
   confirm: false,
@@ -105,11 +105,11 @@ TableSync::BatchPublisher.new(
 
 # Manual publishing with batches (Russian)
 
-С помощью класса `TableSync::BatchPublisher` вы можете опубликовать изменения батчами (массивом в `attributes`).
+С помощью класса `TableSync::Publishing::BatchPublisher` вы можете опубликовать изменения батчами (массивом в `attributes`).
 
-При использовании `TableSync::BatchPublisher`, `TableSync.routing_key_callable` вызывается следующим образом: `TableSync.routing_key_callable.call(klass, {})`, то есть вместо аттрибутов передается пустой хэш. А `TableSync.routing_metadata_callable` не вызывается вовсе: в метадате устанавливается пустой хэш.
+При использовании `TableSync::Publishing::BatchPublisher`, `TableSync.routing_key_callable` вызывается следующим образом: `TableSync.routing_key_callable.call(klass, {})`, то есть вместо аттрибутов передается пустой хэш. А `TableSync.routing_metadata_callable` не вызывается вовсе: в метадате устанавливается пустой хэш.
 
-`TableSync::BatchPublisher.new(object_class, original_attributes_array, **options)`, где `original_attributes_array` - массив с аттрибутами публикуемых объектов и `options`- это хэш с дополнительными опциями.
+`TableSync::Publishing::BatchPublisher.new(object_class, original_attributes_array, **options)`, где `original_attributes_array` - массив с аттрибутами публикуемых объектов и `options`- это хэш с дополнительными опциями.
 
 `options` состоит из:
 - `confirm`, флаг для RabbitMQ, по умолчанию - `true`
@@ -121,7 +121,7 @@ TableSync::BatchPublisher.new(
 Example:
 
 ```ruby
-TableSync::BatchPublisher.new(
+TableSync::Publishing::BatchPublisher.new(
   "SomeClass",
   [{ id: 1 }, { id: 2 }],
   confirm: false,
