@@ -17,7 +17,7 @@ module TableSync::Publishing::Message
 
       @objects = find_or_init_objects
 
-      raise NO_OBJECTS_FOR_SYNC if objects.empty?
+      raise NO_OBJECTS_FOR_SYNC if objects.empty? && TableSync.raise_on_empty_message
     end
 
     def publish
@@ -30,6 +30,10 @@ module TableSync::Publishing::Message
       # model_naming = TableSync.publishing_adapter.model_naming(object_class)
       # TableSync::Instrument.notify table: model_naming.table, schema: model_naming.schema,
       #                              event: event, direction: :publish
+    end
+
+    def empty?
+      objects.empty?
     end
 
     private

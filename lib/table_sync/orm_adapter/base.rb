@@ -22,11 +22,19 @@ module TableSync::ORMAdapter
     # FIND OR INIT OBJECT
 
     def init
-      @object = object_class.new(object_data)
+      @object = object_class.new(object_data.except(*primary_key_columns))
+
+      needle.each do |column, value|
+        @object.send("#{column}=", value)
+      end
+
+      self
     end
 
     def find
-      @object = object_class.find(needle)
+      # @object = object_class.find(needle)
+
+      self
     end
 
     def needle
@@ -34,7 +42,7 @@ module TableSync::ORMAdapter
     end
 
     def primary_key_columns
-      Array.wrap(object_class.primary_key)
+      Array.wrap(object_class.primary_key).map(&:to_sym) # temp!
     end
 
     # ATTRIBUTES
@@ -53,6 +61,12 @@ module TableSync::ORMAdapter
       else
         primary_key
       end
+    end
+
+    # MISC
+
+    def empty?
+      object.nil?
     end
 
     # NOT IMPLEMENTED

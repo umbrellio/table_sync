@@ -4,6 +4,10 @@ module TableSync::Publishing::Message
 	class Single < Base
 	  private
 
+	  def object
+	  	objects.first
+	  end
+
 	  def params
 	    TableSync::Publishing::Params::Single.new(object: object).construct
 	  end

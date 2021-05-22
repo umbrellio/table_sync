@@ -7,7 +7,7 @@ module TableSync
     def initialize(type)
       super(<<~MSG)
         Can't find job class for publishing!
-        Please initialize TableSync.#{type}_publishing_job with the required job class!
+        Please initialize TableSync.#{type}_publishing_job_class_callable with the correct proc!
       MSG
     end
   end

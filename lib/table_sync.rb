@@ -30,11 +30,13 @@ module TableSync
   require_relative "table_sync/setup/sequel"
 
   class << self
-    attr_accessor :publishing_job_class_callable
+    attr_accessor :raise_on_serialization_failure
+    attr_accessor :raise_on_empty_message
+    attr_accessor :single_publishing_job_class_callable
     attr_accessor :batch_publishing_job_class_callable
     attr_accessor :routing_key_callable
     attr_accessor :exchange_name
-    attr_accessor :routing_metadata_callable
+    attr_accessor :headers_callable
     attr_accessor :notifier
 
     attr_reader :orm

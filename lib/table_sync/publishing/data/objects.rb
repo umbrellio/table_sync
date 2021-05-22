@@ -38,7 +38,7 @@ module TableSync::Publishing::Data
     end
 
     def object_class
-      objects.first.class
+      objects.first.object_class
     end
 
     def attributes_for_sync

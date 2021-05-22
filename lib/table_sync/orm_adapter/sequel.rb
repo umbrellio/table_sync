@@ -9,5 +9,11 @@ module TableSync::ORMAdapter
     def attributes
       object.values
     end
+
+    def find
+      @object = object_class.find(needle)
+
+      super
+    end
   end
 end

@@ -3,9 +3,22 @@
 # check if works!
 module TableSync::Publishing::Data
 	class Raw
-		include Tainbox
+  	attr_reader :object_class, :attributes_for_sync, :event
 
-  	attribute :object_class
-  	attribute :attributes_for_sync
+    def initialize(object_class:, attributes_for_sync:, event:)
+      @object_class 			 = object_class
+      @attributes_for_sync = attributes_for_sync
+      @event        			 = event
+    end
+
+    def construct
+      {
+        model:      object_class,# model,
+        attributes: attributes_for_sync,
+        version:    Time.current.to_f,#version,
+        event:      event,
+        metadata:   {}, #metadata,
+      }
+    end
 	end
 end

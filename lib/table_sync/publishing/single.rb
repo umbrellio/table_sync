@@ -2,6 +2,7 @@
 
 class TableSync::Publishing::Single
   include Tainbox
+  include Memery
 
   attribute :object_class
   attribute :original_attributes
@@ -14,20 +15,31 @@ class TableSync::Publishing::Single
   end
 
   def publish_now
-    # # Update request and object does not exist -> skip publishing
-    # return if !object && !destroyed?
+    message.publish unless message.empty? && upsert_event?
+  end
 
-    TableSync::Publishing::Message::Single.new(attributes).publish
+  memoize def message
+    TableSync::Publishing::Message::Single.new(attributes)
   end
 
   private
 
+  def upsert_event?
+    event.in?(%i[update create])
+  end
+
   # DEBOUNCE
+
+  # TO DO
   
   # JOB
 
   def job
-    TableSync.single_publishing_job # || raise NoJobClassError.new("single")
+    if TableSync.single_publishing_job_class_callable
+      TableSync.single_publishing_job_class_callable&.call
+    else
+      raise TableSync::NoJobClassError.new("single")
+    end
   end
 
   def job_attributes

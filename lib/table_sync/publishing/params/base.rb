@@ -18,8 +18,6 @@ module TableSync::Publishing::Params
 
     private
 
-    # ROUTING KEY
-
     def calculated_routing_key
       if TableSync.routing_key_callable
         TableSync.routing_key_callable.call(object_class, attrs_for_routing_key)
@@ -28,22 +26,12 @@ module TableSync::Publishing::Params
       end
     end
 
-    def attrs_for_routing_key
-      {}
-    end
-
-    # HEADERS
-
     def calculated_headers
       if TableSync.headers_callable
         TableSync.headers_callable.call(object_class, attrs_for_headers)
       else
         raise "Can't publish, set TableSync.headers_callable!"
       end
-    end
-
-    def attrs_for_headers
-      {}
     end
 
     # NOT IMPLEMENTED
@@ -62,6 +50,14 @@ module TableSync::Publishing::Params
     end
 
     def exchange_name
+      raise NotImplementedError
+    end
+
+    def attrs_for_routing_key
+      raise NotImplementedError
+    end
+
+    def attrs_for_headers
       raise NotImplementedError
     end
   end

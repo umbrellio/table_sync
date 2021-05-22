@@ -12,7 +12,11 @@ class TableSync::Publishing::Raw
   attribute :event, default: :update
 
   def publish_now
-  	TableSync::Publishing::Message::Raw.new(attributes).publish
+  	message.publish
+  end
+
+  def message
+  	TableSync::Publishing::Message::Raw.new(attributes)
   end
 end
 

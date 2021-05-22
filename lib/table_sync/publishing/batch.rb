@@ -24,7 +24,11 @@ class TableSync::Publishing::Batch
   # JOB
 
   def job
-    TableSync.batch_publishing_job # || raise NoJobClassError.new("batch")
+    if TableSync.batch_publishing_job_class_callable
+      TableSync.batch_publishing_job_class_callable.call
+    else
+      raise TableSync::NoJobClassError.new("batch")
+    end
   end
 
   def job_attributes

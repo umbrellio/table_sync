@@ -6,6 +6,12 @@ module TableSync::ORMAdapter
       object.pk_hash
     end
 
+    def find
+      @object = object_class.find_by(needle)
+
+      super
+    end
+
     def attributes
       object.attributes
     end
