@@ -365,7 +365,7 @@ describe TableSync::Receiving::Handler do
               additional_data { |project_id:| { project_id: project_id.upcase } }
 
               after_commit_on_destroy do |results:|
-                DESTROY_INTERCEPTOR.push(results) # results == 'on_destroy_completed'
+                DESTROY_INTERCEPTOR.push(results) # results == [{text: "on_destroy_completed"}]
               end
             end
           end

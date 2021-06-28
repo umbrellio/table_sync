@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [5.0.1] - 2021-04-06
+### Fixed
+- documentation
+
+### Changed
+- update gems
+
 ## [5.0.0] - 2021-03-04
 ### Fixed
 - Fix `delete` events being broken when either `#attrs_for_routing_key` or `#attrs_for_metadata` was defined on a model.

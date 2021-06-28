@@ -262,14 +262,16 @@ end
 Perform code after updated data was committed.
 
 ```ruby
-after_commit_on_update do |data:, target_keys:, version_key:, default_values:|
+after_commit_on_update do |data:, target_keys:, version_key:, default_values:, results:|
   return makes no sense
 end
 
-after_commit_on_update do |data:, target_keys:, version_key:, default_values:|
+after_commit_on_update do |data:, target_keys:, version_key:, default_values:, results:|
   return makes no sense
 end
 ```
+
+- `results` - returned value from `model.upsert`
 
 Сan be defined several times. Execution order guaranteed.
 
@@ -292,14 +294,16 @@ end
 Perform code after destroyed data was committed.
 
 ```ruby
-after_commit_on_destroy do |data:, target_keys:, version_key:|
+after_commit_on_destroy do |data:, target_keys:, version_key:, results:|
   return makes no sense
 end
 
-after_commit_on_destroy do |data:, target_keys:, version_key:|
+after_commit_on_destroy do |data:, target_keys:, version_key:, results:|
   return makes no sense
 end
 ```
+
+- `results` - returned value from `model.destroy`
 
 Сan be defined several times. Execution order guaranteed.
 
