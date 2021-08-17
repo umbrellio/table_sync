@@ -17,19 +17,11 @@ module TableSync::Publishing::Params
     end
 
     def attrs_for_routing_key
-      if object.respond_to?(:attrs_for_routing_key)
-        object.attrs_for_routing_key
-      else
-        object.attributes
-      end
+      object.attributes_for_routing_key
     end
 
     def attrs_for_headers
-      if object.respond_to?(:attrs_for_headers)
-        object.attrs_for_headers
-      else
-        object.attributes
-      end
+      object.attributes_for_headers
     end
 
     def exchange_name

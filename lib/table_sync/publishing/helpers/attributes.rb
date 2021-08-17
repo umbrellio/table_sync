@@ -3,13 +3,15 @@
 module TableSync::Publishing::Helpers
   class Attributes
     BASE_SAFE_JSON_TYPES = [
-    	NilClass,
-    	String,
-    	TrueClass,
-    	FalseClass,
-    	Numeric,
-    	Symbol,
+      NilClass,
+      String,
+      TrueClass,
+      FalseClass,
+      Numeric,
+      Symbol,
     ].freeze
+
+    # add custom seializables?
 
     NOT_MAPPED = Object.new
 
@@ -20,7 +22,7 @@ module TableSync::Publishing::Helpers
     end
 
     def serialize
-    	filter_safe_for_serialization(attributes)
+      filter_safe_for_serialization(attributes)
     end
 
     def filter_safe_for_serialization(object)

@@ -2,23 +2,31 @@
 
 # check if works!
 module TableSync::Publishing::Data
-	class Raw
-  	attr_reader :object_class, :attributes_for_sync, :event
+  class Raw
+    attr_reader :object_class, :attributes_for_sync, :event
 
     def initialize(object_class:, attributes_for_sync:, event:)
-      @object_class 			 = object_class
+      @object_class = object_class
       @attributes_for_sync = attributes_for_sync
-      @event        			 = event
+      @event = event
     end
 
     def construct
       {
-        model:      object_class,# model,
+        model: object_class,
         attributes: attributes_for_sync,
-        version:    Time.current.to_f,#version,
-        event:      event,
-        metadata:   {}, #metadata,
+        version: version,
+        event: event,
+        metadata: metadata,
       }
     end
-	end
+
+    def metadata
+      { created: event == :create } # remove? who needs this?
+    end
+
+    def version
+      Time.current.to_f
+    end
+  end
 end

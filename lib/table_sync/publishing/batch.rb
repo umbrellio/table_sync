@@ -27,7 +27,7 @@ class TableSync::Publishing::Batch
     if TableSync.batch_publishing_job_class_callable
       TableSync.batch_publishing_job_class_callable.call
     else
-      raise TableSync::NoJobClassError.new("batch")
+      raise TableSync::NoCallableError.new("batch_publishing_job_class")
     end
   end
 

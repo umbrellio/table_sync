@@ -3,11 +3,20 @@
 module TableSync
   Error = Class.new(StandardError)
 
-  class NoJobClassError < Error
+  class NoPrimaryKeyError < Error
+    def initialize(object_class, object_data, primary_key_columns)
+      super(<<~MSG)
+        Can't find or init an object of #{object_class} with #{object_data.inspect}.
+        Incomplete primary key! object_data must contain: #{primary_key_columns.inspect}.
+      MSG
+    end
+  end
+
+  class NoCallableError < Error
     def initialize(type)
       super(<<~MSG)
-        Can't find job class for publishing!
-        Please initialize TableSync.#{type}_publishing_job_class_callable with the correct proc!
+        Can't find callable for #{type}!
+        Please initialize TableSync.#{type}_callable with the correct proc!
       MSG
     end
   end

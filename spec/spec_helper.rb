@@ -26,6 +26,8 @@ require "table_sync"
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |file| require file }
 
+TableSync::TestEnv.setup!
+
 RSpec.configure do |config|
   config.include Rabbit::TestHelpers
 
@@ -43,4 +45,6 @@ RSpec.configure do |config|
     expectations.syntax = :expect
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
+
+  config.after { TableSync::TestEnv.setup! }
 end

@@ -11,18 +11,18 @@ module TableSync::Publishing::Data
 
     def construct
       {
-        model:      model,
+        model: model,
         attributes: attributes_for_sync,
-        version:    version,
-        event:      event,
-        metadata:   metadata,
+        version: version,
+        event: event,
+        metadata: metadata,
       }
     end
 
     private
 
     def model
-      if object_class.method_defined?(:table_sync_model_name)
+      if object_class.respond_to?(:table_sync_model_name)
         object_class.table_sync_model_name
       else
         object_class.name

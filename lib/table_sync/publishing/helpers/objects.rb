@@ -12,7 +12,7 @@ module TableSync::Publishing::Helpers
 
     def construct_list
       if destruction?
-        without_empty_objects(init_objects)
+        init_objects
       else
         without_empty_objects(find_objects)
       end

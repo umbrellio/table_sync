@@ -1,158 +1,100 @@
 # frozen_string_literal: true
 
-TableSync.orm = :sequel
-
-# check for active record?
-
-class User < Sequel::Model; end
-
 RSpec.describe TableSync::Publishing::Single do
-  let(:original_attributes)   { { id: 1, time: Time.current } }
-  let(:serialized_attributes) { { id: 1 } }
-  let(:event)									{ :update }
+  include_context "with created users", 1
+
+  let(:existing_user)	{ ARecordUser.first }
+  let(:original_attributes) { { id: existing_user.id } }
+  let(:event) { :update }
+  let(:object_class)				{ "ARecordUser" }
+  let(:routing_key)					{ object_class.tableize }
+  let(:headers) { { klass: object_class } }
+  let(:debounce_time)	{ 30 }
 
   let(:attributes) do
-  	{
-			object_class: "User",
-  		original_attributes: original_attributes,
-  		event: event,
-  		debounce_time: 30,
-  	}
+    {
+      object_class: object_class,
+      original_attributes: original_attributes,
+      event: event,
+      debounce_time: debounce_time,
+    }
   end
 
-	include_examples "publisher#publish_now calls stubbed message with attributes",
-		TableSync::Publishing::Message::Single
+  describe "#publish_now" do
+    include_examples "publisher#publish_now with stubbed message",
+                     TableSync::Publishing::Message::Single
 
-	context "#publish_later" do
-		context "empty message" do
-			let(:original_attributes) { { id: 1 } }
+    context "real user" do
+      context "sequel" do
+        let(:object_class) { "SequelUser" }
 
-			before do
-				TableSync.routing_key_callable = -> (klass, attributes) { klass }
-				TableSync.headers_callable     = -> (klass, attributes) { klass }
-			end
+        include_examples "publisher#publish_now with real user, for given orm",
+                         :sequel
+      end
 
-			context "create" do
-				let(:event) { :create }
+      context "active_record" do
+        include_examples "publisher#publish_now with real user, for given orm",
+                         :active_record
+      end
+    end
 
-				it "doesn't publish" do
-					expect(Rabbit).not_to receive(:publish)
-					described_class.new(attributes).publish_now
-				end
-			end
+    describe "#empty message" do
+      let(:original_attributes) { { id: existing_user.id + 100 } }
 
-			context "update" do
-				let(:event) { :update }
+      it "skips publish" do
+        expect(Rabbit).not_to receive(:publish)
+        described_class.new(attributes).publish_now
+      end
+    end
+  end
 
-				it "doesn't publish" do
-					expect(Rabbit).not_to receive(:publish)
-					described_class.new(attributes).publish_now
-				end
-			end
+  describe "#publish_later" do
+    let(:original_attributes) { { id: 1, time: Time.current } }
+    let(:serialized_attributes) { { id: 1 } }
+    let(:job)                   { double("Job", perform_later: 1) }
 
-			context "destroy" do
-				let(:event) { :destroy }
+    let(:expected_job_attributes) do
+      attributes.merge(original_attributes: serialized_attributes, perform_at: anything)
+    end
 
-				it "publishes" do
-					expect(Rabbit).to receive(:publish)
-					described_class.new(attributes).publish_now
-				end
-			end
-		end
-	end
+    include_examples "publisher#publish_later behaviour", :perform_at
 
-	context "#publish_later" do
-		let(:job) { double("Job", perform_later: 1) }
+    context "debounce" do
+      before do
+        allow_any_instance_of(described_class).to receive(:job).and_return(job)
+        allow(job).to receive(:perform_at)
 
-		include_examples "publisher#publish_later behaviour"
+        allow(TableSync::Publishing::Helpers::Debounce).to receive(:new).and_call_original
+      end
 
-		context "with debounce" do
-			it "skips job, returns nil" do
-			end
-		end
-	end
+      it "calls debounce" do
+        expect(TableSync::Publishing::Helpers::Debounce).to receive(:new).with(
+          object_class: object_class,
+          needle: { id: 1 },
+          debounce_time: debounce_time,
+          event: event,
+        )
+
+        described_class.new(attributes).publish_later
+      end
+
+      context "within debounce limit" do
+        context "upsert event" do
+          let(:event) { :update }
+
+          xit "skips publishing" do
+            expect(job).not_to receive(:perform_at).with(any_args)
+            described_class.new(attributes).publish_later
+          end
+        end
+
+        context "destroy event" do
+          xit "publishes message" do
+            expect(job).to receive(:perform_at).with(any_args)
+            described_class.new(attributes).publish_later
+          end
+        end
+      end
+    end
+  end
 end
-
-
-# class User < Sequel::Model
-# end
-
-# TableSync.orm = :sequel
-
-# TableSync.routing_key_callable = -> (klass, attributes) { "#{klass}_#{attributes[:ext_id]}" }
-# TableSync.headers_callable     = -> (klass, attributes) { "#{klass}_#{attributes[:ext_id]}" }
-# TableSync.exchange_name        = :test
-
-		# context "event" do
-		# 	let(:routing_key) { "#{object_class}_#{ext_id}" }
-  # 		let(:headers)		  { "#{object_class}_#{ext_id}" }
-
-		# 	let(:published_message) do
-		# 		{
-		# 			confirm_select: true,
-  #  				event: :table_sync,
-  #  				exchange_name: :test,
-  #  				headers: headers,
-  #  				realtime: true,
-  #  				routing_key: routing_key,
-  #  				data: {
-  #   				attributes: published_attributes,
-  #    				event: event,
-  #    				metadata: metadata,
-  #    				model: "User",
-  #    				version: anything,
-  #    			},
-  #    		}
-		# 	end
-
-		# 	shared_examples "publishes rabbit message" do
-		# 		specify do
-		# 			expect(Rabbit).to receive(:publish).with(published_message)
-
-		# 			described_class.new(attributes).publish_now
-		# 		end
-		# 	end
-
-		# 	shared_examples "raises No Objects Error" do
-		# 		specify do
-		# 			expect { described_class.new(attributes).publish_now }
-		# 				.to raise_error(TableSync::Publishing::Message::Base::NO_OBJECTS_FOR_SYNC)
-		# 		end
-		# 	end
-
-		# 	shared_examples "has expected behaviour" do
-		# 		context "when published object exists" do
-		# 			before { User.insert(user_attributes) }
-
-		# 			include_examples "publishes rabbit message"
-		# 		end
-
-		# 		context "when published object DOESN'T exist" do
-		# 			include_examples "raises No Objects Error"
-		# 		end
-		# 	end
-
-		# 	context "create" do
-		# 		let(:event)                { :create }
-		# 		let(:metadata)             { { created: true } }
-		# 		let(:published_attributes) { [a_hash_including(user_attributes)] }
-
-		# 		include_examples "has expected behaviour"
-		# 	end
-
-		# 	context "update" do
-		# 		let(:event)    { :update }
-		# 		let(:metadata) { { created: false} }
-		# 		let(:published_attributes) { [a_hash_including(user_attributes)] }
-
-		# 		include_examples "has expected behaviour"
-		# 	end
-
-		# 	context "destroy" do
-		# 		let(:event)    						 { :destroy }
-		# 		let(:metadata) 						 { { created: false} }
-		# 		let(:published_attributes) { [user_attributes.slice(:id)] }
-
-		# 		include_examples "publishes rabbit message"
-		# 	end
-		# end

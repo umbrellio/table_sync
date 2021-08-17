@@ -1,7 +1,7 @@
-# frozen_strinf_literal: true
+# frozen_string_literal: true
 
 module TableSync::Publishing::Params
-	class Raw < Batch
-  	# FOR NAMING CONSISTENCY
-	end
+  class Raw < Batch
+    # FOR NAMING CONSISTENCY
+  end
 end

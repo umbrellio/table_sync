@@ -2,7 +2,7 @@
 
 module TableSync
   module Publishing
-  	require_relative "publishing/data/objects"
+    require_relative "publishing/data/objects"
     require_relative "publishing/data/raw"
 
     require_relative "publishing/helpers/attributes"

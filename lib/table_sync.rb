@@ -44,13 +44,13 @@ module TableSync
     attr_reader :receiving_model
     attr_reader :setup
 
-    def sync(object_class, on: nil, if_condition: nil, unless_condition: nil, debounce_time: nil)
+    def sync(object_class, **options)
       setup.new(
         object_class: object_class,
-        on: on,
-        if_condition: if_condition,
-        unless_condition: unless_condition,
-        debounce_time: debounce_time,
+        on: options[:on],
+        if_condition: options[:if],
+        unless_condition: options[:unless],
+        debounce_time: options[:debounce_time],
       ).register_callbacks
     end
 

@@ -6,16 +6,16 @@ module TableSync::ORMAdapter
 
     def initialize(object_class, object_data)
       @object_class = object_class
-      @object_data  = object_data
+      @object_data  = object_data.symbolize_keys
 
       validate!
     end
 
     # VALIDATE
-    
+
     def validate!
       if (primary_key_columns - object_data.keys).any?
-        raise NoPrimaryKeyError.new(object_class, object_data, primary_key_columns)
+        raise TableSync::NoPrimaryKeyError.new(object_class, object_data, primary_key_columns)
       end
     end
 
@@ -32,8 +32,6 @@ module TableSync::ORMAdapter
     end
 
     def find
-      # @object = object_class.find(needle)
-
       self
     end
 
@@ -42,7 +40,7 @@ module TableSync::ORMAdapter
     end
 
     def primary_key_columns
-      Array.wrap(object_class.primary_key).map(&:to_sym) # temp!
+      Array.wrap(object_class.primary_key).map(&:to_sym)
     end
 
     # ATTRIBUTES
@@ -56,10 +54,26 @@ module TableSync::ORMAdapter
     end
 
     def attributes_for_destroy
-      if object_class.respond_to?(:table_sync_destroy_attributes)
-        object_class.table_sync_destroy_attributes(attributes)
+      if object.respond_to?(:attributes_for_destroy)
+        object.attributes_for_destroy
       else
-        primary_key
+        needle
+      end
+    end
+
+    def attributes_for_routing_key
+      if object.respond_to?(:attributes_for_routing_key)
+        object.attributes_for_routing_key
+      else
+        attributes
+      end
+    end
+
+    def attributes_for_headers
+      if object.respond_to?(:attributes_for_headers)
+        object.attributes_for_headers
+      else
+        attributes
       end
     end
 
@@ -76,6 +90,10 @@ module TableSync::ORMAdapter
     end
 
     def attributes
+      raise NotImplementedError
+    end
+
+    def self.model_naming
       raise NotImplementedError
     end
   end

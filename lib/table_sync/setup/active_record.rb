@@ -1,16 +1,23 @@
 # frozen-string_literal: true
 
 module TableSync::Setup
-	class ActiveRecord < Base
-	  private
+  class ActiveRecord < Base
+    private
 
-	  def define_after_commit_on(event)
-	    after_commit(on: event) do
-	      return if not if_condition.call(self)
-	      return if unless_condition.call(self)
+    def define_after_commit(event)
+      options = options_exposed_for_block
 
-	      enqueue_message(self.attributes)
-	    end
-	  end
-	end
+      object_class.after_commit(on: event) do
+        next unless options[:if].call(self)
+        next if options[:unless].call(self)
+
+        TableSync::Publishing::Single.new(
+          object_class: self.class.name,
+          original_attributes: attributes,
+          event: event,
+          debounce_time: options[:debounce_time],
+        ).publish_later
+      end
+    end
+  end
 end

@@ -40,9 +40,17 @@ end
     end
 
     let(:player)     { double("player", values: attributes, attributes: attributes) }
-    let(:publisher)  { publisher_class.new("Player", attributes, state: :updated) }
     let(:events)     { [] }
     let(:event)      { events.first }
+    let(:attributes) { { "external_id" => 101, "email" => "email@example.com" } }
+
+    let(:publisher) do
+      publisher_class.new(
+        object_class: "Player",
+        original_attributes: original_attributes,
+        event: :update,
+      )
+    end
 
     shared_context "processing" do
       before do
@@ -85,8 +93,8 @@ end
     end
 
     context "when publish with #{publishing_adapter}" do
-      let(:publisher_class) { TableSync::Publishing::Publisher }
-      let(:attributes)      { { "external_id" => 101, "email" => "email@example.com" } }
+      let(:publisher_class)     { TableSync::Publishing::Single }
+      let(:original_attributes) { attributes }
 
       context "default schema" do
         include_context "processing"
@@ -103,10 +111,8 @@ end
     end
 
     context "when batch publish with #{publishing_adapter}" do
-      let(:publisher_class) { TableSync::Publishing::BatchPublisher }
-      let(:attributes) do
-        Array.new(3) { |e| { "external_id" => e, "email" => "email#{e}@example.com" } }
-      end
+      let(:publisher_class)     { TableSync::Publishing::Batch }
+      let(:original_attributes) { [attributes, attributes, attributes] }
 
       context "default schema" do
         include_context "processing"

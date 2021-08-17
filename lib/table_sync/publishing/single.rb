@@ -7,44 +7,53 @@ class TableSync::Publishing::Single
   attribute :object_class
   attribute :original_attributes
 
-  attribute :event,         default: :update
-  attribute :debounce_time, default: 60
+  attribute :event, default: :update
+  attribute :debounce_time
 
+  # expect job to have perform_at method
+  # debounce destroyed event
+  # because otherwise update event could be sent after destroy
   def publish_later
-    job.perform_later(job_attributes)
+    return if debounce.skip?
+
+    job.perform_at(job_attributes)
+
+    debounce.cache_next_sync_time
   end
 
   def publish_now
-    message.publish unless message.empty? && upsert_event?
+    message.publish unless message.empty?
   end
 
   memoize def message
     TableSync::Publishing::Message::Single.new(attributes)
   end
 
-  private
-
-  def upsert_event?
-    event.in?(%i[update create])
+  memoize def debounce
+    TableSync::Publishing::Helpers::Debounce.new(
+      object_class: object_class,
+      needle: message.object.needle,
+      debounce_time: debounce_time,
+      event: event,
+    )
   end
 
-  # DEBOUNCE
+  private
 
-  # TO DO
-  
   # JOB
 
   def job
     if TableSync.single_publishing_job_class_callable
       TableSync.single_publishing_job_class_callable&.call
     else
-      raise TableSync::NoJobClassError.new("single")
+      raise TableSync::NoCallableError.new("single_publishing_job_class")
     end
   end
 
   def job_attributes
     attributes.merge(
       original_attributes: serialized_original_attributes,
+      perform_at: debounce.next_sync_time,
     )
   end
 

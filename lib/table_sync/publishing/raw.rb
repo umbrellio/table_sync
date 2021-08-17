@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class TableSync::Publishing::Raw
-	include Tainbox
+  include Tainbox
 
-	attribute :object_class
+  attribute :object_class
   attribute :original_attributes
 
   attribute :routing_key
@@ -12,11 +12,11 @@ class TableSync::Publishing::Raw
   attribute :event, default: :update
 
   def publish_now
-  	message.publish
+    message.publish
   end
 
   def message
-  	TableSync::Publishing::Message::Raw.new(attributes)
+    TableSync::Publishing::Message::Raw.new(attributes)
   end
 end
 

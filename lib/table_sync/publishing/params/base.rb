@@ -4,14 +4,14 @@ module TableSync::Publishing::Params
   class Base
     DEFAULT_PARAMS = {
       confirm_select: true,
-      realtime:       true,
-      event:         :table_sync,
+      realtime: true,
+      event: :table_sync,
     }.freeze
 
     def construct
       DEFAULT_PARAMS.merge(
-        routing_key:   routing_key, 
-        headers:       headers,
+        routing_key: routing_key,
+        headers: headers,
         exchange_name: exchange_name,
       )
     end
@@ -22,7 +22,7 @@ module TableSync::Publishing::Params
       if TableSync.routing_key_callable
         TableSync.routing_key_callable.call(object_class, attrs_for_routing_key)
       else
-        raise "Can't publish, set TableSync.routing_key_callable!"
+        raise TableSync::NoCallableError.new("routing_key")
       end
     end
 
@@ -30,7 +30,7 @@ module TableSync::Publishing::Params
       if TableSync.headers_callable
         TableSync.headers_callable.call(object_class, attrs_for_headers)
       else
-        raise "Can't publish, set TableSync.headers_callable!"
+        raise TableSync::NoCallableError.new("headers")
       end
     end
 

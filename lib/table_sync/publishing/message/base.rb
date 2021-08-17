@@ -3,7 +3,7 @@
 module TableSync::Publishing::Message
   class Base
     include Tainbox
-    
+
     NO_OBJECTS_FOR_SYNC = Class.new(StandardError)
 
     attr_reader :objects
@@ -26,28 +26,14 @@ module TableSync::Publishing::Message
       notify!
     end
 
-    def notify!
-      # model_naming = TableSync.publishing_adapter.model_naming(object_class)
-      # TableSync::Instrument.notify table: model_naming.table, schema: model_naming.schema,
-      #                              event: event, direction: :publish
-    end
-
     def empty?
       objects.empty?
     end
-
-    private
 
     def find_or_init_objects
       TableSync::Publishing::Helpers::Objects.new(
         object_class: object_class, original_attributes: original_attributes, event: event,
       ).construct_list
-    end
-
-    def data
-      TableSync::Publishing::Data::Objects.new(
-        objects: objects, event: event
-      ).construct
     end
 
     # MESSAGE PARAMS
@@ -58,12 +44,28 @@ module TableSync::Publishing::Message
 
     def data
       TableSync::Publishing::Data::Objects.new(
-        objects: objects, event: event
+        objects: objects, event: event,
       ).construct
     end
 
     def params
       raise NotImplementedError
+    end
+
+    # NOTIFY
+
+    def notify!
+      TableSync::Instrument.notify(
+        table: model_naming.table,
+        schema: model_naming.schema,
+        event: event,
+        direction: :publish,
+        count: objects.count,
+      )
+    end
+
+    def model_naming
+      TableSync.publishing_adapter.model_naming(objects.first.object_class)
     end
   end
 end

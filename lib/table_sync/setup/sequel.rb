@@ -1,18 +1,25 @@
 # frozen-string_literal: true
 
 module TableSync::Setup
-	class Sequel < Base
-	  private
+  class Sequel < Base
+    private
 
-	  def define_after_commit_on(event)
-	    define_method("after_#{event}".to_sym) do
-	      return if not if_condition.call(self)
-	      return if unless_condition.call(self)
+    def define_after_commit(event)
+      options = options_exposed_for_block
 
-	      enqueue_message(self.values)
+      object_class.define_method("after_#{event}".to_sym) do
+        return unless options[:if].call(self)
+        return if options[:unless].call(self)
 
-	      super()
-	    end
-	  end
-	end
+        TableSync::Publishing::Single.new(
+          object_class: self.class.name,
+          original_attributes: values,
+          event: event,
+          debounce_time: options[:debounce_time],
+        ).publish_later
+
+        super()
+      end
+    end
+  end
 end
