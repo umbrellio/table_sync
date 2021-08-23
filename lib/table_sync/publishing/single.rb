@@ -6,9 +6,9 @@ class TableSync::Publishing::Single
 
   attribute :object_class
   attribute :original_attributes
-
-  attribute :event, default: :update
   attribute :debounce_time
+
+  attribute :event, Symbol, default: :update
 
   # expect job to have perform_at method
   # debounce destroyed event
