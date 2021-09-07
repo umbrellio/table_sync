@@ -4,7 +4,7 @@ describe TableSync::Publishing::Params::Single do
   let(:object_class)       { "ARecordUser" }
   let(:attributes)         { default_attributes }
   let(:default_attributes) { { object: object } }
-  let(:service)            { described_class.new(attributes) }
+  let(:service)            { described_class.new(**attributes) }
 
   let(:object) do
     TableSync::Publishing::Helpers::Objects.new(

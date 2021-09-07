@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe TableSync::Publishing::Data::Raw do
-  let(:data)                { described_class.new(params) }
+  let(:data)                { described_class.new(**params) }
   let(:object_class)        { "User" }
   let(:attributes_for_sync) { [{ id: 1, asd: "asd" }, { id: 22, time: Time.current }] }
   let(:event)               { :update }

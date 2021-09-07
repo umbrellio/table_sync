@@ -10,7 +10,7 @@ describe TableSync::Publishing::Helpers::Debounce do
     }
   end
 
-  let(:service)       { described_class.new(params) }
+  let(:service)       { described_class.new(**params) }
   let(:debounce_time) { 30 }
   let(:event)         { :update }
   let(:current_time)  { Time.current.beginning_of_day }

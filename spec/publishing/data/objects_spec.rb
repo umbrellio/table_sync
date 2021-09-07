@@ -3,7 +3,7 @@
 describe TableSync::Publishing::Data::Objects do
   include_context "with created users", 1
 
-  let(:data)                { described_class.new(params) }
+  let(:data)                { described_class.new(**params) }
   let(:object_class)        { ARecordUser }
   let(:event)               { :update }
   let(:objects)             { [object] }

@@ -4,7 +4,7 @@ describe TableSync::Publishing::Helpers::Objects do
   include_context "with created users", 1
   include_context "with Sequel ORM"
 
-  let(:objects) { described_class.new(params) }
+  let(:objects) { described_class.new(**params) }
 
   let(:params) do
     {
