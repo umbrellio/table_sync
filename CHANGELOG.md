@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Provide current fired event to wrap receiver. You'll be able to get it with `wrap_receiving(event:, **rest) {}` as usual for `data, target_keys, version_key`
+- Update gems
 
 ## [5.0.1] - 2021-04-06
 ### Fixed
