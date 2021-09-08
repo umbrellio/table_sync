@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [5.0.2] - 2021-09-08
+
+### Changed
+- Provide current fired event to wrap receiver. You'll be able to get it with `wrap_receiving(event:, **rest) {}` as usual for `data, target_keys, version_key`
+
 ## [5.0.1] - 2021-04-06
 ### Fixed
 - documentation

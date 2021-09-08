@@ -69,6 +69,7 @@ describe TableSync::Receiving::Handler do
 
     let(:handler) do
       cf = callback_flags
+      cool_wrapper = wrapper
 
       handler = Class.new(described_class)
 
@@ -112,6 +113,11 @@ describe TableSync::Receiving::Handler do
         after_commit_on_update do
           cf[:update3] += 1
         end
+
+        wrap_receiving do |event:, **_rest, &receiving|
+          cool_wrapper.call(event: event)
+          receiving.call
+        end
       end
 
       handler
@@ -145,17 +151,21 @@ describe TableSync::Receiving::Handler do
       }
     end
 
+    let(:wrapper) { double("CoolWrapper", call: {}) }
+
     it "checks callbacks with transaction" do
       DB.transaction do
         fire_update_event
         expect(DB[:clients].count).to eq(1)
         expect(callback_flags)
           .to eq(update1: 0, update2: 0, update3: 0, destroy: 0, before_commit_update: 1)
+        expect(wrapper).to have_received(:call).with(event: :update)
 
         fire_destroy_event
         expect(DB[:clients].count).to eq(0)
         expect(callback_flags)
           .to eq(update1: 0, update2: 0, update3: 0, destroy: 0, before_commit_update: 1)
+        expect(wrapper).to have_received(:call).with(event: :destroy)
       end
 
       expect(callback_flags)
