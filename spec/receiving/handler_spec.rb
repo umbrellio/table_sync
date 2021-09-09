@@ -62,6 +62,36 @@ describe TableSync::Receiving::Handler do
     end
   end
 
+  describe "#wrap_receiving" do
+    let(:handler) do
+      cool_wrapper = wrapper
+
+      handler = Class.new(described_class)
+
+      handler.receive("User", to_table: :players) do
+        rest_key false
+        mapping_overrides id: :external_id
+        only :external_id, :project_id, :email
+
+        wrap_receiving do |event:, **_rest, &receiving|
+          cool_wrapper.call(event: event)
+          receiving.call
+        end
+      end
+
+      handler
+    end
+    let(:wrapper) { double("CoolWrapper", call: {}) }
+
+    it "provides proper event to wrap receiving" do
+      fire_update_event
+      expect(wrapper).to have_received(:call).with(event: :update)
+
+      fire_destroy_event
+      expect(wrapper).to have_received(:call).with(event: :destroy)
+    end
+  end
+
   describe "with config" do
     let(:callback_flags) do
       { update1: 0, update2: 0, update3: 0, destroy: 0, before_commit_update: 0 }

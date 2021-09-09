@@ -68,7 +68,7 @@ The method receives following arguments
 - `events` - array of supported events (optional)
 - `block` - configuration block with options (optional)
 
-This method implements logic of mapping `source` to `to_table` (or to `to_model`) and allows customizing 
+This method implements logic of mapping `source` to `to_table` (or to `to_model`) and allows customizing
 the event handling logic with provided block.
 You can use one `source` for a lot of `to_table` or `to_moel`.
 
@@ -235,12 +235,13 @@ default value is `false`
 Proc that is used to wrap the receiving logic by custom block of code.
 
 ```ruby
-wrap_receiving do |data:, target_keys:, version_key:, default_values: {}, &receiving_logic|
+wrap_receiving do |data:, target_keys:, version_key:, default_values: {}, event:, &receiving_logic|
   receiving_logic.call
   return makes no sense
 end
 ```
 
+event option is current fired event
 default value is `proc { |&block| block.call }`
 
 #### before_update
