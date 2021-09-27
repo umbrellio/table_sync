@@ -4,13 +4,15 @@
 
 describe TableSync::Publishing::Message::Single do
   describe "#publish" do
+    let(:event) { :destroy }
+
     let(:attributes) do
       {
         object_class: object_class,
         original_attributes: [{ id: 1 }],
         routing_key: "users",
         headers: { kek: 1 },
-        event: :destroy,
+        event: event,
       }
     end
 
@@ -69,6 +71,25 @@ describe TableSync::Publishing::Message::Single do
       expect(Rabbit).to receive(:publish)
 
       described_class.new(attributes).publish
+    end
+
+    context "with no objects found" do
+      let(:event) { :update }
+
+      around do |example|
+        before_value = TableSync.raise_on_empty_message
+
+        TableSync.raise_on_empty_message = true
+
+        example.run
+
+        TableSync.raise_on_empty_message = before_value
+      end
+
+      it "raises error" do
+        expect { described_class.new(attributes).publish }
+          .to raise_error(TableSync::NoObjectsForSyncError)
+      end
     end
   end
 end

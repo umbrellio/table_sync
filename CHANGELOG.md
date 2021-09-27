@@ -1,6 +1,38 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.0.0] - 2021-09-07
+### Changed
+- Heavy refactoring of Publisher and BatchPublisher.
+All code is separated in different modules and classes.
+
+1. Job callables are now called:
+- single_publishing_job_class_callable
+- batch_publishing_job_class_callable
+
+2. Now there are three main classes for messaging:
+- TableSync::Publishing::Single - sends one row with initialization
+- TableSync::Publishing::Batch  - sends batch of rows with initialization
+- TableSync::Publishing::Raw    - sends raw data without checks
+
+Separate classes for publishing, object data, Rabbit params, debounce, serialization.
+
+3. Jobs are not constrained by being ActiveJob anymore. Just need to have #perform_at method
+
+4. Changed some method names towards consistency:
+- attrs_for_routing_key -> attributes_for_routing_key
+- attrs_for_metadata    -> attributes_for_headers
+
+5. Moved TableSync setup into separate classes.
+
+6. Changed ORMAdapters.
+
+7. Destroyed objects are initialized. 
+Now custom attributes for destruction will be called on instances.
+- Obj.table_sync_destroy_attributes() -> Obj#attributes_for_destroy
+
+8. Event constants are now kept in one place.
+
 ## [5.0.1] - 2021-04-06
 ### Fixed
 - documentation

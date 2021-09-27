@@ -4,8 +4,6 @@ module TableSync::Publishing::Message
   class Base
     include Tainbox
 
-    NO_OBJECTS_FOR_SYNC = Class.new(StandardError)
-
     attr_reader :objects
 
     attribute :object_class
@@ -17,7 +15,7 @@ module TableSync::Publishing::Message
 
       @objects = find_or_init_objects
 
-      raise NO_OBJECTS_FOR_SYNC if objects.empty? && TableSync.raise_on_empty_message
+      raise TableSync::NoObjectsForSyncError if objects.empty? && TableSync.raise_on_empty_message
     end
 
     def publish

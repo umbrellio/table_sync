@@ -5,6 +5,7 @@ describe TableSync::Publishing::Data::Raw do
   let(:object_class)        { "User" }
   let(:attributes_for_sync) { [{ id: 1, asd: "asd" }, { id: 22, time: Time.current }] }
   let(:event)               { :update }
+  let(:resolved_event)      { :update }
 
   let(:params) do
     {
@@ -19,7 +20,7 @@ describe TableSync::Publishing::Data::Raw do
       model: object_class,
       attributes: attributes_for_sync,
       version: an_instance_of(Float),
-      event: event,
+      event: resolved_event,
       metadata: metadata,
     }
   end

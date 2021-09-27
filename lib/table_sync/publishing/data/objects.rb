@@ -6,7 +6,7 @@ module TableSync::Publishing::Data
 
     def initialize(objects:, event:)
       @objects = objects
-      @event   = event
+      @event   = TableSync::Event.new(event)
     end
 
     def construct
@@ -14,8 +14,8 @@ module TableSync::Publishing::Data
         model: model,
         attributes: attributes_for_sync,
         version: version,
-        event: event,
-        metadata: metadata,
+        event: event.resolve,
+        metadata: event.metadata,
       }
     end
 
@@ -33,26 +33,18 @@ module TableSync::Publishing::Data
       Time.current.to_f
     end
 
-    def metadata
-      { created: event == :create } # remove? who needs this?
-    end
-
     def object_class
       objects.first.object_class
     end
 
     def attributes_for_sync
       objects.map do |object|
-        if destruction?
+        if event.destroy?
           object.attributes_for_destroy
         else
           object.attributes_for_update
         end
       end
-    end
-
-    def destruction?
-      event == :destroy
     end
   end
 end

@@ -8,6 +8,7 @@ require "active_support/core_ext/object/blank"
 require "active_support/core_ext/numeric/time"
 
 module TableSync
+  require_relative "table_sync/event"
   require_relative "table_sync/utils"
   require_relative "table_sync/version"
   require_relative "table_sync/errors"
@@ -30,7 +31,6 @@ module TableSync
   require_relative "table_sync/setup/sequel"
 
   class << self
-    attr_accessor :raise_on_serialization_failure
     attr_accessor :raise_on_empty_message
     attr_accessor :single_publishing_job_class_callable
     attr_accessor :batch_publishing_job_class_callable

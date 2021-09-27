@@ -19,22 +19,3 @@ class TableSync::Publishing::Raw
     TableSync::Publishing::Message::Raw.new(attributes)
   end
 end
-
-# event
-
-# debounce
-# serialization
-# def jobs
-# enqueue
-
-# publishers
-
-# specs
-
-# docs
-
-# cases
-
-# changes
-
-# add validations?

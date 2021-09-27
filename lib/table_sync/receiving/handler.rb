@@ -44,14 +44,18 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
     super(Array.wrap(data[:attributes]))
   end
 
-  def event=(name)
-    name = name.to_sym
-    raise TableSync::UndefinedEvent.new(event) unless %i[update destroy].include?(name)
-    super(name)
+  def event=(event_name)
+    event_name = event_name.to_sym
+
+    if event_name.in?(TableSync::Event::VALID_RESOLVED_EVENTS)
+      super(event_name)
+    else
+      raise TableSync::UndefinedEvent.new(event)
+    end
   end
 
-  def model=(name)
-    super(name.to_s)
+  def model=(model_name)
+    super(model_name.to_s)
   end
 
   def configs

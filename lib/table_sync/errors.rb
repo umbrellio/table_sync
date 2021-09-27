@@ -3,6 +3,18 @@
 module TableSync
   Error = Class.new(StandardError)
 
+  NoObjectsForSyncError = Class.new(Error)
+
+  class EventError < Error
+    def initialize(event)
+      super(<<~MSG)
+        Invalid event!
+        Given event: #{event}.
+        Valid events: #{TableSync::Event::VALID_RAW_EVENTS}.
+      MSG
+    end
+  end
+
   class NoPrimaryKeyError < Error
     def initialize(object_class, object_data, primary_key_columns)
       super(<<~MSG)

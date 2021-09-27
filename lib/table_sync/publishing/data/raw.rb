@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# check if works!
 module TableSync::Publishing::Data
   class Raw
     attr_reader :object_class, :attributes_for_sync, :event
@@ -8,7 +7,7 @@ module TableSync::Publishing::Data
     def initialize(object_class:, attributes_for_sync:, event:)
       @object_class = object_class
       @attributes_for_sync = attributes_for_sync
-      @event = event
+      @event = TableSync::Event.new(event)
     end
 
     def construct
@@ -16,13 +15,9 @@ module TableSync::Publishing::Data
         model: object_class,
         attributes: attributes_for_sync,
         version: version,
-        event: event,
-        metadata: metadata,
+        event: event.resolve,
+        metadata: event.metadata,
       }
-    end
-
-    def metadata
-      { created: event == :create } # remove? who needs this?
     end
 
     def version

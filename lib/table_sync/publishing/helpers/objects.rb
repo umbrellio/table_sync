@@ -5,13 +5,13 @@ module TableSync::Publishing::Helpers
     attr_reader :object_class, :original_attributes, :event
 
     def initialize(object_class:, original_attributes:, event:)
-      @event               = event
+      @event               = TableSync::Event.new(event)
       @object_class        = object_class.constantize
       @original_attributes = Array.wrap(original_attributes)
     end
 
     def construct_list
-      if destruction?
+      if event.destroy?
         init_objects
       else
         without_empty_objects(find_objects)
@@ -34,10 +34,6 @@ module TableSync::Publishing::Helpers
       original_attributes.map do |attrs|
         TableSync.publishing_adapter.new(object_class, attrs).find
       end
-    end
-
-    def destruction?
-      event == :destroy
     end
   end
 end

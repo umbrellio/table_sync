@@ -6,6 +6,7 @@ describe TableSync::Publishing::Data::Objects do
   let(:data)                { described_class.new(**params) }
   let(:object_class)        { ARecordUser }
   let(:event)               { :update }
+  let(:resolved_event)      { :update }
   let(:objects)             { [object] }
   let(:expected_attributes) { object_class.first.attributes.symbolize_keys }
   let(:expected_model)      { object_class.to_s }
@@ -28,7 +29,7 @@ describe TableSync::Publishing::Data::Objects do
       model: expected_model,
       attributes: [expected_attributes],
       version: an_instance_of(Float),
-      event: event,
+      event: resolved_event,
       metadata: metadata,
     }
   end
@@ -67,7 +68,8 @@ describe TableSync::Publishing::Data::Objects do
     end
 
     context "event -> destroy" do
-      let(:event) { :destroy }
+      let(:event)          { :destroy }
+      let(:resolved_event) { :destroy }
 
       context "without #attributes_for_destroy" do
         let(:expected_attributes) { { id: object.object.id } }
