@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [6.0.0] - 2021-09-07
+## [6.0.0] - 2021-10-01
 ### Changed
 - Heavy refactoring of Publisher and BatchPublisher.
 All code is separated in different modules and classes.
@@ -32,6 +32,12 @@ Now custom attributes for destruction will be called on instances.
 - Obj.table_sync_destroy_attributes() -> Obj#attributes_for_destroy
 
 8. Event constants are now kept in one place.
+
+## [5.1.0] - 2021-09-09
+
+### Changed
+- Provide current fired event to wrap receiver. You'll be able to get it with `wrap_receiving(event:, **rest) {}` as usual for `data, target_keys, version_key`
+- Update rails dependencies with patch version
 
 ## [5.0.1] - 2021-04-06
 ### Fixed

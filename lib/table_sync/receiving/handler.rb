@@ -31,7 +31,7 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
         params[:default_values] = config.default_values(data: data)
       end
 
-      config.wrap_receiving(**params) do
+      config.wrap_receiving(event: event, **params) do
         perform(config, params)
       end
     end
