@@ -44,6 +44,6 @@ Example:
 
 ## Read More
 
-- [Publishers](docs/publishing/publishers.md)
-- [Configuration](docs/publishing/configuration.md)
-- [Manual Sync (examples)](docs/publishing/manual.md)
+- [Publishers](publishing/publishers.md)
+- [Configuration](publishing/configuration.md)
+- [Manual Sync (examples)](publishing/manual.md)
