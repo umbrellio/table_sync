@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 ## [6.0.0] - 2021-10-01
+### Added
+
+A lot of specs for all the refactoring.
+
 ### Changed
 - Heavy refactoring of Publisher and BatchPublisher.
 All code is separated in different modules and classes.

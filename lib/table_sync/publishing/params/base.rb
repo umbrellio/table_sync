@@ -20,7 +20,7 @@ module TableSync::Publishing::Params
 
     def calculated_routing_key
       if TableSync.routing_key_callable
-        TableSync.routing_key_callable.call(object_class, attrs_for_routing_key)
+        TableSync.routing_key_callable.call(object_class, attributes_for_routing_key)
       else
         raise TableSync::NoCallableError.new("routing_key")
       end
@@ -28,7 +28,7 @@ module TableSync::Publishing::Params
 
     def calculated_headers
       if TableSync.headers_callable
-        TableSync.headers_callable.call(object_class, attrs_for_headers)
+        TableSync.headers_callable.call(object_class, attributes_for_headers)
       else
         raise TableSync::NoCallableError.new("headers")
       end
@@ -53,11 +53,11 @@ module TableSync::Publishing::Params
       raise NotImplementedError
     end
 
-    def attrs_for_routing_key
+    def attributes_for_routing_key
       raise NotImplementedError
     end
 
-    def attrs_for_headers
+    def attributes_for_headers
       raise NotImplementedError
     end
   end

@@ -16,11 +16,11 @@ module TableSync::Publishing::Params
       object.object_class.name
     end
 
-    def attrs_for_routing_key
+    def attributes_for_routing_key
       object.attributes_for_routing_key
     end
 
-    def attrs_for_headers
+    def attributes_for_headers
       object.attributes_for_headers
     end
 

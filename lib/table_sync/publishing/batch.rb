@@ -16,7 +16,11 @@ class TableSync::Publishing::Batch
   end
 
   def publish_now
-    TableSync::Publishing::Message::Batch.new(attributes).publish
+    message.publish
+  end
+
+  def message
+    TableSync::Publishing::Message::Batch.new(attributes)
   end
 
   private

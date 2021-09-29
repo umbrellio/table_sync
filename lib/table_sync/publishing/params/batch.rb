@@ -12,11 +12,11 @@ module TableSync::Publishing::Params
 
     private
 
-    def attrs_for_routing_key
+    def attributes_for_routing_key
       {}
     end
 
-    def attrs_for_headers
+    def attributes_for_headers
       {}
     end
   end
