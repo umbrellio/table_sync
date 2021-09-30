@@ -526,6 +526,23 @@ describe TableSync::Receiving::Handler do
       )
     end
 
+    describe "error with invalid event" do
+      let(:create_event) do
+        OpenStruct.new(
+          data: {
+            event: "create",
+            model: "User",
+            attributes: { id: user_id },
+          },
+          project_id: "pid",
+        )
+      end
+
+      it "raises TableSync::UndefinedEvent" do
+        expect { described_class.new(create_event).call }.to raise_error(TableSync::UndefinedEvent)
+      end
+    end
+
     describe "error with target keys" do
       let(:handler) do
         Class.new(described_class).receive("User", to_table: :users) do

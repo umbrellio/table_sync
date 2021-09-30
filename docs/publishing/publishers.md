@@ -3,7 +3,7 @@
 There are three publishers you can use to send data.
 
 - `TableSync::Publishing::Single` - sends one row with initialization.
-- `TableSync::Publishing::Batch` - sends batch of rows with initialization.
+- `TableSync::Publishing::Batch` - sends a batch of rows with initialization.
 - `TableSync::Publishing::Raw`  - sends raw data without checks.
 
 ## Single
@@ -17,13 +17,13 @@ This is a publisher called by `TableSync.sync(self)`.
 - `object_class` - class (model) used to initialize published object
 - `original_attributes` - attributes used to initialize `object_class` with
 - `debounce_time` - minimum allowed time between delayed publishings
-- `event` - type of event that happened to the published object (create, update, destroy); `update` by default
+- `event` - type of event that happened to the published object (`create`, `update`, `destroy`); `update` by default
 
 ### What it does (when uses `#publish_now`):
 - takes in the `original_attributes`, `object_class`, `event`
 - constantizes `object_class`
 - extracts the primary key (`needle`) of the `object_class` from the `original_attributes`
-- queries the database for the object with the `needle` (for `update` and `create`) or initializes the `object_class` with it (for `destroy`)
+- queries the database for the object with the `needle` (for `update` and `create`) or initializes the `object_class` with `original_attributes` (for `destroy`)
 - constructs routing_key using `routing_key_callable` and `#attributes_for_routing_key` (if defined)
 - constructs headers using `headers_callable` and `#attributes_for_headers` (if defined)
 - publishes Rabbit message (uses attributes from queried/initialized object as data)
@@ -68,13 +68,13 @@ Job is defined in `TableSync.single_publishing_job_class_callable` as a proc. Re
 
 ## Batch
 
-- `TableSync::Publishing::Batch` - sends batch of rows with initialization.
+- `TableSync::Publishing::Batch` - sends a batch of rows with initialization.
 
 ### Expected parameters:
 
 - `object_class` - class (model) used to initialize published objects
 - `original_attributes` - array of attributes used to initialize `object_class` with
-- `event` - type of event that happened to the published objects (create, update, destroy); `update` by default
+- `event` - type of event that happened to the published objects (`create`, `update`, `destroy`); `update` by default
 - `routing_key` - custom routing_key
 - `headers` - custom headers
 
@@ -82,7 +82,7 @@ Job is defined in `TableSync.single_publishing_job_class_callable` as a proc. Re
 - takes in the `original_attributes`, `object_class`, `event`, `routing_key`, `headers`
 - constantizes `object_class`
 - extracts primary keys (`needles`) of the `object_class` from the array of `original_attributes`
-- queries the database for the objects with `needles` (for `update` and `create`) or initializes the `object_class` with it (for `destroy`)
+- queries the database for the objects with `needles` (for `update` and `create`) or initializes the `object_class` with `original_attributes` (for `destroy`)
 - constructs routing_key using `routing_key_callable` (ignores `#attributes_for_routing_key`) or uses `routing_key` if given
 - constructs headers using `headers_callable` (ignores `#attributes_for_headers`)  or uses `headers` if given
 - publishes Rabbit message (uses attributes from queried/initialized objects as data)
@@ -137,7 +137,7 @@ You can send anything.
 
 - `object_class` - model
 - `original_attributes` - raw data that will be sent
-- `event` - type of event that happened to the published objects (create, update, destroy); `update` by default
+- `event` - type of event that happened to the published objects (`create`, `update`, `destroy`); `update` by default
 - `routing_key` - custom routing_key
 - `headers` - custom headers
 

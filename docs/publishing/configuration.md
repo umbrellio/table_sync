@@ -32,7 +32,7 @@ Callables are defined once. TableSync will use them to dynamically resolve thing
 
 ### Single publishing job (required for automatic and delayed publishing)
 
-- `TableSync.single_publishing_job_class_callable` is a callable which should resolve to a class that calls TableSync back to actually publish changes (required).
+- `TableSync.single_publishing_job_class_callable` is a callable which should resolve to a class that calls TableSync back to actually publish changes.
 
 It is expected to have `.perform_at(hash_with_options)` and it will be passed a hash with the following keys:
 
@@ -60,7 +60,7 @@ class TableSync::Job < ActiveJob::Base
   end
 end
 
-# will call the job described above
+# will enqueue the job described above
 
 TableSync::Publishing::Single.new(
   object_class: "User",
@@ -70,7 +70,7 @@ TableSync::Publishing::Single.new(
 ).publish_later
 ```
 
-### Batch publishing job (required only for `Batch#publish_later`)
+### Batch publishing job (required only for `TableSync::Publishing::Batch#publish_later`)
 
 - `TableSync.batch_publishing_job_class_callable` is a callable which should resolve to a class that calls TableSync back to actually publish changes.
 
@@ -97,13 +97,13 @@ class TableSync::BatchJob < ActiveJob::Base
   end
 
   def self.perform_later(attributes)
-    super(attributes.map(&:to_json))
+    super(attributes.to_json)
   end
 end
 
 TableSync::Publishing::Batch.new(
   object_class: "User",
-  original_attributes: [{ id: 1, name: "Mark" }, { id: 2, name: "Bob" }],
+  original_attributes: [{ id: 1, name: "Mark" }, { id: 2, name: "Bob" }], # will be serialized!
   event: :create,
   routing_key: :custom_key,   # optional
   headers: { type: "admin" }, # optional
@@ -112,7 +112,7 @@ TableSync::Publishing::Batch.new(
 
 ### Routing key callable (required)
 
-- `TableSync.routing_key_callable` is a callable which resolves which routing key to use when publishing changes. It receives object class and published attributes or `#attributes_for_routing_key` (if defined).
+- `TableSync.routing_key_callable` is a callable that resolves which routing key to use when publishing changes. It receives object class and published attributes or `#attributes_for_routing_key` (if defined).
 
 Example:
 
@@ -124,7 +124,7 @@ TableSync.routing_key_callable = -> (klass, attributes) { klass.gsub('::', '_').
 
 - `TableSync.headers_callable` is a callable that adds RabbitMQ headers which can be used in routing. It receives object class and published attributes or `#attributes_for_headers` (if defined).
 
-One possible way of using it is defining a headers exchange and routing rules based on key-value pairs (which correspond to sent headers).
+One possible way of using it is defininga  headers exchange and routing rules based on key-value pairs (which correspond to sent headers).
 
 Example:
 
@@ -138,6 +138,6 @@ TableSync.routing_metadata_callable = -> (klass, attributes) { attributes.slice(
 
 - `TableSync.notifier` is a module that provides publish and recieve notifications.
 
-- `TableSync.raise_on_empty_message` - raises error on empty message if set to true.
+- `TableSync.raise_on_empty_message` - raises an error on empty message if set to true.
 
 - `TableSync.orm` - set ORM (ActiveRecord or Sequel) used to process given entities. Required!

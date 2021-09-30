@@ -48,9 +48,11 @@ module TableSync::Publishing::Message
       ).construct
     end
 
+    # :nocov:
     def params
       raise NotImplementedError
     end
+    # :nocov:
 
     # NOTIFY
 

@@ -2,10 +2,6 @@
 
 module TableSync::ORMAdapter
   class ActiveRecord < Base
-    def primary_key
-      object_class.primary_key
-    end
-
     def find
       @object = object_class.find_by(needle)
 

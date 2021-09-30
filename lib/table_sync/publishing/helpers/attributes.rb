@@ -50,7 +50,7 @@ module TableSync::Publishing::Helpers
     def filter_safe_hash_values(value)
       case value
       when Symbol
-        value.to_s
+        value.to_s # why?
       else
         filter_safe_for_serialization(value)
       end

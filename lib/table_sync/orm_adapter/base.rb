@@ -39,10 +39,6 @@ module TableSync::ORMAdapter
       object_data.slice(*primary_key_columns)
     end
 
-    def primary_key_columns
-      Array.wrap(object_class.primary_key).map(&:to_sym)
-    end
-
     # ATTRIBUTES
 
     def attributes_for_update
@@ -77,6 +73,10 @@ module TableSync::ORMAdapter
       end
     end
 
+    def primary_key_columns
+      Array.wrap(object_class.primary_key).map(&:to_sym)
+    end
+
     # MISC
 
     def empty?
@@ -85,10 +85,7 @@ module TableSync::ORMAdapter
 
     # NOT IMPLEMENTED
 
-    def primary_key
-      raise NotImplementedError
-    end
-
+    # :nocov:
     def attributes
       raise NotImplementedError
     end
@@ -96,5 +93,6 @@ module TableSync::ORMAdapter
     def self.model_naming
       raise NotImplementedError
     end
+    # :nocov:
   end
 end

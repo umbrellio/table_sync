@@ -50,9 +50,11 @@ module TableSync::Setup
 
     # CREATING HOOKS
 
+    # :nocov:
     def define_after_commit(event)
       raise NotImplementedError
     end
+    # :nocov:
 
     def options_exposed_for_block
       {

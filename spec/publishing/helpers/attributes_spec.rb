@@ -28,8 +28,10 @@ describe TableSync::Publishing::Helpers::Attributes do
     end
 
     context "deep hash" do
-      let(:original_attributes) { { id: { safe: 1, unsafe: Time.current, Time.current => "7" } } }
-      let(:expected_attributes) { { id: { safe: 1 } } }
+      let(:original_attributes) do
+        { id: { safe: :yes, unsafe: Time.current, Time.current => "7" } }
+      end
+      let(:expected_attributes) { { id: { safe: "yes" } } }
 
       include_examples "filters out unsafe keys/values"
     end

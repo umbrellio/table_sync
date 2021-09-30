@@ -55,28 +55,6 @@ module TableSync
     end
   end
 
-  # @api public
-  # @since 2.2.0
-  PluginError = Class.new(Error)
-
-  # @api public
-  # @since 2.2.0
-  class UnregisteredPluginError < PluginError
-    # @param plugin_name [Any]
-    def initialize(plugin_name)
-      super("#{plugin_name} plugin is not registered")
-    end
-  end
-
-  # @api public
-  # @since 2.2.0
-  class AlreadyRegisteredPluginError < PluginError
-    # @param plugin_name [Any]
-    def initialize(plugin_name)
-      super("#{plugin_name} plugin already exists")
-    end
-  end
-
   class InterfaceError < Error
     def initialize(object, method_name, parameters, description)
       parameters = parameters.map do |parameter|
@@ -84,7 +62,9 @@ module TableSync
 
         case type
         when :req
+          #:nocov:
           name.to_s
+          #:nocov:
         when :keyreq
           "#{name}:"
         when :block

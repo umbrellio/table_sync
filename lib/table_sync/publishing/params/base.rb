@@ -37,6 +37,7 @@ module TableSync::Publishing::Params
     # NOT IMPLEMENTED
 
     # name of the model being synced in the string format
+    # :nocov:
     def object_class
       raise NotImplementedError
     end
@@ -60,5 +61,6 @@ module TableSync::Publishing::Params
     def attributes_for_headers
       raise NotImplementedError
     end
+    # :nocov:
   end
 end

@@ -15,7 +15,7 @@ Easier to use, but does a lot of DB queries. May filter out invalid PK values.
 
 #### Cons:
 
-- it queries database for each entity in batch (for create and update)
+- it queries database for each entity in batch (for `create` and `update`)
 - it may also do a lot of queries if `#attributes_for_sync` contains additional data from other connected entities
 - serializes values for (`#publish_later`); if your PK contains invalid values (ex. Date) they will be filtered out
 
@@ -97,7 +97,7 @@ TableSync::Publishing:Raw.new(...).message.message_params
       headers: { type: "admin" }, # optional
     ).publish_now
 
-    # make a puse between batches
+    # make a pause between batches
     sleep 1
 
     # for when you are sending from terminal
@@ -110,7 +110,7 @@ TableSync::Publishing:Raw.new(...).message.message_params
 
 #### Another way to gather data
 
-If you don't want to create data query (maybe it's too complex) but there are a lot of quereing in `#attributes_for_sync` and you are willing to trade a little bit of perfomance, you can try the following.
+If you don't want to create a data query (maybe it's too complex) but there is a lot of quereing in `#attributes_for_sync` and you are willing to trade a little bit of perfomance, you can try the following.
 
 ```ruby
 class User < Sequel
@@ -125,8 +125,8 @@ class User < Sequel
   end
 end
 
-# to prevent the need to query for every peice of additional data we can user eager load
-# and constract published data by calling #attributes_for_sync
+# to prevent the need to query for every piece of additional data we can user eager load
+# and construct published data by calling #attributes_for_sync
 # don't forget to chunk it into more managable sizes before trying to send
 data = User.eager(:statuses).map { |user| user.attributes_for_sync }
 ```

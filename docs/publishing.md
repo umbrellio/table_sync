@@ -1,8 +1,8 @@
 # Publishing
 
-TableSync can be used to send the data using RabbitMQ.
+TableSync can be used to send data using RabbitMQ.
 
-You can send the data in two ways. Automatic and manual.
+You can do in two ways. Automatic and manual.
 Each one has its own pros and cons.
 
 Automatic is used to publish changes in realtime, as soon as the tracked entity changes.
