@@ -9,15 +9,15 @@ module TableSync::Receiving
 
       @events = [events].flatten.map(&:to_sym)
 
-      raise TableSync::UndefinedEvent.new(events) if any_invalid_events?
+      raise TableSync::UndefinedEvent.new(events) if invalid_events.any?
 
       self.class.default_values_for_options.each do |ivar, default_value_generator|
         instance_variable_set(ivar, default_value_generator.call(self))
       end
     end
 
-    def any_invalid_events?
-      (events - TableSync::Event::VALID_RESOLVED_EVENTS).any?
+    def invalid_events
+      events - TableSync::Event::VALID_RESOLVED_EVENTS
     end
 
     class << self

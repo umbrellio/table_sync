@@ -49,7 +49,7 @@ Job is defined in `TableSync.single_publishing_job_class_callable` as a proc. Re
 ```ruby
   TableSync::Publishing::Single.new(
     object_class: "User",
-    original_attributes: { id: 1. name: "Mark" },
+    original_attributes: { id: 1, name: "Mark" },
     debounce_time: 60, # useless for #publish _now, can be skipped
     event: :create,
   ).publish_now

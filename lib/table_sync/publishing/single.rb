@@ -44,7 +44,7 @@ class TableSync::Publishing::Single
 
   def job
     if TableSync.single_publishing_job_class_callable
-      TableSync.single_publishing_job_class_callable&.call
+      TableSync.single_publishing_job_class_callable.call
     else
       raise TableSync::NoCallableError.new("single_publishing_job_class")
     end

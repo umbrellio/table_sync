@@ -22,12 +22,6 @@ module TableSync::ORMAdapter
     # FIND OR INIT OBJECT
 
     def init
-      @object = object_class.new(object_data.except(*primary_key_columns))
-
-      needle.each do |column, value|
-        @object.send("#{column}=", value)
-      end
-
       self
     end
 

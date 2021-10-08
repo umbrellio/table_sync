@@ -6,6 +6,14 @@ module TableSync::ORMAdapter
       object.values
     end
 
+    def init
+      @object = object_class.new(object_data.except(*primary_key_columns))
+
+      @object.set_fields(needle, needle.keys)
+
+      super
+    end
+
     def find
       @object = object_class.find(needle)
 

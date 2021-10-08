@@ -7,17 +7,16 @@ module TableSync
 
   class EventError < Error
     def initialize(event)
-      super(<<~MSG)
-        Invalid event!
-        Given event: #{event}.
-        Valid events: #{TableSync::Event::VALID_RAW_EVENTS}.
+      super(<<~MSG.squish)
+        Event #{event.inspect} is invalid.#{' '}
+        Expected: #{TableSync::Event::VALID_RAW_EVENTS.inspect}.
       MSG
     end
   end
 
   class NoPrimaryKeyError < Error
     def initialize(object_class, object_data, primary_key_columns)
-      super(<<~MSG)
+      super(<<~MSG.squish)
         Can't find or init an object of #{object_class} with #{object_data.inspect}.
         Incomplete primary key! object_data must contain: #{primary_key_columns.inspect}.
       MSG
@@ -26,7 +25,7 @@ module TableSync
 
   class NoCallableError < Error
     def initialize(type)
-      super(<<~MSG)
+      super(<<~MSG.squish)
         Can't find callable for #{type}!
         Please initialize TableSync.#{type}_callable with the correct proc!
       MSG

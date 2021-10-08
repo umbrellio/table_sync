@@ -8,6 +8,12 @@ module TableSync::ORMAdapter
       super
     end
 
+    def init
+      @object = object_class.new(object_data)
+
+      super
+    end
+
     def attributes
       object.attributes.symbolize_keys
     end
