@@ -23,6 +23,8 @@ class TableSync::Publishing::Batch
     TableSync::Publishing::Message::Batch.new(attributes)
   end
 
+  alias_method :publish_async, :publish_later
+
   private
 
   # JOB
