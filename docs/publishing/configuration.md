@@ -38,7 +38,7 @@ It is expected to have `.perform_at(hash_with_options)` and it will be passed a 
 
 - `original_attributes` - serialized `original_attributes`
 - `object_class` - model name
-- `debounce_time` - pause between pblishing messages
+- `debounce_time` - pause between publishing messages
 - `event` - type of event that happened to synched entity
 - `perform_at` - time to perform the job at (depends on debounce)
 
@@ -124,7 +124,7 @@ TableSync.routing_key_callable = -> (klass, attributes) { klass.gsub('::', '_').
 
 - `TableSync.headers_callable` is a callable that adds RabbitMQ headers which can be used in routing. It receives object class and published attributes or `#attributes_for_headers` (if defined).
 
-One possible way of using it is defininga  headers exchange and routing rules based on key-value pairs (which correspond to sent headers).
+One possible way of using it is defining a headers exchange and routing rules based on key-value pairs (which correspond to sent headers).
 
 Example:
 

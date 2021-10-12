@@ -13,17 +13,31 @@ But demands greater amount of work and data preparation.
 
 ## Automatic
 
-Include `TableSync.sync(self)` into a Sequel or ActiveRecord model. `:if` and `:unless` are supported for Sequel and ActiveRecord.
+Include `TableSync.sync(self)` into a Sequel or ActiveRecord model. 
+
+Options:
+
+- `if:` and `unless:` - Runs given proc in the scope of an instance. Skips sync on `false` for `if:` and on `true` for `unless:`.
+- `on:` - specify events (`create`, `update`, `destroy`) to trigger sync on. Triggered for all of them without this option.
+- `debounce_time` - min time period allowed between synchronizations.
 
 Functioning `Rails.cache` is required.
 
-After some change happens, TableSync enqueues a job which then publishes a message.
+How it works:
+
+- `TableSync.sync(self)` - registers new callbacks (for `create`, `update`, `destroy`) for ActiveRecord model, and defines `after_create`, `after_update` and `after_destroy` callback methods for Sequel model.
+
+- Callbacks call `TableSync::Publishing::Single#publish_later` with given options and object attributes. It enqueues a job which then publishes a message.
 
 Example:
 
 ```ruby
 class SomeModel < Sequel::Model
-  TableSync.sync(self, { if: -> (*) { some_code } })
+  TableSync.sync(self, { if: -> (*) { some_code }, unless: -> (*) { some_code }, on: [:create, :update] })
+end
+
+class SomeOtherModel < Sequel::Model
+  TableSync.sync(self)
 end
 ```
 
