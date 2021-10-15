@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [6.0.0] - 2021-10-01
+## [6.0.0] - 2021-10-15
 ### Added
 
 - A lot of specs for all the refactoring.
