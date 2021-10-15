@@ -96,3 +96,54 @@ RSpec.configure do |config|
     DB.run("TRUNCATE #{tables.join(', ')}")
   end
 end
+
+class SequelUser < Sequel::Model(:users)
+end
+
+class ARecordUser < ActiveRecord::Base
+  self.table_name = "users"
+end
+
+class CustomARecordUser < ARecordUser
+  def self.table_sync_model_name
+    name
+  end
+
+  def attributes_for_destroy
+    attributes.symbolize_keys
+  end
+
+  def attributes_for_sync
+    attributes.symbolize_keys
+  end
+
+  def attributes_for_headers
+    attributes.symbolize_keys
+  end
+
+  def attributes_for_routing_key
+    attributes.symbolize_keys
+  end
+end
+
+class CustomSequelUser < SequelUser
+  def self.table_sync_model_name
+    name
+  end
+
+  def attributes_for_destroy
+    attributes.symbolize_keys
+  end
+
+  def attributes_for_sync
+    attributes.symbolize_keys
+  end
+
+  def attributes_for_headers
+    attributes.symbolize_keys
+  end
+
+  def attributes_for_routing_key
+    attributes.symbolize_keys
+  end
+end

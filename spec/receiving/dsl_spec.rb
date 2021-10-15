@@ -50,12 +50,6 @@ describe TableSync::Receiving::DSL do
       config.wrap_receiving.call(data: "data", &test_block)
     end
 
-    it "raises Interface error" do
-      model = Object.new
-
-      expect { handler1.receive("User", to_model: model) }.to raise_error(TableSync::InterfaceError)
-    end
-
     describe "inherited handler" do
       before { handler1.receive("User", to_table: :clients) }
 
@@ -67,6 +61,64 @@ describe TableSync::Receiving::DSL do
         expect(handler3.configs["User"]).to be_an(Array)
         expect(handler1.configs["User"].size).to eq(1)
         expect(handler3.configs["User"].size).to eq(2)
+      end
+    end
+
+    context "to_model" do
+      let(:valid_model) do
+        Class.new do
+          class << self
+            def upsert(data:, target_keys:, version_key:, default_values:); end
+
+            def destroy(data:, target_keys:); end
+
+            def transaction(&block); end
+
+            def after_commit(&block); end
+
+            def columns; end
+
+            def primary_keys; end
+
+            def table; end
+
+            def schema; end
+          end
+        end
+      end
+
+      it "doesn't raise error" do
+        expect { handler1.receive("User", to_model: valid_model) }.not_to raise_error
+      end
+
+      context "invalid model" do
+        TableSync::Utils::InterfaceChecker::INTERFACES[:receiving_model].each do |meth|
+          context "without #{meth.first}" do
+            let(:invalid_model) { valid_model }
+
+            before { invalid_model.singleton_class.undef_method(meth.first) }
+
+            it "raises Interface Error" do
+              expect do
+                handler1.receive("User", to_model: invalid_model)
+              end.to raise_error(TableSync::InterfaceError)
+            end
+          end
+        end
+
+        context "method present, but incorrect" do
+          let(:invalid_model) { valid_model }
+
+          before do
+            invalid_model.singleton_class.define_method(:upsert) { "kek" }
+          end
+
+          it "raises Interface Error" do
+            expect do
+              handler1.receive("User", to_model: invalid_model)
+            end.to raise_error(TableSync::InterfaceError)
+          end
+        end
       end
     end
   end

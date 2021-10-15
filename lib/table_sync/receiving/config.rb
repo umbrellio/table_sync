@@ -4,18 +4,20 @@ module TableSync::Receiving
   class Config
     attr_reader :model, :events
 
-    def initialize(model:, events: AVAILABLE_EVENTS)
+    def initialize(model:, events: TableSync::Event::VALID_RESOLVED_EVENTS)
       @model = model
 
       @events = [events].flatten.map(&:to_sym)
 
-      unless @events.all? { |event| AVAILABLE_EVENTS.include?(event) }
-        raise TableSync::UndefinedEvent.new(events)
-      end
+      raise TableSync::UndefinedEvent.new(events) if invalid_events.any?
 
       self.class.default_values_for_options.each do |ivar, default_value_generator|
         instance_variable_set(ivar, default_value_generator.call(self))
       end
+    end
+
+    def invalid_events
+      events - TableSync::Event::VALID_RESOLVED_EVENTS
     end
 
     class << self
