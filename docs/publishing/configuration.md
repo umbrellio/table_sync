@@ -129,7 +129,7 @@ One possible way of using it is defining a headers exchange and routing rules ba
 Example:
 
 ```ruby
-TableSync.routing_metadata_callable = -> (klass, attributes) { attributes.slice("project_id") }
+TableSync.headers_callable = -> (klass, attributes) { attributes.slice("project_id") }
 ```
 
 ## Other
