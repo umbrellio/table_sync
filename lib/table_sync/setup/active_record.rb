@@ -8,7 +8,7 @@ module TableSync::Setup
       options = options_exposed_for_block
 
       object_class.after_commit(on: event) do
-        next if (self.new_record? && self.destroyed?)
+        next if new_record? && destroyed?
 
         if instance_eval(&options[:if]) && !instance_eval(&options[:unless])
           TableSync::Publishing::Single.new(
