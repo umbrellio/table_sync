@@ -41,6 +41,19 @@ class SomeOtherModel < Sequel::Model
 end
 ```
 
+ActiveRecord features:
+
+- Skip publish when object is new and event is destroy. 
+
+Example: 
+
+```ruby
+  user = User.new.destroy!
+  # `TableSync::Publishing::Single` isn't creating and message isn't sending to rabbit 
+```
+
+
+
 ## Manual
 
 Directly call one of the publishers. It's the best if you need to sync a lot of data.
