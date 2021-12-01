@@ -41,7 +41,7 @@ class SomeOtherModel < Sequel::Model
 end
 ```
 
-ActiveRecord features:
+Features of ActiveRecord:
 
 - Skip publish when object is new and event is destroy. 
 
@@ -52,6 +52,7 @@ Example:
   # `TableSync::Publishing::Single` isn't creating and message isn't sending to rabbit 
 ```
 
+If we repeat this example for Sequel we got error 'Sequel::NoExistingObject'
 
 
 ## Manual
