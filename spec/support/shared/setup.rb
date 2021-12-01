@@ -64,4 +64,27 @@ shared_examples "setup: enqueue job behaviour" do |test_class_name|
       include_examples "doesn't enqueue job"
     end
   end
+
+  context "when event destroy" do
+    before { setup_sync }
+
+    context "when user is persisted" do
+      specify do
+        expect(job).to receive(:perform_at)
+        test_class.first.destroy
+      end
+    end
+
+    context "when user is new record" do
+      specify do
+        expect(job).not_to receive(:perform_at)
+
+        if test_class_name == "TestARUser"
+          test_class.new.destroy
+        else
+          expect { test_class.new.destroy }.to raise_error(Sequel::NoExistingObject)
+        end
+      end
+    end
+  end
 end
