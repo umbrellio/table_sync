@@ -64,4 +64,15 @@ shared_examples "setup: enqueue job behaviour" do |test_class_name|
       include_examples "doesn't enqueue job"
     end
   end
+
+  context "when event destroy" do
+    before { setup_sync }
+
+    context "when user is persisted" do
+      specify do
+        expect(job).to receive(:perform_at)
+        test_class.first.destroy
+      end
+    end
+  end
 end

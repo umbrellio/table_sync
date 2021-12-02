@@ -41,6 +41,23 @@ class SomeOtherModel < Sequel::Model
 end
 ```
 
+### Non persisted record destruction
+
+Sometimes destroy event can happen for non persisted record. In this case we can expect the following:
+
+For Sequel: 'Sequel::NoExistingObject' is raised. (This is default Sequel behaviour)
+For Active Record: Publishing is skipped.
+
+Example:
+
+```ruby
+ # ActiveRecord
+  user = User.new.destroy! # Publishing is skipped.
+  
+ # Sequel 
+  user = User.new.destroy! # raise Sequel::NoExistingObject
+```
+
 ## Manual
 
 Directly call one of the publishers. It's the best if you need to sync a lot of data.

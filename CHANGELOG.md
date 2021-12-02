@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.0.2] - 2021-12-01
+### Fixed
+- Fixed bug: skip publish when object is new and event is destroy for ActiveRecord
+
 ## [6.0.1] - 2021-11-30
 ### Fixed
 - fixed docs
