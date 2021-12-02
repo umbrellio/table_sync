@@ -41,19 +41,22 @@ class SomeOtherModel < Sequel::Model
 end
 ```
 
-Features of ActiveRecord:
+### Non persisted record destruction
 
-- Skip publish when object is new and event is destroy. 
+Sometimes destroy event can happen for non persisted record. In this case we can expect the following:
 
-Example: 
+For Sequel: 'Sequel::NoExistingObject' is raised. (This is default Sequel behaviour)
+For Active Record: Publishing is skipped.
+
+Example:
 
 ```ruby
-  user = User.new.destroy!
-  # `TableSync::Publishing::Single` isn't creating and message isn't sending to rabbit 
+ # ActiveRecord
+  user = User.new.destroy! # Publishing is skipped.
+  
+ # Sequel 
+  user = User.new.destroy! # raise Sequel::NoExistingObject
 ```
-
-If we repeat this example for Sequel we got error 'Sequel::NoExistingObject'
-
 
 ## Manual
 

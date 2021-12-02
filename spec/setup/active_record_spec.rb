@@ -26,4 +26,22 @@ describe TableSync::Setup::ActiveRecord do
       setup_sync
     end
   end
+
+  context "when event destroy" do
+    before { setup_sync }
+
+    context "when user is persisted" do
+      specify do
+        expect(job).to receive(:perform_at)
+        test_class.first.destroy
+      end
+    end
+
+    context "when user is new record" do
+      specify do
+        expect(job).not_to receive(:perform_at)
+        test_class.new.destroy
+      end
+    end
+  end
 end
