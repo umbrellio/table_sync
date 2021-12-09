@@ -9,7 +9,8 @@ RSpec.describe TableSync::Publishing::Batch do
   let(:event)	{ :update }
   let(:object_class)				  { "ARecordUser" }
   let(:routing_key)					  { object_class.tableize }
-  let(:headers)					      { { klass: object_class } }
+  let(:expected_routing_key) { "a_record_users" }
+  let(:headers) { { klass: object_class } }
 
   let(:attributes) do
     {
@@ -27,6 +28,16 @@ RSpec.describe TableSync::Publishing::Batch do
   context "real user" do
     context "sequel" do
       let(:object_class) { "SequelUser" }
+      let(:expected_routing_key) { "sequel_users" }
+
+      include_examples "publisher#publish_now with real user, for given orm",
+                       :sequel
+    end
+
+    context "when routing key is nil" do
+      let(:object_class) { "SequelUser" }
+      let(:routing_key) { nil }
+      let(:expected_routing_key) { "sequel_users" }
 
       include_examples "publisher#publish_now with real user, for given orm",
                        :sequel

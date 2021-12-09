@@ -47,7 +47,7 @@ module TableSync::Publishing::Message
 
     def params
       TableSync::Publishing::Params::Raw.new(
-        object_class: object_class, routing_key: routing_key, headers: headers,
+        attributes.slice(:object_class, :headers, :routing_key).compact,
       ).construct
     end
   end

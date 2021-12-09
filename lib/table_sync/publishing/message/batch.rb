@@ -7,7 +7,7 @@ module TableSync::Publishing::Message
 
     def params
       TableSync::Publishing::Params::Batch.new(
-        object_class: object_class, headers: headers, routing_key: routing_key,
+        attributes.slice(:object_class, :headers, :routing_key).compact,
       ).construct
     end
   end
