@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.0.3] - 2021-12-09
+### Fixed
+Fixed bug when routing key is nil.
+
 ## [6.0.2] - 2021-12-01
 ### Fixed
 - Fixed bug: skip publish when object is new and event is destroy for ActiveRecord
