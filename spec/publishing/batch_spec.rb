@@ -10,7 +10,7 @@ RSpec.describe TableSync::Publishing::Batch do
   let(:object_class)				  { "ARecordUser" }
   let(:routing_key)					  { object_class.tableize }
   let(:expected_routing_key) { "a_record_users" }
-  let(:headers)					      { { klass: object_class } }
+  let(:headers) { { klass: object_class } }
 
   let(:attributes) do
     {
