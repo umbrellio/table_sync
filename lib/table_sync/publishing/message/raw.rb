@@ -46,9 +46,14 @@ module TableSync::Publishing::Message
     end
 
     def params
-      TableSync::Publishing::Params::Raw.new(
-        object_class: object_class, routing_key: routing_key, headers: headers,
-      ).construct
+      TableSync::Publishing::Params::Raw.new(**params_keys).construct
+    end
+
+    def params_keys
+      { object_class: object_class }.tap do |hash|
+        hash[:headers] = headers unless headers.nil?
+        hash[:routing_key] = routing_key unless routing_key.nil?
+      end
     end
   end
 end
