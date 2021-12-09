@@ -6,14 +6,9 @@ module TableSync::Publishing::Message
     attribute :routing_key
 
     def params
-      TableSync::Publishing::Params::Batch.new(**params_keys).construct
-    end
-
-    def params_keys
-      { object_class: object_class }.tap do |hash|
-        hash[:headers] = headers unless headers.nil?
-        hash[:routing_key] = routing_key unless routing_key.nil?
-      end
+      TableSync::Publishing::Params::Batch.new(
+        attributes.slice(:object_class, :headers, :routing_key).compact,
+      ).construct
     end
   end
 end
