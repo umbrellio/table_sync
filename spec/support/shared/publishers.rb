@@ -40,7 +40,7 @@ shared_examples "publisher#publish_now without stubbed message" do
             model: object_class,
             version: an_instance_of(Float),
           ),
-          routing_key: routing_key, # defined by callable by default
+          routing_key: expected_routing_key, # defined by callable by default
           headers: headers, # defined by callable by default
         )
       end

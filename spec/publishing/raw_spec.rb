@@ -4,6 +4,7 @@ RSpec.describe TableSync::Publishing::Raw do
   let(:object_class) { "SequelUser" }
   let(:event)               { :update }
   let(:routing_key)         { "custom_routing_key" }
+  let(:expected_routing_key) { "custom_routing_key" }
   let(:headers) { { some_key: "123" } }
   let(:original_attributes) { [{ id: 1, name: "purum" }] }
 
@@ -24,4 +25,12 @@ RSpec.describe TableSync::Publishing::Raw do
 
   include_examples "publisher#publish_now without stubbed message",
                    TableSync::Publishing::Message::Raw
+
+  context "when routing_key is nil" do
+    let(:routing_key)         { nil }
+    let(:expected_routing_key) { "sequel_users" }
+
+    include_examples "publisher#publish_now without stubbed message",
+                     TableSync::Publishing::Message::Raw
+  end
 end
