@@ -35,3 +35,7 @@ Lint/MissingSuper:
 
 Style/MissingRespondToMissing:
   Enabled: false
+
+Style/HashConversion:
+  Exclude:
+    - spec/**/*

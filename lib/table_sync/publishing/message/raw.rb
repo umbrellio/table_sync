@@ -5,6 +5,7 @@ module TableSync::Publishing::Message
     include Tainbox
 
     attribute :object_class
+    attribute :model_name
     attribute :original_attributes
     attribute :routing_key
     attribute :headers
@@ -41,8 +42,12 @@ module TableSync::Publishing::Message
 
     def data
       TableSync::Publishing::Data::Raw.new(
-        object_class: object_class, attributes_for_sync: original_attributes, event: event,
+        model_name: resolve_model_name, attributes_for_sync: original_attributes, event: event,
       ).construct
+    end
+
+    def resolve_model_name
+      model_name || object_class
     end
 
     def params

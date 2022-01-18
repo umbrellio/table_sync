@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 
 - `Debouncer` calculates proper `next_sync_time`
 
+## [6.1.0] - 2022-01-18
+### Added
+- Ability to specify a model name other than the class name, when using `raw` publishing.
+
 ## [6.0.3] - 2021-12-09
 ### Fixed
 Fixed bug when routing key is nil.

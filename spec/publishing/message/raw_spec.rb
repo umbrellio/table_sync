@@ -5,6 +5,7 @@ describe TableSync::Publishing::Message::Raw do
     let(:attributes) do
       {
         object_class: "SequelUser",
+        model_name: "User",
         original_attributes: [{ id: 1 }],
         routing_key: "users",
         headers: { kek: 1 },
@@ -21,7 +22,7 @@ describe TableSync::Publishing::Message::Raw do
 
       let(:data_attributes) do
         {
-          object_class: attributes[:object_class],
+          model_name: attributes[:model_name],
           attributes_for_sync: attributes[:original_attributes],
           event: attributes[:event],
         }

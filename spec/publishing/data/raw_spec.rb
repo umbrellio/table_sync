@@ -2,14 +2,14 @@
 
 describe TableSync::Publishing::Data::Raw do
   let(:data)                { described_class.new(**params) }
-  let(:object_class)        { "User" }
+  let(:model_name)          { "User" }
   let(:attributes_for_sync) { [{ id: 1, asd: "asd" }, { id: 22, time: Time.current }] }
   let(:event)               { :update }
   let(:resolved_event)      { :update }
 
   let(:params) do
     {
-      object_class: object_class,
+      model_name: model_name,
       attributes_for_sync: attributes_for_sync,
       event: event,
     }
@@ -17,12 +17,20 @@ describe TableSync::Publishing::Data::Raw do
 
   let(:expected_data) do
     {
-      model: object_class,
+      model: model_name,
       attributes: attributes_for_sync,
       version: an_instance_of(Float),
       event: resolved_event,
       metadata: metadata,
     }
+  end
+
+  context "with unwrapped attributes for sync" do
+    let(:attributes_for_sync) { Hash[id: 1, kek: "pek"] }
+
+    it "wraps attributes in an array" do
+      expect(data.construct).to include(attributes: [id: 1, kek: "pek"])
+    end
   end
 
   shared_examples "correctly constructs data for message" do

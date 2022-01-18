@@ -91,7 +91,7 @@ Job is defined in `TableSync.single_publishing_job_class_callable` as a proc. Re
 ### What it does (when uses `#publish_later`):
 - takes in the `original_attributes`, `object_class`, `event`, `routing_key`, `headers`
 - serializes the array of `original_attributes`, silently filters out unserializable keys/values
-- enqueues the job with the `serialized_original_attributes` 
+- enqueues the job with the `serialized_original_attributes`
 - job calls `TableSync::Publishing::Batch#publish_now` with `serialized_original_attributes` and the same `object_class`, `event`, `routing_key`, `headers`
 
 ### Serialization
@@ -136,6 +136,8 @@ You can send anything.
 ### Expected parameters:
 
 - `object_class` - model
+- `model_name` - name of model, which will be insterted to the message payload. If `nil`,
+`object_class` will be used instead
 - `original_attributes` - raw data that will be sent
 - `event` - type of event that happened to the published objects (`create`, `update`, `destroy`); `update` by default
 - `routing_key` - custom routing_key

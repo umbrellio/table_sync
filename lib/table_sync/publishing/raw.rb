@@ -4,6 +4,7 @@ class TableSync::Publishing::Raw
   include Tainbox
 
   attribute :object_class
+  attribute :model_name
   attribute :original_attributes
 
   attribute :routing_key
