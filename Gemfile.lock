@@ -3,7 +3,6 @@ PATH
   specs:
     table_sync (6.0.4)
       memery
-      nokogiri (~> 1.12.5)
       rabbit_messaging
       rails
       self_data
