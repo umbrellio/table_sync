@@ -27,6 +27,7 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_runtime_dependency "memery"
+  spec.add_runtime_dependency "nokogiri", "~> 1.12.5"
   spec.add_runtime_dependency "rabbit_messaging"
   spec.add_runtime_dependency "rails"
   spec.add_runtime_dependency "self_data"
