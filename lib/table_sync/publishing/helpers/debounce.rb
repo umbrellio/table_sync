@@ -63,7 +63,7 @@ module TableSync::Publishing::Helpers
     end
 
     def skip?
-      true if sync_in_the_future? && upsert_event? # case 3.1
+      sync_in_the_future? && upsert_event? # case 3.1
     end
 
     memoize def next_sync_time
@@ -87,16 +87,16 @@ module TableSync::Publishing::Helpers
     end
 
     def debounce_time_passed?
-      cached_sync_time + debounce_time.seconds >= current_time
+      cached_sync_time + debounce_time.seconds <= current_time
     end
 
     def debounce_time_not_passed?
-      cached_sync_time + debounce_time.seconds < current_time
+      cached_sync_time + debounce_time.seconds > current_time
     end
 
     # CASE 3
     def sync_in_the_future?
-      cached_sync_time && (cached_sync_time > current_time)
+      !!cached_sync_time && (cached_sync_time > current_time)
     end
 
     def destroy_event?
