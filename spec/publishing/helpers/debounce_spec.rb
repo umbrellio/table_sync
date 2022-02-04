@@ -94,7 +94,7 @@ describe TableSync::Publishing::Helpers::Debounce do
 
     context "case 3.2: event destroy" do
       let(:event)         { :destroy }
-      let(:expected_time) { cached_time + debounce_time.seconds }
+      let(:expected_time) { cached_time + 30.seconds }
 
       include_examples "skip? returns", false
       include_examples "returns correct next_sync_time"
