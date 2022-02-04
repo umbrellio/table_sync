@@ -40,6 +40,7 @@ RSpec.configure do |config|
   config.filter_run_when_matching :focus
   config.default_formatter = "doc" if config.files_to_run.one?
   config.expose_dsl_globally = true
+  config.profile_examples = 10
 
   config.expect_with(:rspec) do |expectations|
     expectations.syntax = :expect

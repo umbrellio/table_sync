@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.0.4] - 2022-02-05
+### Fixed
+
+- `Debouncer` calculates proper `next_sync_time`
+
 ## [6.0.3] - 2021-12-09
 ### Fixed
 Fixed bug when routing key is nil.
@@ -45,7 +50,7 @@ Separate classes for publishing, object data, Rabbit params, debounce, serializa
 
 6. Changed ORMAdapters.
 
-7. Destroyed objects are initialized. 
+7. Destroyed objects are initialized.
 Now custom attributes for destruction will be called on instances.
 - Obj.table_sync_destroy_attributes() -> Obj#attributes_for_destroy
 
