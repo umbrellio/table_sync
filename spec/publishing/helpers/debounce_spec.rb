@@ -47,35 +47,35 @@ describe TableSync::Publishing::Helpers::Debounce do
     let(:debounce_time) { 0 }
     let(:expected_time) { current_time }
 
-    include_examples "skip? returns", nil
+    include_examples "skip? returns", false
     include_examples "returns correct next_sync_time"
   end
 
   context "case 1: cached sync time is empty" do
     let(:expected_time) { current_time }
 
-    include_examples "skip? returns", nil
+    include_examples "skip? returns", false
     include_examples "returns correct next_sync_time"
   end
 
   context "case 2: cached sync time in the past" do
     context "case 2.1: debounce time passed" do
       let(:expected_time) { current_time }
-      let(:cached_time)   { current_time - debounce_time.seconds + 10.seconds }
+      let(:cached_time)   { current_time - 30.seconds }
 
       before { set_cached_sync_time(cached_time) }
 
-      include_examples "skip? returns", nil
+      include_examples "skip? returns", false
       include_examples "returns correct next_sync_time"
     end
 
     context "case 2.2: debounce time not passed yet" do
-      let(:expected_time) { cached_time + debounce_time.seconds }
-      let(:cached_time)   { current_time - debounce_time.seconds - 10.seconds }
+      let(:expected_time) { cached_time + 30.seconds }
+      let(:cached_time)   { current_time }
 
       before { set_cached_sync_time(cached_time) }
 
-      include_examples "skip? returns", nil
+      include_examples "skip? returns", false
       include_examples "returns correct next_sync_time"
     end
   end
@@ -94,9 +94,9 @@ describe TableSync::Publishing::Helpers::Debounce do
 
     context "case 3.2: event destroy" do
       let(:event)         { :destroy }
-      let(:expected_time) { cached_time + debounce_time.seconds }
+      let(:expected_time) { cached_time + 30.seconds }
 
-      include_examples "skip? returns", nil
+      include_examples "skip? returns", false
       include_examples "returns correct next_sync_time"
     end
   end
