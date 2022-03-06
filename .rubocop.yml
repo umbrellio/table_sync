@@ -39,3 +39,7 @@ Style/MissingRespondToMissing:
 Style/HashConversion:
   Exclude:
     - spec/**/*
+
+Style/OpenStructUse:
+  Exclude:
+    - spec/**/*

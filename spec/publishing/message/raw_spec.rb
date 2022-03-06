@@ -4,7 +4,6 @@ describe TableSync::Publishing::Message::Raw do
   describe "#publish" do
     let(:attributes) do
       {
-        object_class: "SequelUser",
         model_name: "User",
         original_attributes: [{ id: 1 }],
         routing_key: "users",
@@ -30,7 +29,7 @@ describe TableSync::Publishing::Message::Raw do
 
       let(:params_attributes) do
         {
-          object_class: attributes[:object_class],
+          model_name: attributes[:model_name],
           routing_key: attributes[:routing_key],
           headers: attributes[:headers],
         }

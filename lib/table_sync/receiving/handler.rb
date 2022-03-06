@@ -115,7 +115,7 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
 
     keys_sample = data[0].keys
     keys_diff = data.each_with_object(Set.new) do |row, set|
-      (row.keys - keys_sample | keys_sample - row.keys).each { |x| set.add(x) }
+      ((row.keys - keys_sample) | (keys_sample - row.keys)).each { |x| set.add(x) }
     end
 
     unless keys_diff.empty?
