@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module TableSync::Instrument
+  NOTIFIER_REQUIRED_ARGS = %i[table schema event count direction].freeze
+
   extend self
 
   def notify(**args)
@@ -21,13 +23,9 @@ module TableSync::Instrument
   end
 
   def validate_args!(**args)
-    missing_keywords = required_args - args.compact.keys
+    missing_keywords = NOTIFIER_REQUIRED_ARGS - args.compact.keys
     return if missing_keywords.blank?
 
     raise ArgumentError, "Missing keywords: #{missing_keywords.join(', ')}."
-  end
-
-  def required_args
-    @required_args ||= %i[table schema event count direction].freeze
   end
 end

@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.1.0] - 2022-11-24
+### Changed
+
+- Instead of using `object_class` for `TableSync::Publishing::Raw`, use `model_name`,
+  which accepts `String` instead of `Class`.
+- Can manually disable notifications by setting `TableSync.notify = false`.
+- `TableSync::Publishing::Raw` accepts two additional optional arguments: `table_name` and `schema`,
+  this attributes only used to fill information for the notification.
+
 ## [6.0.4] - 2022-02-05
 ### Fixed
 
