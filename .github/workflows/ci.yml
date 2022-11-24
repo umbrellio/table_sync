@@ -47,6 +47,6 @@ jobs:
     - run: bundle exec rubocop
     - run: bundle exec rspec
 
-    - uses: coverallsapp/github-action@v1.1.2
+    - uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
