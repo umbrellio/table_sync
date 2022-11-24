@@ -2,9 +2,8 @@
 
 module TableSync::Publishing::Params
   class Raw < Batch
-    include Tainbox
-
     attribute :model_name
-    attribute :object_class, default: -> { model_name }, writer: false
+
+    alias_method :object_class, :model_name
   end
 end
