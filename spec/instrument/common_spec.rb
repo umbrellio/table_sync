@@ -6,7 +6,7 @@ describe TableSync::Instrument do
   end
 
   let(:notifier) { double(:notifier) }
-  let(:notify_args) { notify_keys.map { |x| [x, Object.new] }.to_h }
+  let(:notify_args) { notify_keys.to_h { |x| [x, Object.new] } }
   let(:notify_keys) { %i[table schema event count direction] }
 
   before { TableSync.notifier = notifier }

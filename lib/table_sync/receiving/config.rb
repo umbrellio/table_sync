@@ -101,12 +101,12 @@ exactly_hash = proc do |block_for_keys, block_for_values|
       raise TableSync::WrongOptionValue.new(model, option_name, new_value)
     end
 
-    new_value.to_a.map do |key, value|
+    new_value.to_a.to_h do |key, value|
       [
         instance_exec("#{option_name} keys", key, &block_for_keys),
         instance_exec("#{option_name} values", value, &block_for_values),
       ]
-    end.to_h
+    end
   end
 end
 

@@ -77,7 +77,7 @@ module TableSync::Receiving::Model
     end
 
     def update_spec(keys)
-      keys.map { |key| [key, ::Sequel[:excluded][key]] }.to_h
+      keys.to_h { |key| [key, ::Sequel[:excluded][key]] }
     end
   end
 end
