@@ -90,7 +90,7 @@ GEM
       concurrent-ruby (~> 1.0)
     lamian (1.5.0)
       rails (>= 4.2)
-    loofah (2.13.0)
+    loofah (2.19.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -119,7 +119,7 @@ GEM
       rails (>= 5.2)
       sneakers (~> 2.0)
       tainbox
-    racc (1.6.0)
+    racc (1.6.1)
     rack (2.2.3)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
