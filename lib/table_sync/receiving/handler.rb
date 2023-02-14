@@ -77,7 +77,7 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
   end
 
   def processed_data(config)
-    data.map do |row|
+    data.filter_map do |row|
       next if config.skip(row: row)
 
       row = row.dup
@@ -97,7 +97,7 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
       (row[rest_key] ||= {}).merge!(rest) if rest_key
 
       row
-    end.compact
+    end
   end
 
   def validate_data(data, target_keys:)

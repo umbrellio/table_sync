@@ -58,7 +58,7 @@ end
         allow(Player).to receive(:find).and_return(player)
         allow(Rabbit).to receive(:publish).and_return(nil)
 
-        ::ActiveSupport::Notifications.subscribe("tablesync.publish.update") do |*args|
+        ActiveSupport::Notifications.subscribe("tablesync.publish.update") do |*args|
           events << ActiveSupport::Notifications::Event.new(*args)
         end
 

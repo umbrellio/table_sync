@@ -60,7 +60,7 @@ module TableSync::Receiving::Model
     end
 
     def upsert(data:, target_keys:, version_key:, default_values:)
-      data.map do |datum|
+      data.filter_map do |datum|
         conditions = datum.select { |k| target_keys.include?(k) }
 
         row = raw_model.lock("FOR NO KEY UPDATE").where(conditions)
@@ -81,7 +81,7 @@ module TableSync::Receiving::Model
         end
 
         row_to_hash(row)
-      end.compact
+      end
     end
 
     def destroy(data:, target_keys:, version_key:)

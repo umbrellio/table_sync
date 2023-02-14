@@ -2,7 +2,7 @@ inherit_gem:
   rubocop-config-umbrellio: lib/rubocop.yml
 
 AllCops:
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 2.7
   Include:
     - bin/*
     - lib/**/*.rb
@@ -43,3 +43,6 @@ Style/HashConversion:
 Style/OpenStructUse:
   Exclude:
     - spec/**/*
+
+RSpec/PendingWithoutReason:
+  Enabled: false # Many false positives
