@@ -45,7 +45,7 @@ describe TableSync::Receiving::DSL do
       expect(test_proc).to receive(:call).with(project_id: "some project_id")
       config.after_commit_on_update.call(data: "some data", project_id: "some project_id")
 
-      test_block = proc { nil }
+      test_block = proc {}
       expect(test_proc).to receive(:call).with(data: "data", block: test_block)
       config.wrap_receiving.call(data: "data", &test_block)
     end

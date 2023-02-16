@@ -37,12 +37,13 @@ module TableSync
     attr_accessor :routing_key_callable
     attr_accessor :exchange_name
     attr_accessor :headers_callable
-    attr_accessor :notifier
+    attr_accessor :notify
 
     attr_reader :orm
     attr_reader :publishing_adapter
     attr_reader :receiving_model
     attr_reader :setup
+    attr_reader :notifier
 
     def sync(object_class, **options)
       setup.new(
@@ -69,6 +70,16 @@ module TableSync
       end
 
       @orm = val
+    end
+
+    def notifier=(value)
+      self.notify = true if notify.nil?
+
+      @notifier = value
+    end
+
+    def notify?
+      !!notify
     end
   end
 end

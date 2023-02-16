@@ -1,4 +1,4 @@
-# frozen-string_literal: true
+# frozen_string_literal: true
 
 module TableSync::Setup
   class Sequel < Base

@@ -2,6 +2,8 @@
 
 module TableSync::Publishing::Params
   class Raw < Batch
-    # FOR NAMING CONSISTENCY
+    attribute :model_name
+
+    alias_method :object_class, :model_name
   end
 end

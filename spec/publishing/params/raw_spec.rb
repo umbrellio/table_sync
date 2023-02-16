@@ -3,7 +3,7 @@
 describe TableSync::Publishing::Params::Raw do
   let(:object_class)       { "User" }
   let(:attributes)         { default_attributes }
-  let(:default_attributes) { { object_class: object_class } }
+  let(:default_attributes) { { model_name: object_class } }
   let(:service)            { described_class.new(attributes) }
 
   let(:default_expected_values) do

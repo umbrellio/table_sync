@@ -4,6 +4,7 @@ module TableSync
   Error = Class.new(StandardError)
 
   NoObjectsForSyncError = Class.new(Error)
+  InvalidConfig = Class.new(Error)
 
   class EventError < Error
     def initialize(event)
@@ -61,9 +62,9 @@ module TableSync
 
         case type
         when :req
-          #:nocov:
+          # :nocov:
           name.to_s
-          #:nocov:
+          # :nocov:
         when :keyreq
           "#{name}:"
         when :block

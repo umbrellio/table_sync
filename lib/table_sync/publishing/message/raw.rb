@@ -4,8 +4,11 @@ module TableSync::Publishing::Message
   class Raw
     include Tainbox
 
-    attribute :object_class
+    attribute :model_name
+    attribute :table_name
+    attribute :schema_name
     attribute :original_attributes
+
     attribute :routing_key
     attribute :headers
 
@@ -21,16 +24,12 @@ module TableSync::Publishing::Message
 
     def notify!
       TableSync::Instrument.notify(
-        table: model_naming.table,
-        schema: model_naming.schema,
+        table: table_name,
+        schema: schema_name,
         event: event,
         count: original_attributes.count,
         direction: :publish,
       )
-    end
-
-    def model_naming
-      TableSync.publishing_adapter.model_naming(object_class.constantize)
     end
 
     # MESSAGE PARAMS
@@ -41,13 +40,13 @@ module TableSync::Publishing::Message
 
     def data
       TableSync::Publishing::Data::Raw.new(
-        object_class: object_class, attributes_for_sync: original_attributes, event: event,
+        model_name: model_name, attributes_for_sync: original_attributes, event: event,
       ).construct
     end
 
     def params
       TableSync::Publishing::Params::Raw.new(
-        attributes.slice(:object_class, :headers, :routing_key).compact,
+        attributes.slice(:model_name, :headers, :routing_key).compact,
       ).construct
     end
   end

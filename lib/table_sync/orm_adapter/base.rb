@@ -4,6 +4,12 @@ module TableSync::ORMAdapter
   class Base
     attr_reader :object, :object_class, :object_data
 
+    # :nocov:
+    def self.model_naming
+      raise NotImplementedError
+    end
+    # :nocov:
+
     def initialize(object_class, object_data)
       @object_class = object_class
       @object_data  = object_data.symbolize_keys
@@ -81,10 +87,6 @@ module TableSync::ORMAdapter
 
     # :nocov:
     def attributes
-      raise NotImplementedError
-    end
-
-    def self.model_naming
       raise NotImplementedError
     end
     # :nocov:

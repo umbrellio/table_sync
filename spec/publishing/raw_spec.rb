@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe TableSync::Publishing::Raw do
-  let(:object_class) { "SequelUser" }
+  let(:model_name) { "SequelUser" }
+  let(:object_class) { model_name }
   let(:event)               { :update }
   let(:routing_key)         { "custom_routing_key" }
   let(:expected_routing_key) { "custom_routing_key" }
@@ -10,11 +11,13 @@ RSpec.describe TableSync::Publishing::Raw do
 
   let(:attributes) do
     {
-      object_class: object_class,
+      model_name: model_name,
       original_attributes: original_attributes,
       routing_key: routing_key,
       headers: headers,
       event: event,
+      table_name: nil,
+      schema_name: nil,
     }
   end
 

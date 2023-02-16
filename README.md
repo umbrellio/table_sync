@@ -20,13 +20,7 @@ require 'table_sync'
 
 ## Usage
 
-- [Message protocol](docs/message_protocol.md)
-- [Publishing](docs/publishing.md)
-    - [Publishers](docs/publishing/publishers.md)
-    - [Configuration](docs/publishing/configuration.md)
-    - [Manual Sync (examples)](docs/publishing/manual.md)
-- [Receiving](docs/receiving.md)
-- [Notifications](docs/notifications.md)
+Usage information available in the [Wiki](https://github.com/umbrellio/table_sync/wiki).
 
 ## Contributing
 
