@@ -140,7 +140,7 @@ GEM
       sneakers (~> 2.0)
       tainbox
     racc (1.6.2)
-    rack (2.2.6.2)
+    rack (2.2.6.3)
     rack-test (2.0.2)
       rack (>= 1.3)
     rails (7.0.4.2)
