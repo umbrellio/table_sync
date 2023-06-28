@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.2.0] - 2023-06-29
+### Changed
+- `rabbit_messaging` gem version is locked on `~> 0.13` in order to provide a way to keep "up-to-date"
+  the actual rabbit_messaging gem version on our projects with table_sync update;
+
 ## [6.1.0] - 2022-11-24
 ### Changed
 
