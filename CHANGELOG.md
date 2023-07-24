@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [6.3.0] -- 2023-07-24
+## [6.3.0] - 2023-07-24
 ### Changed
 - Send all original attributes for `delete` events instead of just PK.
 
