@@ -72,8 +72,6 @@ describe TableSync::Publishing::Data::Objects do
       let(:resolved_event) { :destroy }
 
       context "without #attributes_for_destroy" do
-        let(:expected_attributes) { { id: object.object.id } }
-
         include_examples "correctly constructs data for message"
       end
 
