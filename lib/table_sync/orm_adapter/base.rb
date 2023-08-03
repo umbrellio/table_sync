@@ -53,7 +53,7 @@ module TableSync::ORMAdapter
       if object.respond_to?(:attributes_for_destroy)
         object.attributes_for_destroy
       else
-        needle
+        attributes
       end
     end
 
