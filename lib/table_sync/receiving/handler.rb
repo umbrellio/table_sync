@@ -23,7 +23,7 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
 
       validate_data(data, target_keys: target_keys)
 
-      data.sort_by! { |row| row.values_at(*target_keys) }
+      data.sort_by! { |row| row.values_at(*target_keys).to_s }
 
       params = { data: data, target_keys: target_keys, version_key: version_key }
 
