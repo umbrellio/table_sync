@@ -151,7 +151,6 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
   end
 
   def sort_key(value)
-    # value.respond_to?(:>) ? value : value.to_s
-    value
+    value.respond_to?(:>) ? value : value.to_s
   end
 end
