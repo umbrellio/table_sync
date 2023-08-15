@@ -2,6 +2,7 @@
 
 class TableSync::Publishing::Batch
   include Tainbox
+  include TableSync::Utils::RequiredValidator
 
   attribute :object_class
   attribute :original_attributes
@@ -10,6 +11,8 @@ class TableSync::Publishing::Batch
   attribute :headers
 
   attribute :event, default: :update
+
+  require_attributes :object_class, :original_attributes
 
   def publish_later
     job.perform_later(job_attributes)

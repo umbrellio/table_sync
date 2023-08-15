@@ -36,4 +36,8 @@ RSpec.describe TableSync::Publishing::Raw do
     include_examples "publisher#publish_now without stubbed message",
                      TableSync::Publishing::Message::Raw
   end
+
+  include_examples "publisher#new without expected fields",
+                   TableSync::Publishing::Raw,
+                   %i[model_name original_attributes]
 end
