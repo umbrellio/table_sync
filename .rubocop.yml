@@ -46,3 +46,9 @@ Style/OpenStructUse:
 
 RSpec/PendingWithoutReason:
   Enabled: false # Many false positives
+
+RSpec/SkipBlockInsideExample:
+  Enabled: false # Many false positives
+
+RSpec/IndexedLet:
+  Enabled: false
