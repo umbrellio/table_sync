@@ -2,6 +2,7 @@
 
 class TableSync::Publishing::Raw
   include Tainbox
+  include TableSync::Utils::RequiredValidator
 
   attribute :model_name
   attribute :table_name
@@ -12,6 +13,8 @@ class TableSync::Publishing::Raw
   attribute :headers
 
   attribute :event, default: :update
+
+  require_attributes :model_name, :original_attributes
 
   def publish_now
     message.publish

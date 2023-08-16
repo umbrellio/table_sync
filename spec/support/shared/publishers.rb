@@ -54,6 +54,22 @@ shared_examples "publisher#publish_now without stubbed message" do
   end
 end
 
+# needs let(:attributes)
+shared_examples "publisher#new without expected fields" do |publisher_class, required_attributes|
+  required_attributes.each do |attribute|
+    context "without #{attribute}" do
+      it "raises an error" do
+        expect { publisher_class.new(attributes.except(attribute)) }.to raise_error do |error|
+          expect(error).to be_an_instance_of(ArgumentError)
+          expect(error.message).to eq(
+            "Some of required attributes is not provided: [:#{attribute}]",
+          )
+        end
+      end
+    end
+  end
+end
+
 # needs let(:existing_user)
 shared_examples "publisher#publish_now with real user, for given orm" do |orm|
   let(:user) { DB[:users].where(id: existing_user.id).first }

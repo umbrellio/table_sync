@@ -24,6 +24,9 @@ RSpec.describe TableSync::Publishing::Batch do
 
   include_examples "publisher#publish_now with stubbed message",
                    TableSync::Publishing::Message::Batch
+  include_examples "publisher#new without expected fields",
+                   TableSync::Publishing::Batch,
+                   %i[object_class original_attributes]
 
   context "real user" do
     context "sequel" do
