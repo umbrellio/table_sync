@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.4.2] - 2023-11-14
+### Added
+- Required fields allow accepting empty collections.
+
 ## [6.4.1] - 2023-08-15
 ### Added
 - Required fields validation for the Raw and Batch publishers.

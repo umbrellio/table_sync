@@ -30,7 +30,7 @@ module TableSync::Utils::RequiredValidator
 
     def calculate_not_filled_attributes
       attributes
-        .select { |key, value| key.in?(self.class._required_attributes) && value.blank? }
+        .select { |key, value| key.in?(self.class._required_attributes) && value.nil? }
         .keys
     end
   end
