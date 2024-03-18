@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.4.3] - 2024-03-19
+### Added
+- Cache used in debouncing sync has expiration time now.
+
 ## [6.4.2] - 2023-11-14
 ### Added
 - Required fields allow accepting empty collections.
