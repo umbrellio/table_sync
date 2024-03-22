@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Add expiration time for cache used in debouncing sync
 - Update dependencies
+- Fix rubocop issue
 - Drop ruby 2.7 support
 
 ### Removed
