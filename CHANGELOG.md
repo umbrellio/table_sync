@@ -1,9 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [6.4.3] - 2024-03-19
+## [6.5.0] - 2024-03-19
 ### Added
-- Cache used in debouncing sync has expiration time now.
+- Add ruby 3.3 to ci workflow
+
+### Changed
+- Add expiration time for cache used in debouncing sync
+- Update dependencies
+- Drop ruby 2.7 support
+
+### Removed
+- Remove ruby 2.7 from ci workflow
 
 ## [6.4.2] - 2023-11-14
 ### Added
