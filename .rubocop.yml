@@ -2,7 +2,7 @@ inherit_gem:
   rubocop-config-umbrellio: lib/rubocop.yml
 
 AllCops:
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.0
   Include:
     - bin/*
     - lib/**/*.rb

@@ -24,7 +24,7 @@ require "rabbit_messaging" # NOTE: runtime dependency
 require "rabbit/test_helpers" # NOTE: from rabbit_messaging
 require "table_sync"
 
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |file| require file }
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |file| require file }
 
 TableSync::TestEnv.setup!
 

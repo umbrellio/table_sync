@@ -7,7 +7,7 @@ module Rails
         store[key]
       end
 
-      def write(key, value)
+      def write(key, value, _options = nil)
         store[key] = value
       end
 

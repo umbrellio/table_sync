@@ -63,10 +63,17 @@ describe TableSync::Publishing::Helpers::Debounce do
       let(:expected_time) { current_time }
       let(:cached_time)   { current_time - 30.seconds }
 
-      before { set_cached_sync_time(cached_time) }
+      context "cache existed" do
+        before { set_cached_sync_time(cached_time) }
 
-      include_examples "skip? returns", false
-      include_examples "returns correct next_sync_time"
+        include_examples "skip? returns", false
+        include_examples "returns correct next_sync_time"
+      end
+
+      context "cache expired" do
+        include_examples "skip? returns", false
+        include_examples "returns correct next_sync_time"
+      end
     end
 
     context "case 2.2: debounce time not passed yet" do
