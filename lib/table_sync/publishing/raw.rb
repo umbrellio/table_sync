@@ -7,7 +7,7 @@ class TableSync::Publishing::Raw
   attribute :table_name
   attribute :schema_name
   attribute :original_attributes
-
+  attribute :custom_version
   attribute :routing_key
   attribute :headers
 

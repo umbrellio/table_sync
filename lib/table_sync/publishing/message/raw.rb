@@ -11,7 +11,7 @@ module TableSync::Publishing::Message
 
     attribute :routing_key
     attribute :headers
-
+    attribute :custom_version
     attribute :event
 
     def publish
@@ -41,6 +41,7 @@ module TableSync::Publishing::Message
     def data
       TableSync::Publishing::Data::Raw.new(
         model_name: model_name, attributes_for_sync: original_attributes, event: event,
+        custom_version: custom_version,
       ).construct
     end
 
