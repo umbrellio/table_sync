@@ -6,6 +6,7 @@ module TableSync::Publishing::Message
 
     attr_reader :objects
 
+    attribute :custom_version
     attribute :object_class
     attribute :original_attributes
     attribute :event
@@ -44,7 +45,9 @@ module TableSync::Publishing::Message
 
     def data
       TableSync::Publishing::Data::Objects.new(
-        objects: objects, event: event,
+        objects: objects,
+        event: event,
+        custom_version: custom_version,
       ).construct
     end
 
