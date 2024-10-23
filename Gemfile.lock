@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    table_sync (6.5.0)
+    table_sync (6.5.1)
       memery
-      rabbit_messaging (~> 0.13)
+      rabbit_messaging (>= 0.13)
       rails
       self_data
 
