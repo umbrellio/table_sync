@@ -185,8 +185,6 @@
           end
 
           it "updates by pk" do
-            pending("AR sucks") if described_class == TableSync::Receiving::Model::ActiveRecord
-
             result = clients.upsert(
               data: [{ name: "test2", client_id: 222, project_id: 222, ts_version: 124 }],
               target_keys: %i[client_id project_id],
@@ -206,8 +204,6 @@
           end
 
           it "updates by composite unique constraint" do
-            pending("AR sucks") if described_class == TableSync::Receiving::Model::ActiveRecord
-
             result = clients.upsert(
               data: [{ name: "test2", ext_id: 222, ext_project_id: 222, ts_version: 124 }],
               target_keys: %i[ext_id ext_project_id],
@@ -239,8 +235,6 @@
 
           context "when multi update" do
             it "updates by composite unique constraint" do
-              pending("AR sucks") if described_class == TableSync::Receiving::Model::ActiveRecord
-
               result = clients.upsert(
                 data: [
                   { name: "test2", ext_id: 222, ext_project_id: 222, ts_version: 124,
@@ -434,8 +428,6 @@
 
     describe "#destroy" do
       it "destroys in table with composite primary keys" do
-        pending("AR sucks") if described_class == TableSync::Receiving::Model::ActiveRecord
-
         DB[:clients].multi_insert([
           {
             client_id: 111,
