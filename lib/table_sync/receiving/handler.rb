@@ -23,7 +23,7 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
 
       validate_data(data, target_keys: target_keys)
 
-      data.sort_by! { |row| row.values_at(*target_keys).to_s }
+      data.sort_by! { |row| row.values_at(*target_keys).map { |value| sort_key(value) } }
 
       params = { data: data, target_keys: target_keys, version_key: version_key }
 
@@ -148,5 +148,9 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
         model.after_commit { config.after_commit_on_destroy(**params.merge(results: results)) }
       end
     end
+  end
+
+  def sort_key(value)
+    value.is_a?(Comparable) ? value : value.to_s
   end
 end
