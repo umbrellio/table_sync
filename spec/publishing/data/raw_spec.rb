@@ -12,6 +12,7 @@ describe TableSync::Publishing::Data::Raw do
       model_name: model_name,
       attributes_for_sync: attributes_for_sync,
       event: event,
+      custom_version: nil,
     }
   end
 

@@ -19,6 +19,7 @@ RSpec.describe TableSync::Publishing::Batch do
       event: event,
       headers: headers,
       routing_key: routing_key,
+      custom_version: nil,
     }
   end
 

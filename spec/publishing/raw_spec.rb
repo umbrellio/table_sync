@@ -18,6 +18,7 @@ RSpec.describe TableSync::Publishing::Raw do
       event: event,
       table_name: nil,
       schema_name: nil,
+      custom_version: nil,
     }
   end
 

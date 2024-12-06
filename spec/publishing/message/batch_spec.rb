@@ -31,6 +31,7 @@ describe TableSync::Publishing::Message::Batch do
         {
           objects: collection_of_objects,
           event: attributes[:event],
+          custom_version: nil,
         }
       end
 

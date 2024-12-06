@@ -15,6 +15,7 @@ describe TableSync::Publishing::Data::Objects do
     {
       objects: objects,
       event: event,
+      custom_version: nil,
     }
   end
 

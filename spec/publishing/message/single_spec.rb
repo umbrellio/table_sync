@@ -13,6 +13,7 @@ describe TableSync::Publishing::Message::Single do
         routing_key: "users",
         headers: { kek: 1 },
         event: event,
+        custom_version: nil,
       }
     end
 
@@ -33,6 +34,7 @@ describe TableSync::Publishing::Message::Single do
         {
           objects: collection_of_objects,
           event: attributes[:event],
+          custom_version: attributes[:custom_version],
         }
       end
 

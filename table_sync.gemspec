@@ -5,7 +5,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "table_sync/version"
 
 Gem::Specification.new do |spec|
-  spec.required_ruby_version = ">= 3.0.0"
+  spec.required_ruby_version = ">= 3.1.0"
 
   spec.name        = "table_sync"
   spec.version     = TableSync::VERSION
@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_runtime_dependency "memery"
-  spec.add_runtime_dependency "rabbit_messaging", ">= 0.13"
+  spec.add_runtime_dependency "rabbit_messaging", ">= 1.1.0"
   spec.add_runtime_dependency "rails"
   spec.add_runtime_dependency "self_data"
 end

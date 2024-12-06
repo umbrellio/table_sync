@@ -18,6 +18,7 @@ RSpec.describe TableSync::Publishing::Single do
       original_attributes: original_attributes,
       event: event,
       debounce_time: debounce_time,
+      custom_version: nil,
     }
   end
 
