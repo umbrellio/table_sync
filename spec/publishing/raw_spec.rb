@@ -8,6 +8,8 @@ RSpec.describe TableSync::Publishing::Raw do
   let(:expected_routing_key) { "custom_routing_key" }
   let(:headers) { { some_key: "123" } }
   let(:original_attributes) { [{ id: 1, name: "purum" }] }
+  let(:table_name) { "sequel_users" }
+  let(:schema_name) { "public" }
 
   let(:attributes) do
     {
@@ -16,8 +18,8 @@ RSpec.describe TableSync::Publishing::Raw do
       routing_key:,
       headers:,
       event:,
-      table_name: nil,
-      schema_name: nil,
+      table_name:,
+      schema_name:,
       custom_version: nil,
     }
   end
@@ -40,5 +42,5 @@ RSpec.describe TableSync::Publishing::Raw do
 
   include_examples "publisher#new without expected fields",
                    TableSync::Publishing::Raw,
-                   %i[model_name original_attributes]
+                   %i[model_name original_attributes table_name schema_name]
 end

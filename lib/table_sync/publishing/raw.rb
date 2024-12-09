@@ -14,7 +14,7 @@ class TableSync::Publishing::Raw
 
   attribute :event, default: :update
 
-  require_attributes :model_name, :original_attributes
+  require_attributes :model_name, :original_attributes, :table_name, :schema_name
 
   def publish_now
     message.publish
