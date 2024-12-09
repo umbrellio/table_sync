@@ -12,7 +12,7 @@ module TableSync::Publishing::Data
 
     def construct
       {
-        model: model,
+        model:,
         attributes: attributes_for_sync,
         version: custom_version || version,
         event: event.resolve,

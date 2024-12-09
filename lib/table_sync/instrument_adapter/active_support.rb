@@ -6,11 +6,11 @@ module TableSync::InstrumentAdapter
 
     def notify(table:, schema:, event:, direction:, count: 1)
       ::ActiveSupport::Notifications.instrument "tablesync.#{direction}.#{event}",
-                                                count: count,
+                                                count:,
                                                 table: table.to_s,
                                                 schema: schema.to_s,
-                                                event: event,
-                                                direction: direction
+                                                event:,
+                                                direction:
     end
   end
 end

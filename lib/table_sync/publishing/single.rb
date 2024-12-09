@@ -31,10 +31,10 @@ class TableSync::Publishing::Single
 
   memoize def debounce
     TableSync::Publishing::Helpers::Debounce.new(
-      object_class: object_class,
+      object_class:,
       needle: message.object.needle,
-      debounce_time: debounce_time,
-      event: event,
+      debounce_time:,
+      event:,
     )
   end
 

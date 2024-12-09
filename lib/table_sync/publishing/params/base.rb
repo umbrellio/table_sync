@@ -10,9 +10,9 @@ module TableSync::Publishing::Params
 
     def construct
       DEFAULT_PARAMS.merge(
-        routing_key: routing_key,
-        headers: headers,
-        exchange_name: exchange_name,
+        routing_key:,
+        headers:,
+        exchange_name:,
       )
     end
 

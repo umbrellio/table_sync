@@ -14,11 +14,11 @@ RSpec.describe TableSync::Publishing::Batch do
 
   let(:attributes) do
     {
-      object_class: object_class,
-      original_attributes: original_attributes,
-      event: event,
-      headers: headers,
-      routing_key: routing_key,
+      object_class:,
+      original_attributes:,
+      event:,
+      headers:,
+      routing_key:,
       custom_version: nil,
     }
   end

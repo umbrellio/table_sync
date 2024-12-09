@@ -11,11 +11,11 @@ RSpec.describe TableSync::Publishing::Raw do
 
   let(:attributes) do
     {
-      model_name: model_name,
-      original_attributes: original_attributes,
-      routing_key: routing_key,
-      headers: headers,
-      event: event,
+      model_name:,
+      original_attributes:,
+      routing_key:,
+      headers:,
+      event:,
       table_name: nil,
       schema_name: nil,
       custom_version: nil,

@@ -6,11 +6,11 @@ describe TableSync::Publishing::Message::Batch do
 
     let(:attributes) do
       {
-        object_class: object_class,
+        object_class:,
         original_attributes: [{ id: 1 }],
         routing_key: "users",
         headers: { kek: 1 },
-        event: event,
+        event:,
       }
     end
 

@@ -14,10 +14,10 @@ RSpec.describe TableSync::Publishing::Single do
 
   let(:attributes) do
     {
-      object_class: object_class,
-      original_attributes: original_attributes,
-      event: event,
-      debounce_time: debounce_time,
+      object_class:,
+      original_attributes:,
+      event:,
+      debounce_time:,
       custom_version: nil,
     }
   end
@@ -81,10 +81,10 @@ RSpec.describe TableSync::Publishing::Single do
 
       it "calls debounce" do
         expect(TableSync::Publishing::Helpers::Debounce).to receive(:new).with(
-          object_class: object_class,
+          object_class:,
           needle: { id: 1 },
-          debounce_time: debounce_time,
-          event: event,
+          debounce_time:,
+          event:,
         )
 
         described_class.new(attributes).publish_later

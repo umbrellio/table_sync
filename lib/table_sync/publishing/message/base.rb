@@ -33,21 +33,21 @@ module TableSync::Publishing::Message
 
     def find_or_init_objects
       TableSync::Publishing::Helpers::Objects.new(
-        object_class: object_class, original_attributes: original_attributes, event: event,
+        object_class:, original_attributes:, event:,
       ).construct_list
     end
 
     # MESSAGE PARAMS
 
     def message_params
-      params.merge(data: data)
+      params.merge(data:)
     end
 
     def data
       TableSync::Publishing::Data::Objects.new(
-        objects: objects,
-        event: event,
-        custom_version: custom_version,
+        objects:,
+        event:,
+        custom_version:,
       ).construct
     end
 
@@ -63,7 +63,7 @@ module TableSync::Publishing::Message
       TableSync::Instrument.notify(
         table: model_naming.table,
         schema: model_naming.schema,
-        event: event,
+        event:,
         direction: :publish,
         count: objects.count,
       )
