@@ -4,12 +4,14 @@ All notable changes to this project will be documented in this file.
 ## [6.6.0] - 2024-12-06
 ### Added
 - Add custom version attributes
+- Set table_name and schema_name as required for TableSync::Publishing::Raw
 
 ### Changed
 - `rabbit_messaging` gem version is locked on `~> 1.1.0` in order to provide a way to keep "up-to-date"
   the actual rabbit_messaging gem version on our projects with table_sync update;
-- Drop ruby 3.0 from ci workflow
 
+### Removed
+- Remove ruby 3.0 from ci workflow
 
 ## [6.5.0] - 2024-03-19
 ### Added
