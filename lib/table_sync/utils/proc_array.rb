@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class TableSync::Utils::ProcArray < Proc
-  def initialize(&block)
+  def initialize(&)
     @array = []
-    super(&block)
+    super(&)
   end
 
   def push(&block)
@@ -11,7 +11,7 @@ class TableSync::Utils::ProcArray < Proc
     self
   end
 
-  def call(*args, &block)
-    super(@array, args, &block)
+  def call(*args, &)
+    super(@array, args, &)
   end
 end

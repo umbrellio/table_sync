@@ -36,19 +36,19 @@ describe TableSync::Publishing::Params::Raw do
     context "headers" do
       context "from attributes" do
         let(:headers)         { { custom: "kek" } }
-        let(:attributes)      { default_attributes.merge(headers: headers) }
-        let(:expected_values) { default_expected_values.merge(headers: headers) }
+        let(:attributes)      { default_attributes.merge(headers:) }
+        let(:expected_values) { default_expected_values.merge(headers:) }
 
         include_examples "constructs with expected values"
       end
 
       context "calculated" do
         let(:expected_values) do
-          default_expected_values.merge(headers: { object_class: object_class })
+          default_expected_values.merge(headers: { object_class: })
         end
 
         before do
-          TableSync.headers_callable = -> (object_class, _atrs) { { object_class: object_class } }
+          TableSync.headers_callable = -> (object_class, _atrs) { { object_class: } }
         end
 
         include_examples "constructs with expected values"
@@ -64,8 +64,8 @@ describe TableSync::Publishing::Params::Raw do
     context "routing_key" do
       context "from attributes" do
         let(:routing_key)     { "custom_routing_key" }
-        let(:attributes)      { default_attributes.merge(routing_key: routing_key) }
-        let(:expected_values) { default_expected_values.merge(routing_key: routing_key) }
+        let(:attributes)      { default_attributes.merge(routing_key:) }
+        let(:expected_values) { default_expected_values.merge(routing_key:) }
 
         include_examples "constructs with expected values"
       end
@@ -92,15 +92,15 @@ describe TableSync::Publishing::Params::Raw do
     context "exchange_name" do
       context "from attributes" do
         let(:exchange_name)   { "custom_exchange_name" }
-        let(:attributes)      { default_attributes.merge(exchange_name: exchange_name) }
-        let(:expected_values) { default_expected_values.merge(exchange_name: exchange_name) }
+        let(:attributes)      { default_attributes.merge(exchange_name:) }
+        let(:expected_values) { default_expected_values.merge(exchange_name:) }
 
         include_examples "constructs with expected values"
       end
 
       context "by default" do
         let(:exchange_name)   { "some.project.table_sync" }
-        let(:expected_values) { default_expected_values.merge(exchange_name: exchange_name) }
+        let(:expected_values) { default_expected_values.merge(exchange_name:) }
 
         before { TableSync.exchange_name = exchange_name }
 

@@ -35,13 +35,13 @@ shared_examples "publisher#publish_now without stubbed message" do
         a_hash_including(
           data: a_hash_including(
             attributes: expected_object_data,
-            event: event,
+            event:,
             metadata: { created: false },
             model: object_class,
             version: an_instance_of(Float),
           ),
           routing_key: expected_routing_key, # defined by callable by default
-          headers: headers, # defined by callable by default
+          headers:, # defined by callable by default
         )
       end
 

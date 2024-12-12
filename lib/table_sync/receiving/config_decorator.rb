@@ -10,18 +10,18 @@ module TableSync::Receiving
       @config = config
 
       @default_params = {
-        event: event,
-        model: model,
-        version: version,
-        project_id: project_id,
-        raw_data: raw_data,
+        event:,
+        model:,
+        version:,
+        project_id:,
+        raw_data:,
       }
     end
     # rubocop:enable Metrics/ParameterLists
 
-    def method_missing(name, **additional_params, &block)
+    def method_missing(name, **additional_params, &)
       value = @config.send(name)
-      value.is_a?(Proc) ? value.call(@default_params.merge(additional_params), &block) : value
+      value.is_a?(Proc) ? value.call(@default_params.merge(additional_params), &) : value
     end
   end
 end

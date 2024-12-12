@@ -16,22 +16,22 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
 
       next if data.empty?
 
-      version_key = config.version_key(data: data)
+      version_key = config.version_key(data:)
       data.each { |row| row[version_key] = version }
 
-      target_keys = config.target_keys(data: data)
+      target_keys = config.target_keys(data:)
 
-      validate_data(data, target_keys: target_keys)
+      validate_data(data, target_keys:)
 
       data.sort_by! { |row| row.values_at(*target_keys).map { |value| sort_key(value) } }
 
-      params = { data: data, target_keys: target_keys, version_key: version_key }
+      params = { data:, target_keys:, version_key: }
 
       if event == :update
-        params[:default_values] = config.default_values(data: data)
+        params[:default_values] = config.default_values(data:)
       end
 
-      config.wrap_receiving(event: event, **params) do
+      config.wrap_receiving(event:, **params) do
         perform(config, params)
       end
     end
@@ -64,12 +64,12 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
       configs = configs.sort_by { |config| "#{config.model.schema}.#{config.model.table}" }
       configs.map do |config|
         ::TableSync::Receiving::ConfigDecorator.new(
-          config: config,
+          config:,
           # next parameters will be send to each proc-options from config
-          event: event,
-          model: model,
-          version: version,
-          project_id: project_id,
+          event:,
+          model:,
+          version:,
+          project_id:,
           raw_data: data,
         )
       end
@@ -78,22 +78,22 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
 
   def processed_data(config)
     data.filter_map do |row|
-      next if config.skip(row: row)
+      next if config.skip(row:)
 
       row = row.dup
 
-      config.mapping_overrides(row: row).each do |before, after|
+      config.mapping_overrides(row:).each do |before, after|
         row[after] = row.delete(before)
       end
 
-      config.except(row: row).each { |x| row.delete(x) }
+      config.except(row:).each { |x| row.delete(x) }
 
-      row.merge!(config.additional_data(row: row))
+      row.merge!(config.additional_data(row:))
 
-      only = config.only(row: row)
+      only = config.only(row:)
       row, rest = row.partition { |key, _| key.in?(only) }.map(&:to_h)
 
-      rest_key = config.rest_key(row: row, rest: rest)
+      rest_key = config.rest_key(row:, rest:)
       (row[rest_key] ||= {}).merge!(rest) if rest_key
 
       row
@@ -139,13 +139,13 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
 
       model.after_commit do
         TableSync::Instrument.notify table: model.table, schema: model.schema,
-                                     count: results.count, event: event, direction: :receive
+                                     count: results.count, event:, direction: :receive
       end
 
       if event == :update
-        model.after_commit { config.after_commit_on_update(**params.merge(results: results)) }
+        model.after_commit { config.after_commit_on_update(**params.merge(results:)) }
       else
-        model.after_commit { config.after_commit_on_destroy(**params.merge(results: results)) }
+        model.after_commit { config.after_commit_on_destroy(**params.merge(results:)) }
       end
     end
   end

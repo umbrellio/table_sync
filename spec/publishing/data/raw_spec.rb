@@ -9,9 +9,10 @@ describe TableSync::Publishing::Data::Raw do
 
   let(:params) do
     {
-      model_name: model_name,
-      attributes_for_sync: attributes_for_sync,
-      event: event,
+      model_name:,
+      attributes_for_sync:,
+      event:,
+      custom_version: nil,
     }
   end
 
@@ -21,7 +22,7 @@ describe TableSync::Publishing::Data::Raw do
       attributes: attributes_for_sync,
       version: an_instance_of(Float),
       event: resolved_event,
-      metadata: metadata,
+      metadata:,
     }
   end
 

@@ -29,10 +29,10 @@ describe TableSync::Receiving::DSL do
           { custom_attr: project_id }
         end
 
-        after_commit_on_update { |data:| test_proc.call(data: data) }
-        after_commit_on_update { |project_id:| test_proc.call(project_id: project_id) }
+        after_commit_on_update { |data:| test_proc.call(data:) }
+        after_commit_on_update { |project_id:| test_proc.call(project_id:) }
 
-        wrap_receiving { |data:, &block| test_proc.call(data: data, block: block) }
+        wrap_receiving { |data:, &block| test_proc.call(data:, block:) }
       end
 
       expect(handler1.configs.key?("User")).to eq(true)
@@ -72,9 +72,9 @@ describe TableSync::Receiving::DSL do
 
             def destroy(data:, target_keys:); end
 
-            def transaction(&block); end
+            def transaction(&); end
 
-            def after_commit(&block); end
+            def after_commit(&); end
 
             def columns; end
 

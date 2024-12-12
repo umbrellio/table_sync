@@ -39,7 +39,7 @@ end
       allow(TableSync).to receive(:routing_key_callable) { proc { "routing_key_callable" } }
     end
 
-    let(:player)     { double("player", values: attributes, attributes: attributes) }
+    let(:player)     { double("player", values: attributes, attributes:) }
     let(:events)     { [] }
     let(:event)      { events.first }
     let(:attributes) { { "external_id" => 101, "email" => "email@example.com" } }
@@ -47,7 +47,7 @@ end
     let(:publisher) do
       publisher_class.new(
         object_class: "Player",
-        original_attributes: original_attributes,
+        original_attributes:,
         event: :update,
       )
     end

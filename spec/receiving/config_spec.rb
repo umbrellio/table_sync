@@ -5,31 +5,31 @@ describe TableSync::Receiving::Config do
 
   describe "#allow_event?" do
     it "sets events like a single value" do
-      config = described_class.new(model: model, events: :update)
+      config = described_class.new(model:, events: :update)
       expect(config.allow_event?(:update)).to be(true)
     end
 
     it "sets events like an array value" do
-      config = described_class.new(model: model, events: %i[update destroy])
+      config = described_class.new(model:, events: %i[update destroy])
       expect(config.allow_event?(:update)).to be(true)
       expect(config.allow_event?(:destroy)).to be(true)
     end
 
     it "returns true for :update and :destroy if events is not set" do
-      config = described_class.new(model: model)
+      config = described_class.new(model:)
       expect(config.allow_event?(:update)).to be(true)
       expect(config.allow_event?(:destroy)).to be(true)
       expect(config.allow_event?(:wrong_event)).to be(false)
     end
 
     it "returns false for wrong event" do
-      config = described_class.new(model: model, events: :update)
+      config = described_class.new(model:, events: :update)
       expect(config.allow_event?(:destroy)).to be(false)
     end
   end
 
   describe "options" do
-    let(:config) { described_class.new(model: model) }
+    let(:config) { described_class.new(model:) }
 
     describe "#only" do
       it "returns correct default value" do

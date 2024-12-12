@@ -60,7 +60,7 @@ module TableSync::Setup
       {
         if: if_condition,
         unless: unless_condition,
-        debounce_time: debounce_time,
+        debounce_time:,
       }
     end
   end

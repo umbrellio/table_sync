@@ -9,6 +9,7 @@ describe TableSync::Publishing::Message::Raw do
         routing_key: "users",
         headers: { kek: 1 },
         event: :update,
+        custom_version: nil,
       }
     end
 
@@ -24,6 +25,7 @@ describe TableSync::Publishing::Message::Raw do
           model_name: attributes[:model_name],
           attributes_for_sync: attributes[:original_attributes],
           event: attributes[:event],
+          custom_version: attributes[:custom_version],
         }
       end
 

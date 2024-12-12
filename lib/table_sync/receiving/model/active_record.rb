@@ -26,7 +26,7 @@ module TableSync::Receiving::Model
         self.inheritance_column = nil
       end
 
-      model_naming = ::TableSync::NamingResolver::ActiveRecord.new(table_name: table_name)
+      model_naming = ::TableSync::NamingResolver::ActiveRecord.new(table_name:)
 
       @table = model_naming.table.to_sym
       @schema = model_naming.schema.to_sym
@@ -66,7 +66,7 @@ module TableSync::Receiving::Model
         row = raw_model.lock("FOR NO KEY UPDATE").where(conditions)
 
         if row.to_a.size > 1
-          raise TableSync::UpsertError.new(data: datum, target_keys: target_keys, result: row)
+          raise TableSync::UpsertError.new(data: datum, target_keys:, result: row)
         end
 
         row = row.first
@@ -99,18 +99,18 @@ module TableSync::Receiving::Model
       result = query.destroy_all.map { |x| row_to_hash(x) }
 
       if result.size > data.size
-        raise TableSync::DestroyError.new(data: data, target_keys: target_keys, result: result)
+        raise TableSync::DestroyError.new(data:, target_keys:, result:)
       end
 
       result
     end
 
-    def transaction(&block)
-      ::ActiveRecord::Base.transaction(&block)
+    def transaction(&)
+      ::ActiveRecord::Base.transaction(&)
     end
 
-    def after_commit(&block)
-      db.add_transaction_record(AfterCommitWrap.new(&block))
+    def after_commit(&)
+      db.add_transaction_record(AfterCommitWrap.new(&))
     end
 
     private

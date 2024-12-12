@@ -4,7 +4,7 @@ shared_context "with created users" do |quantity|
   before do
     (1..quantity).each do |id|
       DB[:users].insert({
-        id: id,
+        id:,
         name: "test#{id}",
         email: "mail#{id}",
         ext_id: id + 100,

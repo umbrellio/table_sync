@@ -74,7 +74,7 @@ describe TableSync::Receiving::Handler do
         only :external_id, :project_id, :email
 
         wrap_receiving do |event:, **_rest, &receiving|
-          cool_wrapper.call(event: event)
+          cool_wrapper.call(event:)
           receiving.call
         end
       end
@@ -382,7 +382,7 @@ describe TableSync::Receiving::Handler do
         let(:model) do
           Class.new(TableSync.receiving_model) do
             def destroy(data:, target_keys:, version_key:)
-              DESTROY_INTERCEPTOR.push(data: data, target_keys: target_keys)
+              DESTROY_INTERCEPTOR.push(data:, target_keys:)
               [{ text: "on_destroy_completed" }] # returning value
             end
           end.new(:players)

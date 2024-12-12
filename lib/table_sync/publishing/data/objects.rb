@@ -2,18 +2,19 @@
 
 module TableSync::Publishing::Data
   class Objects
-    attr_reader :objects, :event
+    attr_reader :objects, :event, :custom_version
 
-    def initialize(objects:, event:)
-      @objects = objects
-      @event   = TableSync::Event.new(event)
+    def initialize(objects:, event:, custom_version:)
+      @objects        = objects
+      @event          = TableSync::Event.new(event)
+      @custom_version = custom_version
     end
 
     def construct
       {
-        model: model,
+        model:,
         attributes: attributes_for_sync,
-        version: version,
+        version: custom_version || version,
         event: event.resolve,
         metadata: event.metadata,
       }
