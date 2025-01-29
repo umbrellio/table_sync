@@ -7,7 +7,7 @@ class TableSync::Publishing::Single
   attribute :object_class
   attribute :original_attributes
   attribute :debounce_time
-
+  attribute :custom_version
   attribute :event, Symbol, default: :update
 
   # expect job to have perform_at method
@@ -31,10 +31,10 @@ class TableSync::Publishing::Single
 
   memoize def debounce
     TableSync::Publishing::Helpers::Debounce.new(
-      object_class: object_class,
+      object_class:,
       needle: message.object.needle,
-      debounce_time: debounce_time,
-      event: event,
+      debounce_time:,
+      event:,
     )
   end
 

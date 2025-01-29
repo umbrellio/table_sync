@@ -5,8 +5,8 @@ describe TableSync::Publishing::Helpers::Debounce do
     {
       object_class: "SequelUser",
       needle: { id: 1 },
-      debounce_time: debounce_time,
-      event: event,
+      debounce_time:,
+      event:,
     }
   end
 

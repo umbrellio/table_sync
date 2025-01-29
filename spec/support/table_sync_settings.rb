@@ -10,7 +10,7 @@ module TableSync::TestEnv
     TableSync.single_publishing_job_class_callable = -> { SingleTestJob }
     TableSync.batch_publishing_job_class_callable  = -> { BatchTestJob }
     TableSync.routing_key_callable                 = -> (klass, _attributes) { klass.tableize }
-    TableSync.headers_callable                     = -> (klass, _attributes) { { klass: klass } }
+    TableSync.headers_callable                     = -> (klass, _attributes) { { klass: } }
     TableSync.notifier = nil
     TableSync.notify = nil
   end

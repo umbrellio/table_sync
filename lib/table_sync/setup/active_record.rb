@@ -14,7 +14,7 @@ module TableSync::Setup
           TableSync::Publishing::Single.new(
             object_class: self.class.name,
             original_attributes: attributes,
-            event: event,
+            event:,
             debounce_time: options[:debounce_time],
           ).publish_later
         end

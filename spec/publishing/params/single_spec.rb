@@ -3,12 +3,12 @@
 describe TableSync::Publishing::Params::Single do
   let(:object_class)       { "ARecordUser" }
   let(:attributes)         { default_attributes }
-  let(:default_attributes) { { object: object } }
+  let(:default_attributes) { { object: } }
   let(:service)            { described_class.new(**attributes) }
 
   let(:object) do
     TableSync::Publishing::Helpers::Objects.new(
-      object_class: object_class, original_attributes: { id: 1 }, event: :update,
+      object_class:, original_attributes: { id: 1 }, event: :update,
     ).construct_list.first
   end
 
@@ -48,11 +48,11 @@ describe TableSync::Publishing::Params::Single do
     context "headers" do
       context "calculated" do
         let(:expected_values) do
-          default_expected_values.merge(headers: { object_class: object_class })
+          default_expected_values.merge(headers: { object_class: })
         end
 
         before do
-          TableSync.headers_callable = -> (object_class, _atrs) { { object_class: object_class } }
+          TableSync.headers_callable = -> (object_class, _atrs) { { object_class: } }
         end
 
         include_examples "constructs with expected values"
@@ -134,7 +134,7 @@ describe TableSync::Publishing::Params::Single do
     context "exchange_name" do
       context "by default" do
         let(:exchange_name)   { "some.project.table_sync" }
-        let(:expected_values) { default_expected_values.merge(exchange_name: exchange_name) }
+        let(:expected_values) { default_expected_values.merge(exchange_name:) }
 
         before { TableSync.exchange_name = exchange_name }
 

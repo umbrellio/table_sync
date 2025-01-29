@@ -13,8 +13,9 @@ describe TableSync::Publishing::Data::Objects do
 
   let(:params) do
     {
-      objects: objects,
-      event: event,
+      objects:,
+      event:,
+      custom_version: nil,
     }
   end
 
@@ -30,7 +31,7 @@ describe TableSync::Publishing::Data::Objects do
       attributes: [expected_attributes],
       version: an_instance_of(Float),
       event: resolved_event,
-      metadata: metadata,
+      metadata:,
     }
   end
 

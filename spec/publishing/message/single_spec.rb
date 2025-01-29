@@ -8,11 +8,12 @@ describe TableSync::Publishing::Message::Single do
 
     let(:attributes) do
       {
-        object_class: object_class,
+        object_class:,
         original_attributes: [{ id: 1 }],
         routing_key: "users",
         headers: { kek: 1 },
-        event: event,
+        event:,
+        custom_version: nil,
       }
     end
 
@@ -33,12 +34,13 @@ describe TableSync::Publishing::Message::Single do
         {
           objects: collection_of_objects,
           event: attributes[:event],
+          custom_version: attributes[:custom_version],
         }
       end
 
       let(:params_attributes) do
         {
-          object: object,
+          object:,
         }
       end
 

@@ -8,7 +8,7 @@ module TableSync::Receiving::Model
       @raw_model = Class.new(::Sequel::Model(table_name)).tap(&:unrestrict_primary_key)
 
       model_naming = ::TableSync::NamingResolver::Sequel.new(
-        table_name: table_name,
+        table_name:,
         db: @raw_model.db,
       )
 
@@ -46,18 +46,18 @@ module TableSync::Receiving::Model
       result = dataset.returning.where(::Sequel.|(*sanitized_data)).delete
 
       if result.size > data.size
-        raise TableSync::DestroyError.new(data: data, target_keys: target_keys, result: result)
+        raise TableSync::DestroyError.new(data:, target_keys:, result:)
       end
 
       result
     end
 
-    def transaction(&block)
-      db.transaction(&block)
+    def transaction(&)
+      db.transaction(&)
     end
 
-    def after_commit(&block)
-      db.after_commit(&block)
+    def after_commit(&)
+      db.after_commit(&)
     end
 
     private

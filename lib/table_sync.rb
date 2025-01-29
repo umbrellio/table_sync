@@ -47,7 +47,7 @@ module TableSync
 
     def sync(object_class, **options)
       setup.new(
-        object_class: object_class,
+        object_class:,
         on: options[:on],
         if_condition: options[:if],
         unless_condition: options[:unless],

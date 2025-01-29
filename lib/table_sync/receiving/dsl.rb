@@ -16,7 +16,7 @@ module TableSync::Receiving
 
       TableSync::Utils::InterfaceChecker.new(model).implements(:receiving_model)
 
-      config = ::TableSync::Receiving::Config.new(model: model, events: events)
+      config = ::TableSync::Receiving::Config.new(model:, events:)
 
       config.instance_exec(&block) if block
 

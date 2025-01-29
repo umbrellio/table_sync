@@ -9,8 +9,8 @@ describe TableSync::Publishing::Helpers::Objects do
   let(:params) do
     {
       object_class: "SequelUser",
-      original_attributes: original_attributes,
-      event: event,
+      original_attributes:,
+      event:,
     }
   end
 

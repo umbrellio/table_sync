@@ -11,7 +11,7 @@ module TableSync::Publishing::Message
 
     attribute :routing_key
     attribute :headers
-
+    attribute :custom_version
     attribute :event
 
     def publish
@@ -26,7 +26,7 @@ module TableSync::Publishing::Message
       TableSync::Instrument.notify(
         table: table_name,
         schema: schema_name,
-        event: event,
+        event:,
         count: original_attributes.count,
         direction: :publish,
       )
@@ -35,12 +35,15 @@ module TableSync::Publishing::Message
     # MESSAGE PARAMS
 
     def message_params
-      params.merge(data: data)
+      params.merge(data:)
     end
 
     def data
       TableSync::Publishing::Data::Raw.new(
-        model_name: model_name, attributes_for_sync: original_attributes, event: event,
+        model_name:,
+        attributes_for_sync: original_attributes,
+        event:,
+        custom_version:,
       ).construct
     end
 
