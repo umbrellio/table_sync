@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module TableSync::Instrument
-  NOTIFIER_REQUIRED_ARGS = %i[table schema event count direction].freeze
+  NOTIFIER_REQUIRED_ARGS = %i[event count direction].freeze
 
   extend self
 

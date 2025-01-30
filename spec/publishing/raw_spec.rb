@@ -42,5 +42,5 @@ RSpec.describe TableSync::Publishing::Raw do
 
   include_examples "publisher#new without expected fields",
                    TableSync::Publishing::Raw,
-                   %i[model_name original_attributes table_name schema_name]
+                   %i[model_name original_attributes]
 end

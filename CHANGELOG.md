@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.6.1] - 2025-01-30
+### Fixed
+- Delete table_name and schema_name as required for TableSync::Publishing::Raw
+- Delete table and schema as required for TableSync::Instrument#notify
+
 ## [6.6.0] - 2024-12-06
 ### Added
 - Add custom version attributes
