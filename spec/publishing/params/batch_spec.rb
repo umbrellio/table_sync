@@ -30,7 +30,7 @@ describe TableSync::Publishing::Params::Batch do
     context "default params" do
       let(:expected_values) { default_expected_values }
 
-      include_examples "constructs with expected values"
+      it_behaves_like "constructs with expected values"
     end
 
     context "headers" do
@@ -39,7 +39,7 @@ describe TableSync::Publishing::Params::Batch do
         let(:attributes)      { default_attributes.merge(headers:) }
         let(:expected_values) { default_expected_values.merge(headers:) }
 
-        include_examples "constructs with expected values"
+        it_behaves_like "constructs with expected values"
       end
 
       context "calculated" do
@@ -51,13 +51,13 @@ describe TableSync::Publishing::Params::Batch do
           TableSync.headers_callable = -> (object_class, _atrs) { { object_class: } }
         end
 
-        include_examples "constructs with expected values"
+        it_behaves_like "constructs with expected values"
       end
 
       context "without headers callable" do
         before { TableSync.headers_callable = nil }
 
-        include_examples "raises callable error", TableSync::NoCallableError
+        it_behaves_like "raises callable error", TableSync::NoCallableError
       end
     end
 
@@ -67,7 +67,7 @@ describe TableSync::Publishing::Params::Batch do
         let(:attributes)      { default_attributes.merge(routing_key:) }
         let(:expected_values) { default_expected_values.merge(routing_key:) }
 
-        include_examples "constructs with expected values"
+        it_behaves_like "constructs with expected values"
       end
 
       context "calculated" do
@@ -79,13 +79,13 @@ describe TableSync::Publishing::Params::Batch do
           TableSync.routing_key_callable = -> (object_class, _atrs) { object_class }
         end
 
-        include_examples "constructs with expected values"
+        it_behaves_like "constructs with expected values"
       end
 
       context "without routing_key callable" do
         before { TableSync.routing_key_callable = nil }
 
-        include_examples "raises callable error", TableSync::NoCallableError
+        it_behaves_like "raises callable error", TableSync::NoCallableError
       end
     end
 
@@ -95,7 +95,7 @@ describe TableSync::Publishing::Params::Batch do
         let(:attributes)      { default_attributes.merge(exchange_name:) }
         let(:expected_values) { default_expected_values.merge(exchange_name:) }
 
-        include_examples "constructs with expected values"
+        it_behaves_like "constructs with expected values"
       end
 
       context "by default" do
@@ -104,7 +104,7 @@ describe TableSync::Publishing::Params::Batch do
 
         before { TableSync.exchange_name = exchange_name }
 
-        include_examples "constructs with expected values"
+        it_behaves_like "constructs with expected values"
       end
     end
   end

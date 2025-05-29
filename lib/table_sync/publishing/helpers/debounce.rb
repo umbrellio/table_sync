@@ -73,7 +73,7 @@ module TableSync::Publishing::Helpers
       return current_time        if sync_in_the_past? && debounce_time_passed?     # case 2.1
       return debounced_sync_time if sync_in_the_past? && debounce_time_not_passed? # case 2.2
 
-      return debounced_sync_time if sync_in_the_future? && destroy_event? # case 3.2
+      debounced_sync_time if sync_in_the_future? && destroy_event? # case 3.2
     end
 
     # CASE 1

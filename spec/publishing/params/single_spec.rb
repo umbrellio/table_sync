@@ -42,7 +42,7 @@ describe TableSync::Publishing::Params::Single do
     context "default params" do
       let(:expected_values) { default_expected_values }
 
-      include_examples "constructs with expected values"
+      it_behaves_like "constructs with expected values"
     end
 
     context "headers" do
@@ -55,13 +55,13 @@ describe TableSync::Publishing::Params::Single do
           TableSync.headers_callable = -> (object_class, _atrs) { { object_class: } }
         end
 
-        include_examples "constructs with expected values"
+        it_behaves_like "constructs with expected values"
       end
 
       context "without headers callable" do
         before { TableSync.headers_callable = nil }
 
-        include_examples "raises callable error", TableSync::NoCallableError
+        it_behaves_like "raises callable error", TableSync::NoCallableError
       end
 
       it "calls callable with attributes" do
@@ -97,13 +97,13 @@ describe TableSync::Publishing::Params::Single do
           TableSync.routing_key_callable = -> (object_class, _atrs) { object_class }
         end
 
-        include_examples "constructs with expected values"
+        it_behaves_like "constructs with expected values"
       end
 
       context "without routing_key callable" do
         before { TableSync.routing_key_callable = nil }
 
-        include_examples "raises callable error", TableSync::NoCallableError
+        it_behaves_like "raises callable error", TableSync::NoCallableError
       end
 
       it "calls callable with attributes" do
@@ -138,7 +138,7 @@ describe TableSync::Publishing::Params::Single do
 
         before { TableSync.exchange_name = exchange_name }
 
-        include_examples "constructs with expected values"
+        it_behaves_like "constructs with expected values"
       end
     end
   end

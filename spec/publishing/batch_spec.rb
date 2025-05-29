@@ -23,19 +23,19 @@ RSpec.describe TableSync::Publishing::Batch do
     }
   end
 
-  include_examples "publisher#publish_now with stubbed message",
-                   TableSync::Publishing::Message::Batch
-  include_examples "publisher#new without expected fields",
-                   TableSync::Publishing::Batch,
-                   %i[object_class original_attributes]
+  it_behaves_like "publisher#publish_now with stubbed message",
+                  TableSync::Publishing::Message::Batch
+  it_behaves_like "publisher#new without expected fields",
+                  TableSync::Publishing::Batch,
+                  %i[object_class original_attributes]
 
   context "real user" do
     context "sequel" do
       let(:object_class) { "SequelUser" }
       let(:expected_routing_key) { "sequel_users" }
 
-      include_examples "publisher#publish_now with real user, for given orm",
-                       :sequel
+      it_behaves_like "publisher#publish_now with real user, for given orm",
+                      :sequel
     end
 
     context "when routing key is nil" do
@@ -43,13 +43,13 @@ RSpec.describe TableSync::Publishing::Batch do
       let(:routing_key) { nil }
       let(:expected_routing_key) { "sequel_users" }
 
-      include_examples "publisher#publish_now with real user, for given orm",
-                       :sequel
+      it_behaves_like "publisher#publish_now with real user, for given orm",
+                      :sequel
     end
 
     context "active_record" do
-      include_examples "publisher#publish_now with real user, for given orm",
-                       :active_record
+      it_behaves_like "publisher#publish_now with real user, for given orm",
+                      :active_record
     end
   end
 
@@ -60,6 +60,6 @@ RSpec.describe TableSync::Publishing::Batch do
       attributes.merge(original_attributes: serialized_attributes)
     end
 
-    include_examples "publisher#publish_later behaviour", :perform_later
+    it_behaves_like "publisher#publish_later behaviour", :perform_later
   end
 end

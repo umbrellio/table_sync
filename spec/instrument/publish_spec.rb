@@ -54,8 +54,7 @@ end
 
     shared_context "processing" do
       before do
-        allow(Player).to receive(:find_by).and_return(player)
-        allow(Player).to receive(:find).and_return(player)
+        allow(Player).to receive_messages(find_by: player, find: player)
         allow(Rabbit).to receive(:publish).and_return(nil)
 
         ActiveSupport::Notifications.subscribe("tablesync.publish.update") do |*args|

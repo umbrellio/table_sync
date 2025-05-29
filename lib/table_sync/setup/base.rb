@@ -15,7 +15,7 @@ module TableSync::Setup
     attribute :unless_condition
 
     def initialize(attrs)
-      super(attrs)
+      super
 
       self.on = Array.wrap(on).map(&:to_sym)
 

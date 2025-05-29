@@ -85,7 +85,7 @@ module TableSync::Receiving::Model
     end
 
     def destroy(data:, target_keys:, version_key:)
-      sanitized_data = data.map { |attr| attr.select { |key, _value| target_keys.include?(key) } }
+      sanitized_data = data.map { |attr| attr.slice(*target_keys) }
 
       query = nil
       sanitized_data.each_with_index do |row, index|

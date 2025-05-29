@@ -7,7 +7,7 @@ module TableSync::Setup
     def define_after_commit(event)
       options = options_exposed_for_block
 
-      object_class.define_method("after_#{event}".to_sym) do
+      object_class.define_method(:"after_#{event}") do
         if instance_eval(&options[:if]) && !instance_eval(&options[:unless])
           db.after_commit do
             TableSync::Publishing::Single.new(

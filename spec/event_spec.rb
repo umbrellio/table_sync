@@ -22,26 +22,26 @@ describe TableSync::Event do
   end
 
   describe "#resolve" do
-    include_examples "method returns correct value", :resolve, :create,  :update
-    include_examples "method returns correct value", :resolve, :update,  :update
-    include_examples "method returns correct value", :resolve, :destroy, :destroy
+    it_behaves_like "method returns correct value", :resolve, :create,  :update
+    it_behaves_like "method returns correct value", :resolve, :update,  :update
+    it_behaves_like "method returns correct value", :resolve, :destroy, :destroy
   end
 
   describe "#metadata" do
-    include_examples "method returns correct value", :metadata, :create,  { created: true  }
-    include_examples "method returns correct value", :metadata, :update,  { created: false }
-    include_examples "method returns correct value", :metadata, :destroy, { created: false }
+    it_behaves_like "method returns correct value", :metadata, :create,  { created: true  }
+    it_behaves_like "method returns correct value", :metadata, :update,  { created: false }
+    it_behaves_like "method returns correct value", :metadata, :destroy, { created: false }
   end
 
   describe "#destroy?" do
-    include_examples "method returns correct value", :destroy?, :create,  false
-    include_examples "method returns correct value", :destroy?, :update,  false
-    include_examples "method returns correct value", :destroy?, :destroy, true
+    it_behaves_like "method returns correct value", :destroy?, :create,  false
+    it_behaves_like "method returns correct value", :destroy?, :update,  false
+    it_behaves_like "method returns correct value", :destroy?, :destroy, true
   end
 
   describe "#upsert?" do
-    include_examples "method returns correct value", :upsert?, :create,  true
-    include_examples "method returns correct value", :upsert?, :update,  true
-    include_examples "method returns correct value", :upsert?, :destroy, false
+    it_behaves_like "method returns correct value", :upsert?, :create,  true
+    it_behaves_like "method returns correct value", :upsert?, :update,  true
+    it_behaves_like "method returns correct value", :upsert?, :destroy, false
   end
 end

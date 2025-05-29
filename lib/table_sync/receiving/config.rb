@@ -32,7 +32,7 @@ module TableSync::Receiving
       # through `Receiving::ConfigDecorator#method_missing` which always executes `config.option`
 
       def add_option(name, value_setter_wrapper:, value_as_proc_setter_wrapper:, default:)
-        ivar = "@#{name}".to_sym
+        ivar = :"@#{name}"
 
         @default_values_for_options ||= {}
         @default_values_for_options[ivar] = default

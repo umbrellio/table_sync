@@ -43,13 +43,13 @@ describe TableSync::Publishing::Data::Raw do
   describe "#construct" do
     let(:metadata) { { created: false } }
 
-    include_examples "correctly constructs data for message"
+    it_behaves_like "correctly constructs data for message"
 
     context "event -> create" do
       let(:event)    { :create }
       let(:metadata) { { created: true } }
 
-      include_examples "correctly constructs data for message"
+      it_behaves_like "correctly constructs data for message"
     end
   end
 end
