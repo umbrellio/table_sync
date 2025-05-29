@@ -16,7 +16,7 @@ describe TableSync::Setup::Sequel do
     TestSequelUser.instance_exec { TableSync.sync(self, **options) }
   end
 
-  it_behaves_like "setup: enqueue job behaviour", "TestSequelUser"
+  include_examples "setup: enqueue job behaviour", "TestSequelUser"
 
   context "setup" do
     it "sends define_method for all events" do

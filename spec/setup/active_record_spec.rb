@@ -15,7 +15,7 @@ describe TableSync::Setup::ActiveRecord do
     TestARUser.instance_exec { TableSync.sync(self, **options) }
   end
 
-  it_behaves_like "setup: enqueue job behaviour", "TestARUser"
+  include_examples "setup: enqueue job behaviour", "TestARUser"
 
   context "setup" do
     it "sends after_commit for all events" do

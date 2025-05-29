@@ -36,7 +36,7 @@ module TableSync::Utils
 
   def proc_keywords_resolver(&proc_for_wrap)
     available_keywords = proc_for_wrap.parameters
-      .slice(:keyreq)
+      .select { |type, _name| type == :keyreq }
       .map { |_type, name| name }
 
     proc do |keywords = {}, &block|

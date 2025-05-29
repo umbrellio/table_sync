@@ -17,6 +17,7 @@ SimpleCov.start { add_filter "spec" }
 
 require "bundler/setup"
 require "pry"
+require "ostruct"
 
 require "active_job" # NOTE: runtime dependency
 require "timecop" # NOTE: runtime dependency
