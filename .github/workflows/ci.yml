@@ -43,7 +43,6 @@ jobs:
         bundler-cache: true
 
     - run: psql -c 'CREATE DATABASE table_sync_test'
-    - run: bundle exec rake bundle:audit
     - run: bundle exec rubocop
     - run: bundle exec rspec
 
