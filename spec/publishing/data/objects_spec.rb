@@ -48,12 +48,12 @@ describe TableSync::Publishing::Data::Objects do
       let(:event)    { :create }
       let(:metadata) { { created: true } }
 
-      include_examples "correctly constructs data for message"
+      it_behaves_like "correctly constructs data for message"
     end
 
     context "event -> update" do
       context "without attributes_for_sync" do
-        include_examples "correctly constructs data for message"
+        it_behaves_like "correctly constructs data for message"
       end
 
       context "attributes_for_sync defined" do
@@ -64,7 +64,7 @@ describe TableSync::Publishing::Data::Objects do
           allow(object.object).to receive(:attributes_for_sync).and_return(expected_attributes)
         end
 
-        include_examples "correctly constructs data for message"
+        it_behaves_like "correctly constructs data for message"
       end
     end
 
@@ -73,7 +73,7 @@ describe TableSync::Publishing::Data::Objects do
       let(:resolved_event) { :destroy }
 
       context "without #attributes_for_destroy" do
-        include_examples "correctly constructs data for message"
+        it_behaves_like "correctly constructs data for message"
       end
 
       context "attributes_for_destroy defined" do
@@ -84,7 +84,7 @@ describe TableSync::Publishing::Data::Objects do
           allow(object.object).to receive(:attributes_for_destroy).and_return(expected_attributes)
         end
 
-        include_examples "correctly constructs data for message"
+        it_behaves_like "correctly constructs data for message"
       end
     end
 
@@ -96,7 +96,7 @@ describe TableSync::Publishing::Data::Objects do
         allow(object_class).to receive(:table_sync_model_name).and_return(expected_model)
       end
 
-      include_examples "correctly constructs data for message"
+      it_behaves_like "correctly constructs data for message"
     end
   end
 end

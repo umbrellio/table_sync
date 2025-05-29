@@ -74,13 +74,13 @@ shared_examples "adapter behaviour" do |klass, custom_klass|
         allow(adapter.object).to receive(:attributes_for_sync).and_return(expected_attributes)
       end
 
-      include_examples "returns expected_attributes for method", :attributes_for_update
+      it_behaves_like "returns expected_attributes for method", :attributes_for_update
     end
 
     context "object DOESN'T respond to method" do
       let(:expected_attributes) { adapter.attributes }
 
-      include_examples "returns expected_attributes for method", :attributes_for_update
+      it_behaves_like "returns expected_attributes for method", :attributes_for_update
     end
   end
 
@@ -93,13 +93,13 @@ shared_examples "adapter behaviour" do |klass, custom_klass|
         allow(adapter.object).to receive(:attributes_for_destroy).and_return(expected_attributes)
       end
 
-      include_examples "returns expected_attributes for method", :attributes_for_destroy
+      it_behaves_like "returns expected_attributes for method", :attributes_for_destroy
     end
 
     context "object DOESN'T respond to method" do
       let(:expected_attributes) { adapter.needle }
 
-      include_examples "returns expected_attributes for method", :attributes_for_destroy
+      it_behaves_like "returns expected_attributes for method", :attributes_for_destroy
     end
   end
 
@@ -114,13 +114,13 @@ shared_examples "adapter behaviour" do |klass, custom_klass|
         ).and_return(expected_attributes)
       end
 
-      include_examples "returns expected_attributes for method", :attributes_for_routing_key
+      it_behaves_like "returns expected_attributes for method", :attributes_for_routing_key
     end
 
     context "object DOESN'T respond to method" do
       let(:expected_attributes) { adapter.attributes }
 
-      include_examples "returns expected_attributes for method", :attributes_for_routing_key
+      it_behaves_like "returns expected_attributes for method", :attributes_for_routing_key
     end
   end
 
@@ -133,13 +133,13 @@ shared_examples "adapter behaviour" do |klass, custom_klass|
         allow(adapter.object).to receive(:attributes_for_headers).and_return(expected_attributes)
       end
 
-      include_examples "returns expected_attributes for method", :attributes_for_headers
+      it_behaves_like "returns expected_attributes for method", :attributes_for_headers
     end
 
     context "object DOESN'T respond to method" do
       let(:expected_attributes) { adapter.attributes }
 
-      include_examples "returns expected_attributes for method", :attributes_for_headers
+      it_behaves_like "returns expected_attributes for method", :attributes_for_headers
     end
   end
 

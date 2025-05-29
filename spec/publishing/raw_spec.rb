@@ -26,21 +26,21 @@ RSpec.describe TableSync::Publishing::Raw do
 
   let(:expected_object_data) { original_attributes }
 
-  include_examples "publisher#publish_now with stubbed message",
-                   TableSync::Publishing::Message::Raw
+  it_behaves_like "publisher#publish_now with stubbed message",
+                  TableSync::Publishing::Message::Raw
 
-  include_examples "publisher#publish_now without stubbed message",
-                   TableSync::Publishing::Message::Raw
+  it_behaves_like "publisher#publish_now without stubbed message",
+                  TableSync::Publishing::Message::Raw
 
   context "when routing_key is nil" do
     let(:routing_key) { nil }
     let(:expected_routing_key) { "sequel_users" }
 
-    include_examples "publisher#publish_now without stubbed message",
-                     TableSync::Publishing::Message::Raw
+    it_behaves_like "publisher#publish_now without stubbed message",
+                    TableSync::Publishing::Message::Raw
   end
 
-  include_examples "publisher#new without expected fields",
-                   TableSync::Publishing::Raw,
-                   %i[model_name original_attributes]
+  it_behaves_like "publisher#new without expected fields",
+                  TableSync::Publishing::Raw,
+                  %i[model_name original_attributes]
 end

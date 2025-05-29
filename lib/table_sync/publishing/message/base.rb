@@ -12,7 +12,7 @@ module TableSync::Publishing::Message
     attribute :event
 
     def initialize(params)
-      super(params)
+      super
 
       @objects = find_or_init_objects
 

@@ -23,16 +23,16 @@ RSpec.describe TableSync::Publishing::Single do
   end
 
   describe "#publish_now" do
-    include_examples "publisher#publish_now with stubbed message",
-                     TableSync::Publishing::Message::Single
+    it_behaves_like "publisher#publish_now with stubbed message",
+                    TableSync::Publishing::Message::Single
 
     context "real user" do
       context "sequel" do
         let(:object_class) { "SequelUser" }
         let(:expected_routing_key) { "sequel_users" }
 
-        include_examples "publisher#publish_now with real user, for given orm",
-                         :sequel
+        it_behaves_like "publisher#publish_now with real user, for given orm",
+                        :sequel
       end
 
       context "when routing key is nil" do
@@ -40,13 +40,13 @@ RSpec.describe TableSync::Publishing::Single do
         let(:routing_key) { nil }
         let(:expected_routing_key) { "sequel_users" }
 
-        include_examples "publisher#publish_now with real user, for given orm",
-                         :sequel
+        it_behaves_like "publisher#publish_now with real user, for given orm",
+                        :sequel
       end
 
       context "active_record" do
-        include_examples "publisher#publish_now with real user, for given orm",
-                         :active_record
+        it_behaves_like "publisher#publish_now with real user, for given orm",
+                        :active_record
       end
     end
 
@@ -69,7 +69,7 @@ RSpec.describe TableSync::Publishing::Single do
       attributes.merge(original_attributes: serialized_attributes, perform_at: anything)
     end
 
-    include_examples "publisher#publish_later behaviour", :perform_at
+    it_behaves_like "publisher#publish_later behaviour", :perform_at
 
     context "debounce" do
       before do

@@ -3,7 +3,7 @@
 class TableSync::Utils::ProcArray < Proc
   def initialize(&)
     @array = []
-    super(&)
+    super
   end
 
   def push(&block)

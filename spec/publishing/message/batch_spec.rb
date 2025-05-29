@@ -52,9 +52,7 @@ describe TableSync::Publishing::Message::Batch do
         allow(params).to receive(:construct).and_return({})
         allow(objects).to receive(:construct_list).and_return(collection_of_objects)
 
-        allow(collection_of_objects).to receive(:empty?).and_return(false)
-        allow(collection_of_objects).to receive(:first).and_return(object)
-        allow(collection_of_objects).to receive(:count).and_return(1)
+        allow(collection_of_objects).to receive_messages(empty?: false, first: object, count: 1)
 
         allow(object).to receive(:object_class).and_return(object_class.constantize)
       end

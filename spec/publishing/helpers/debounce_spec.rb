@@ -47,15 +47,15 @@ describe TableSync::Publishing::Helpers::Debounce do
     let(:debounce_time) { 0 }
     let(:expected_time) { current_time }
 
-    include_examples "skip? returns", false
-    include_examples "returns correct next_sync_time"
+    it_behaves_like "skip? returns", false
+    it_behaves_like "returns correct next_sync_time"
   end
 
   context "case 1: cached sync time is empty" do
     let(:expected_time) { current_time }
 
-    include_examples "skip? returns", false
-    include_examples "returns correct next_sync_time"
+    it_behaves_like "skip? returns", false
+    it_behaves_like "returns correct next_sync_time"
   end
 
   context "case 2: cached sync time in the past" do
@@ -66,13 +66,13 @@ describe TableSync::Publishing::Helpers::Debounce do
       context "cache existed" do
         before { set_cached_sync_time(cached_time) }
 
-        include_examples "skip? returns", false
-        include_examples "returns correct next_sync_time"
+        it_behaves_like "skip? returns", false
+        it_behaves_like "returns correct next_sync_time"
       end
 
       context "cache expired" do
-        include_examples "skip? returns", false
-        include_examples "returns correct next_sync_time"
+        it_behaves_like "skip? returns", false
+        it_behaves_like "returns correct next_sync_time"
       end
     end
 
@@ -82,8 +82,8 @@ describe TableSync::Publishing::Helpers::Debounce do
 
       before { set_cached_sync_time(cached_time) }
 
-      include_examples "skip? returns", false
-      include_examples "returns correct next_sync_time"
+      it_behaves_like "skip? returns", false
+      it_behaves_like "returns correct next_sync_time"
     end
   end
 
@@ -95,16 +95,16 @@ describe TableSync::Publishing::Helpers::Debounce do
     context "case 3.1: event update" do
       let(:expected_time) { nil }
 
-      include_examples "skip? returns", true
-      include_examples "returns correct next_sync_time"
+      it_behaves_like "skip? returns", true
+      it_behaves_like "returns correct next_sync_time"
     end
 
     context "case 3.2: event destroy" do
       let(:event)         { :destroy }
       let(:expected_time) { cached_time + 30.seconds }
 
-      include_examples "skip? returns", false
-      include_examples "returns correct next_sync_time"
+      it_behaves_like "skip? returns", false
+      it_behaves_like "returns correct next_sync_time"
     end
   end
 end

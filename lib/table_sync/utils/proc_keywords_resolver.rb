@@ -36,7 +36,7 @@ module TableSync::Utils
 
   def proc_keywords_resolver(&proc_for_wrap)
     available_keywords = proc_for_wrap.parameters
-      .select { |type, _name| type == :keyreq }
+      .select { |type, _name| type == :keyreq } # rubocop:disable Style/HashSlice
       .map { |_type, name| name }
 
     proc do |keywords = {}, &block|

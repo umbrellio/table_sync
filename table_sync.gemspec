@@ -26,8 +26,8 @@ Gem::Specification.new do |spec|
     f.match(%r{^(test|spec|features)/})
   end
 
-  spec.add_runtime_dependency "memery"
-  spec.add_runtime_dependency "rabbit_messaging", ">= 1.1.0"
-  spec.add_runtime_dependency "rails"
-  spec.add_runtime_dependency "self_data"
+  spec.add_dependency "memery"
+  spec.add_dependency "rabbit_messaging", ">= 1.1.0"
+  spec.add_dependency "rails"
+  spec.add_dependency "self_data"
 end

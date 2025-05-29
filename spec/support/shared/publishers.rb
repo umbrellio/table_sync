@@ -77,7 +77,7 @@ shared_examples "publisher#publish_now with real user, for given orm" do |orm|
 
   before { TableSync.orm = orm }
 
-  include_examples "publisher#publish_now without stubbed message"
+  it_behaves_like "publisher#publish_now without stubbed message"
 end
 
 # needs let(:job) with perform_at defined

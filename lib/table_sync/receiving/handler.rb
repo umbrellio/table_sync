@@ -48,7 +48,7 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
     event_name = event_name.to_sym
 
     if event_name.in?(TableSync::Event::VALID_RESOLVED_EVENTS)
-      super(event_name)
+      super
     else
       raise TableSync::UndefinedEvent.new(event)
     end
@@ -143,9 +143,9 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
       end
 
       if event == :update
-        model.after_commit { config.after_commit_on_update(**params.merge(results:)) }
+        model.after_commit { config.after_commit_on_update(**params, results:) }
       else
-        model.after_commit { config.after_commit_on_destroy(**params.merge(results:)) }
+        model.after_commit { config.after_commit_on_destroy(**params, results:) }
       end
     end
   end

@@ -16,5 +16,6 @@ gem "sequel"
 gem "timecop"
 
 gem "bundler"
+gem "ostruct"
 gem "pry"
 gem "rake"

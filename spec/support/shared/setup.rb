@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples "setup: enqueue job behaviour" do |test_class_name|
+shared_context "setup: enqueue job behaviour" do |test_class_name|
   let(:test_class) { test_class_name.constantize }
 
   shared_examples "enqueues job" do
@@ -20,20 +20,20 @@ shared_examples "setup: enqueue job behaviour" do |test_class_name|
   context "without options" do
     before { setup_sync }
 
-    include_examples "enqueues job"
+    it_behaves_like "enqueues job"
   end
 
   context "if option" do
     context "true" do
       before { setup_sync(if: -> (_) { true }) }
 
-      include_examples "enqueues job"
+      it_behaves_like "enqueues job"
     end
 
     context "false" do
       before { setup_sync(if: -> (_) { false }) }
 
-      include_examples "doesn't enqueue job"
+      it_behaves_like "doesn't enqueue job"
     end
   end
 
@@ -41,13 +41,13 @@ shared_examples "setup: enqueue job behaviour" do |test_class_name|
     context "false" do
       before { setup_sync(unless: -> (_) { false }) }
 
-      include_examples "enqueues job"
+      it_behaves_like "enqueues job"
     end
 
     context "true" do
       before { setup_sync(unless: -> (_) { true }) }
 
-      include_examples "doesn't enqueue job"
+      it_behaves_like "doesn't enqueue job"
     end
   end
 
@@ -55,13 +55,13 @@ shared_examples "setup: enqueue job behaviour" do |test_class_name|
     context "skips by if (false)" do
       before { setup_sync(if: -> (_) { false }, unless: -> (_) { false }) }
 
-      include_examples "doesn't enqueue job"
+      it_behaves_like "doesn't enqueue job"
     end
 
     context "skips by unless (true)" do
       before { setup_sync(if: -> (_) { true }, unless: -> (_) { true }) }
 
-      include_examples "doesn't enqueue job"
+      it_behaves_like "doesn't enqueue job"
     end
   end
 
