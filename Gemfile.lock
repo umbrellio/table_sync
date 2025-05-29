@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    table_sync (6.6.1)
+    table_sync (6.6.2)
       memery
       rabbit_messaging (>= 1.1.0)
       rails
@@ -321,4 +321,4 @@ DEPENDENCIES
   timecop
 
 BUNDLED WITH
-   2.4.6
+   2.6.9
