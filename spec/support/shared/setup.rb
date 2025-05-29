@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-shared_examples "setup: enqueue job behaviour" do |test_class_name|
+shared_context "setup: enqueue job behaviour" do |test_class_name|
   let(:test_class) { test_class_name.constantize }
 
   shared_examples "enqueues job" do
