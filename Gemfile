@@ -16,6 +16,5 @@ gem "sequel"
 gem "timecop"
 
 gem "bundler"
-gem "bundler-audit"
 gem "pry"
 gem "rake"

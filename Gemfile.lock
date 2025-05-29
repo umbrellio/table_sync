@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    table_sync (6.6.1)
+    table_sync (6.6.2)
       memery
       rabbit_messaging (>= 1.1.0)
       rails
@@ -93,9 +93,6 @@ GEM
     benchmark (0.4.0)
     bigdecimal (3.1.8)
     builder (3.3.0)
-    bundler-audit (0.9.1)
-      bundler (>= 1.2.0, < 3)
-      thor (~> 1.0)
     bunny (2.23.0)
       amq-protocol (~> 2.3, >= 2.3.1)
       sorted_set (~> 1, >= 1.0.2)
@@ -308,7 +305,6 @@ DEPENDENCIES
   activejob
   activerecord
   bundler
-  bundler-audit
   pg
   pry
   rake
@@ -321,4 +317,4 @@ DEPENDENCIES
   timecop
 
 BUNDLED WITH
-   2.4.6
+   2.6.9

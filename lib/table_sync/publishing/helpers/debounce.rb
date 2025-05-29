@@ -124,11 +124,11 @@ module TableSync::Publishing::Helpers
     end
 
     def cache_next_sync_time
-      Rails.cache.write(
-        cache_key,
-        next_sync_time,
-        expires_at: next_sync_time + debounce_time.seconds,
-      )
+      expires_at = next_sync_time + debounce_time.seconds
+      expires_in = expires_at - Time.current
+      return if expires_in.negative?
+
+      Rails.cache.write(cache_key, next_sync_time, expires_in:)
     end
 
     def cache_key
