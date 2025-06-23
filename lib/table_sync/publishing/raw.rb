@@ -1,18 +1,29 @@
 # frozen_string_literal: true
 
 class TableSync::Publishing::Raw
-  include Tainbox
   include TableSync::Utils::RequiredValidator
 
-  attribute :model_name
-  attribute :table_name
-  attribute :schema_name
-  attribute :original_attributes
-  attribute :custom_version
-  attribute :routing_key
-  attribute :headers
+  attr_accessor :model_name,
+                :table_name,
+                :schema_name,
+                :original_attributes,
+                :custom_version,
+                :routing_key,
+                :headers,
+                :event
 
-  attribute :event, default: :update
+  def initialize(attributes = {})
+    attributes ||= {}
+
+    @model_name           = attributes[:model_name]
+    @table_name           = attributes[:table_name]
+    @schema_name          = attributes[:schema_name]
+    @original_attributes  = attributes[:original_attributes]
+    @custom_version       = attributes[:custom_version]
+    @routing_key          = attributes[:routing_key]
+    @headers              = attributes[:headers]
+    @event                = attributes.fetch(:event, :update)
+  end
 
   require_attributes :model_name, :original_attributes
 
@@ -22,5 +33,20 @@ class TableSync::Publishing::Raw
 
   def message
     TableSync::Publishing::Message::Raw.new(attributes)
+  end
+
+  private
+
+  def attributes
+    {
+      model_name: model_name,
+      table_name: table_name,
+      schema_name: schema_name,
+      original_attributes: original_attributes,
+      custom_version: custom_version,
+      routing_key: routing_key,
+      headers: headers,
+      event: event,
+    }
   end
 end

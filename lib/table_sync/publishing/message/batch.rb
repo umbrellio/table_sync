@@ -2,12 +2,18 @@
 
 module TableSync::Publishing::Message
   class Batch < Base
-    attribute :headers
-    attribute :routing_key
+    attr_accessor :headers, :routing_key
+
+    def initialize(params = {})
+      super
+
+      @headers     = params[:headers]
+      @routing_key = params[:routing_key]
+    end
 
     def params
       TableSync::Publishing::Params::Batch.new(
-        attributes.slice(:object_class, :headers, :routing_key).compact,
+        { object_class:, headers:, routing_key: }.compact,
       ).construct
     end
   end

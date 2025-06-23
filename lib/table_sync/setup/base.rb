@@ -2,20 +2,16 @@
 
 module TableSync::Setup
   class Base
-    include Tainbox
-
     EVENTS            = %i[create update destroy].freeze
     INVALID_EVENT     = Class.new(StandardError)
     INVALID_CONDITION = Class.new(StandardError)
 
-    attribute :object_class
-    attribute :debounce_time
-    attribute :on
-    attribute :if_condition
-    attribute :unless_condition
+    attr_accessor :object_class, :debounce_time, :on, :if_condition, :unless_condition
 
-    def initialize(attrs)
-      super
+    def initialize(attrs = {})
+      attrs.each do |key, value|
+        public_send("#{key}=", value)
+      end
 
       self.on = Array.wrap(on).map(&:to_sym)
 

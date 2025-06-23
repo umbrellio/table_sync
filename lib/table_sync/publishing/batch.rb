@@ -1,18 +1,23 @@
 # frozen_string_literal: true
 
 class TableSync::Publishing::Batch
-  include Tainbox
-  include TableSync::Utils::RequiredValidator
+  attr_accessor :object_class,
+                :original_attributes,
+                :custom_version,
+                :routing_key,
+                :headers,
+                :event
 
-  attribute :object_class
-  attribute :original_attributes
-  attribute :custom_version
-  attribute :routing_key
-  attribute :headers
+  def initialize(attrs = {})
+    @object_class         = attrs[:object_class]
+    @original_attributes  = attrs[:original_attributes]
+    @custom_version       = attrs[:custom_version]
+    @routing_key          = attrs[:routing_key]
+    @headers              = attrs[:headers]
+    @event                = attrs.fetch(:event, :update)
 
-  attribute :event, default: :update
-
-  require_attributes :object_class, :original_attributes
+    validate_required_attributes!
+  end
 
   def publish_later
     job.perform_later(job_attributes)
@@ -29,6 +34,27 @@ class TableSync::Publishing::Batch
   alias_method :publish_async, :publish_later
 
   private
+
+  def validate_required_attributes!
+    missing = []
+    missing << :object_class if object_class.nil?
+    missing << :original_attributes if original_attributes.nil?
+
+    unless missing.empty?
+      raise ArgumentError, "Some of required attributes is not provided: #{missing.inspect}"
+    end
+  end
+
+  def attributes
+    {
+      object_class: object_class,
+      original_attributes: original_attributes,
+      custom_version: custom_version,
+      routing_key: routing_key,
+      headers: headers,
+      event: event,
+    }
+  end
 
   # JOB
 
