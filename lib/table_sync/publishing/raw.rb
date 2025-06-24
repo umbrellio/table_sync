@@ -13,16 +13,16 @@ class TableSync::Publishing::Raw
                 :event
 
   def initialize(attributes = {})
-    attributes ||= {}
+    attributes = attributes.deep_symbolize_keys
 
-    @model_name           = attributes[:model_name]
-    @table_name           = attributes[:table_name]
-    @schema_name          = attributes[:schema_name]
-    @original_attributes  = attributes[:original_attributes]
-    @custom_version       = attributes[:custom_version]
-    @routing_key          = attributes[:routing_key]
-    @headers              = attributes[:headers]
-    @event                = attributes.fetch(:event, :update)
+    self.model_name           = attributes[:model_name]
+    self.table_name           = attributes[:table_name]
+    self.schema_name          = attributes[:schema_name]
+    self.original_attributes  = attributes[:original_attributes]
+    self.custom_version       = attributes[:custom_version]
+    self.routing_key          = attributes[:routing_key]
+    self.headers              = attributes[:headers]
+    self.event                = attributes.fetch(:event, :update).to_sym
   end
 
   require_attributes :model_name, :original_attributes

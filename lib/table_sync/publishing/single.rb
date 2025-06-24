@@ -10,6 +10,8 @@ class TableSync::Publishing::Single
                 :event
 
   def initialize(attrs = {})
+    attrs = attrs.deep_symbolize_keys
+
     self.object_class         = attrs[:object_class]
     self.original_attributes  = attrs[:original_attributes]
     self.debounce_time        = attrs[:debounce_time]

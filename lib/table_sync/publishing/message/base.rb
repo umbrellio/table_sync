@@ -10,10 +10,10 @@ module TableSync::Publishing::Message
     attr_reader :objects
 
     def initialize(params = {})
-      @custom_version        = params[:custom_version]
-      @object_class          = params[:object_class]
-      @original_attributes   = params[:original_attributes]
-      @event                 = params[:event]
+      self.custom_version        = params[:custom_version]
+      self.object_class          = params[:object_class]
+      self.original_attributes   = params[:original_attributes]
+      self.event                 = params[:event].to_sym
 
       @objects = find_or_init_objects
 

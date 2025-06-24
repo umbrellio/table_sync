@@ -7,8 +7,8 @@ module TableSync::Publishing::Message
     def initialize(params = {})
       super
 
-      @headers     = params[:headers]
-      @routing_key = params[:routing_key]
+      self.headers     = params[:headers]
+      self.routing_key = params[:routing_key]
     end
 
     def params
