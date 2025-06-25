@@ -3,7 +3,7 @@ PATH
   specs:
     table_sync (6.7.0)
       memery
-      rabbit_messaging (>= 1.6.2)
+      rabbit_messaging (>= 1.6.3)
       rails
       self_data
 
@@ -180,7 +180,7 @@ GEM
     psych (5.2.6)
       date
       stringio
-    rabbit_messaging (1.6.2)
+    rabbit_messaging (1.6.3)
       bunny (~> 2.0)
       kicks
     racc (1.8.1)
