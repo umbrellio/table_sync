@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.7.0] - 2025-01-30
+### Fixed
+- Removed `tainbox` gem from dependencies
+- `rabbit_messaging` gem version is now locked to `>= 1.6.3`
+
 ## [6.6.1] - 2025-01-30
 ### Fixed
 - Delete table_name and schema_name as required for TableSync::Publishing::Raw
