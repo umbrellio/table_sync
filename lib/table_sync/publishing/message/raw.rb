@@ -2,17 +2,25 @@
 
 module TableSync::Publishing::Message
   class Raw
-    include Tainbox
+    attr_accessor :model_name,
+                  :table_name,
+                  :schema_name,
+                  :original_attributes,
+                  :routing_key,
+                  :headers,
+                  :custom_version,
+                  :event
 
-    attribute :model_name
-    attribute :table_name
-    attribute :schema_name
-    attribute :original_attributes
-
-    attribute :routing_key
-    attribute :headers
-    attribute :custom_version
-    attribute :event
+    def initialize(params = {})
+      self.model_name          = params[:model_name]
+      self.table_name          = params[:table_name]
+      self.schema_name         = params[:schema_name]
+      self.original_attributes = params[:original_attributes]
+      self.routing_key         = params[:routing_key]
+      self.headers             = params[:headers]
+      self.custom_version      = params[:custom_version]
+      self.event               = params[:event]
+    end
 
     def publish
       Rabbit.publish(message_params)
@@ -49,7 +57,7 @@ module TableSync::Publishing::Message
 
     def params
       TableSync::Publishing::Params::Raw.new(
-        attributes.slice(:model_name, :headers, :routing_key).compact,
+        { model_name:, headers:, routing_key: }.compact,
       ).construct
     end
   end

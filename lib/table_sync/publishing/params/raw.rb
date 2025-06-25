@@ -2,8 +2,13 @@
 
 module TableSync::Publishing::Params
   class Raw < Batch
-    attribute :model_name
+    attr_accessor :model_name
 
     alias_method :object_class, :model_name
+
+    def initialize(attrs = {})
+      super
+      self.model_name = attrs[:model_name]
+    end
   end
 end

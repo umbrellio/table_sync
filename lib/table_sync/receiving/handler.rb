@@ -3,10 +3,16 @@
 class TableSync::Receiving::Handler < Rabbit::EventHandler
   extend TableSync::Receiving::DSL
 
-  # Rabbit::EventHandler uses Tainbox and performs `handler.new(message).call`
-  attribute :event
-  attribute :model
-  attribute :version
+  attr_accessor :version
+  attr_reader :event, :model
+
+  def initialize(message)
+    super
+
+    self.event   = message.data[:event]
+    self.model   = message.data[:model]
+    self.version = message.data[:version]
+  end
 
   def call
     configs.each do |config|
@@ -40,22 +46,22 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
   private
 
   # redefine setter from Rabbit::EventHandler
-  def data=(data)
-    super(Array.wrap(data[:attributes]))
+  def data=(raw_data)
+    super(Array.wrap(raw_data[:attributes]))
   end
 
   def event=(event_name)
     event_name = event_name.to_sym
 
     if event_name.in?(TableSync::Event::VALID_RESOLVED_EVENTS)
-      super
+      @event = event_name
     else
       raise TableSync::UndefinedEvent.new(event)
     end
   end
 
   def model=(model_name)
-    super(model_name.to_s)
+    @model = model_name.to_s
   end
 
   def configs

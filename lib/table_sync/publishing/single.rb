@@ -1,14 +1,23 @@
 # frozen_string_literal: true
 
 class TableSync::Publishing::Single
-  include Tainbox
   include Memery
 
-  attribute :object_class
-  attribute :original_attributes
-  attribute :debounce_time
-  attribute :custom_version
-  attribute :event, Symbol, default: :update
+  attr_accessor :object_class,
+                :original_attributes,
+                :debounce_time,
+                :custom_version,
+                :event
+
+  def initialize(attrs = {})
+    attrs = attrs.with_indifferent_access
+
+    self.object_class         = attrs[:object_class]
+    self.original_attributes  = attrs[:original_attributes]
+    self.debounce_time        = attrs[:debounce_time]
+    self.custom_version       = attrs[:custom_version]
+    self.event                = attrs.fetch(:event, :update)
+  end
 
   # expect job to have perform_at method
   # debounce destroyed event
@@ -39,6 +48,16 @@ class TableSync::Publishing::Single
   end
 
   private
+
+  def attributes
+    {
+      object_class: object_class,
+      original_attributes: original_attributes,
+      debounce_time: debounce_time,
+      custom_version: custom_version,
+      event: event,
+    }
+  end
 
   # JOB
 

@@ -2,17 +2,18 @@
 
 module TableSync::Publishing::Message
   class Base
-    include Tainbox
+    attr_accessor :custom_version,
+                  :object_class,
+                  :original_attributes,
+                  :event
 
     attr_reader :objects
 
-    attribute :custom_version
-    attribute :object_class
-    attribute :original_attributes
-    attribute :event
-
-    def initialize(params)
-      super
+    def initialize(params = {})
+      self.custom_version        = params[:custom_version]
+      self.object_class          = params[:object_class]
+      self.original_attributes   = params[:original_attributes]
+      self.event                 = params[:event].to_sym
 
       @objects = find_or_init_objects
 
