@@ -10,7 +10,7 @@ class TableSync::Publishing::Single
                 :event
 
   def initialize(attrs = {})
-    attrs = attrs.deep_symbolize_keys
+    attrs = attrs.with_indifferent_access
 
     self.object_class         = attrs[:object_class]
     self.original_attributes  = attrs[:original_attributes]

@@ -13,7 +13,7 @@ class TableSync::Publishing::Raw
                 :event
 
   def initialize(attributes = {})
-    attributes = attributes.deep_symbolize_keys
+    attributes = attributes.with_indifferent_access
 
     self.model_name           = attributes[:model_name]
     self.table_name           = attributes[:table_name]
