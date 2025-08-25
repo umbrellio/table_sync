@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module TableSync
-  VERSION = "6.7.0"
+  VERSION = "6.8.0"
 end
