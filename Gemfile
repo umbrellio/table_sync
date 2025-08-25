@@ -4,6 +4,8 @@ source "https://rubygems.org"
 
 gemspec
 
+gem "rabbit_messaging", github: "umbrellio/rabbit_messaging", branch: "feature/custom-queue"
+
 gem "rspec"
 gem "rubocop-config-umbrellio"
 gem "simplecov"
