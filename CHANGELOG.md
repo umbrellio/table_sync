@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [6.8.0] - 2025-08-25
 ### Changed
 - Updated `rabbit_messaging` gem version to `1.7.0`
-- Use kwargs in Rabbit.publish
+- Use kwargs in Rabbit.publish calls in order to bypass inconsistent hash interpolations in our existing product codebases due to new requirements in `rabbit_messaging` gem.
 
 ## [6.7.0] - 2025-01-30
 ### Fixed
