@@ -1,12 +1,3 @@
-GIT
-  remote: https://github.com/umbrellio/rabbit_messaging.git
-  revision: 86cb92cc1afce317298b6ea98105c1588b7ac736
-  branch: feature/custom-queue
-  specs:
-    rabbit_messaging (1.7.0)
-      bunny (~> 2.0)
-      kicks
-
 PATH
   remote: .
   specs:
@@ -189,6 +180,9 @@ GEM
     psych (5.2.6)
       date
       stringio
+    rabbit_messaging (1.7.0)
+      bunny (~> 2.0)
+      kicks
     racc (1.8.1)
     rack (3.1.15)
     rack-session (2.1.1)
@@ -348,7 +342,6 @@ DEPENDENCIES
   ostruct
   pg
   pry
-  rabbit_messaging!
   rake
   rspec
   rubocop-config-umbrellio
