@@ -23,7 +23,7 @@ module TableSync::Publishing::Message
     def publish
       return if original_attributes.blank?
 
-      Rabbit.publish(message_params)
+      Rabbit.publish(**message_params)
 
       notify!
     end

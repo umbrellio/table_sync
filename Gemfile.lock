@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    table_sync (6.7.0)
+    table_sync (6.8.0)
       memery
-      rabbit_messaging (>= 1.6.3)
+      rabbit_messaging (>= 1.7.0)
       rails
       self_data
 
@@ -180,7 +180,7 @@ GEM
     psych (5.2.6)
       date
       stringio
-    rabbit_messaging (1.6.3)
+    rabbit_messaging (1.7.0)
       bunny (~> 2.0)
       kicks
     racc (1.8.1)

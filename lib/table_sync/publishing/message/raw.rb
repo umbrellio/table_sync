@@ -23,7 +23,7 @@ module TableSync::Publishing::Message
     end
 
     def publish
-      Rabbit.publish(message_params)
+      Rabbit.publish(**message_params)
 
       notify!
     end
