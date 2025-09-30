@@ -117,7 +117,6 @@
               model: "Player",
               attributes: {
                 external_id: 1,
-                email: "some",
               },
               version: 123.34534,
             },
