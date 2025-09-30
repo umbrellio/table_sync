@@ -6,6 +6,7 @@ module TableSync::Receiving::Model
 
     def initialize(table_name)
       @raw_model = Class.new(::Sequel::Model(table_name)).tap(&:unrestrict_primary_key)
+      @types_validator = TableSync::Utils::Schema::Builder::Sequel.build(@raw_model)
 
       model_naming = ::TableSync::NamingResolver::Sequel.new(
         table_name:,
@@ -52,6 +53,10 @@ module TableSync::Receiving::Model
       result
     end
 
+    def validate_types(data)
+      types_validator.validate(data)
+    end
+
     def transaction(&)
       db.transaction(&)
     end
@@ -62,7 +67,7 @@ module TableSync::Receiving::Model
 
     private
 
-    attr_reader :raw_model
+    attr_reader :raw_model, :types_validator
 
     def dataset
       raw_model.dataset

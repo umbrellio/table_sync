@@ -6,5 +6,6 @@ module TableSync
     require_relative "utils/proc_keywords_resolver"
     require_relative "utils/interface_checker"
     require_relative "utils/required_validator"
+    require_relative "utils/schema"
   end
 end

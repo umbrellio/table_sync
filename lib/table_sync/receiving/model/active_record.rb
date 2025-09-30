@@ -25,6 +25,7 @@ module TableSync::Receiving::Model
         self.table_name = table_name
         self.inheritance_column = nil
       end
+      @types_validator = TableSync::Utils::Schema::Builder::ActiveRecord.build(@raw_model)
 
       model_naming = ::TableSync::NamingResolver::ActiveRecord.new(table_name:)
 
@@ -105,6 +106,10 @@ module TableSync::Receiving::Model
       result
     end
 
+    def validate_types(data)
+      types_validator.validate(data)
+    end
+
     def transaction(&)
       ::ActiveRecord::Base.transaction(&)
     end
@@ -115,7 +120,7 @@ module TableSync::Receiving::Model
 
     private
 
-    attr_reader :raw_model
+    attr_reader :raw_model, :types_validator
 
     def db
       raw_model.connection
