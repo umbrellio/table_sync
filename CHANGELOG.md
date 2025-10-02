@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.9.0] - 2025-10-02
+### Changed
+- Add check of data scalar types in order to provide readable error text.
+
 ## [6.8.0] - 2025-08-25
 ### Changed
 - Updated `rabbit_messaging` gem version to `1.7.0`
