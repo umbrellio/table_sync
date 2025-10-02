@@ -606,7 +606,6 @@
       end
       let(:error) do
         {
-          datetime: "expected DateTime, got: String",
           integer: "expected Integer, got: Float",
           decimal: "expected Decimal, got: String",
           boolean: "expected Boolean, got: String",

@@ -13,7 +13,7 @@ class TableSync::Utils::Schema
 
       # rubocop:disable Layout/ClassStructure
       STRING = new("String", [String]).freeze
-      DATETIME = new("DateTime", [::Sequel::SQLTime, Date, Time, DateTime]).freeze
+      DATETIME = new("DateTime", [String, ::Sequel::SQLTime, Date, Time, DateTime]).freeze
       INTEGER = new("Integer", [Integer]).freeze
       DECIMAL = new("Decimal", [Numeric]).freeze
       BOOLEAN = new("Boolean", [TrueClass, FalseClass]).freeze
