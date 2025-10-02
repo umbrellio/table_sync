@@ -13,5 +13,9 @@ class TableSync::Utils::Schema
     def validate(value)
       type.validate(value)
     end
+
+    def inspect
+      type.inspect
+    end
   end
 end

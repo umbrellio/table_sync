@@ -12,14 +12,17 @@ class TableSync::Utils::Schema
   end
 
   def validate(data)
-    {}.tap do |errors|
-      data.each do |row|
-        schema.each do |key, value|
-          errors[key] = value.validate(row[key])
+    errors = nil
+    data.each do |row|
+      schema.each do |key, value|
+        if (error = value.validate(row[key]))
+          errors ||= {}
+          errors[key] = error
         end
       end
-      errors.compact!
-      errors.freeze
+
+      return errors.freeze unless errors.nil?
     end
+    errors
   end
 end

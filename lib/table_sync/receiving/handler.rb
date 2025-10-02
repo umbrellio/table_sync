@@ -133,7 +133,7 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
 
   def validate_data_types(model, data)
     errors = model.validate_types(data)
-    return if errors.empty?
+    return if errors.nil?
 
     raise TableSync::DataError.new(data, errors.keys, errors.to_json)
   end

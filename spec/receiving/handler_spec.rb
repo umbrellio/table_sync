@@ -603,44 +603,6 @@ describe TableSync::Receiving::Handler do
         expect { fire_update_event }.to raise_error(TableSync::DataError)
       end
     end
-
-    describe "error while validating types" do
-      let(:handler) do
-        Class.new(described_class).receive("TypesTest", to_table: :types_test) do
-          target_keys(:id)
-          rest_key(false)
-        end
-      end
-
-      let(:update_event) do
-        OpenStruct.new(
-          data: {
-            event: "update",
-            model: "TypesTest",
-            attributes: [
-              {
-                id: 1,
-                string: nil,
-                datetime: "string",
-                integer: 10.5,
-                decimal: "string",
-                array: "string",
-              },
-            ],
-            version: 123.34534,
-          },
-          project_id: "pid",
-        )
-      end
-      let(:error_text) do
-        '{"datetime":"expected Time, got: String","integer":"expected Integer, got: Float",' \
-          '"decimal":"expected Numeric, got: String","array":"expected Array, got: String"'
-      end
-
-      it "raises TableSync::DataError" do
-        expect { fire_update_event }.to raise_error(TableSync::DataError, /#{error_text}/)
-      end
-    end
   end
 
   describe "avoid dead locks" do

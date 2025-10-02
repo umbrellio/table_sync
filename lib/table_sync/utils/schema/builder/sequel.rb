@@ -14,24 +14,23 @@ class TableSync::Utils::Schema
 
         def schema(model)
           model.db_schema.transform_values do |value|
-            TableSync::Utils::Schema::Validator.new(type(value))
-          end.compact
+            next unless (type = type(value))
+            TableSync::Utils::Schema::Validator.new(type)
+          end.tap(&:compact!)
         end
 
         def type(value)
           case value[:type]
           when :string
-            Type.new(String)
-          when :datetime
-            Type.new(Time)
+            Type::STRING
+          when :datetime, :date, :time
+            Type::DATETIME
           when :integer
-            Type.new(Integer)
-          when :decimal
-            Type.new(Numeric)
-          when /array/
-            Type.new(Array)
-          else
-            Type.new(BasicObject)
+            Type::INTEGER
+          when :decimal, :float
+            Type::DECIMAL
+          when :boolean
+            Type::BOOLEAN
           end
         end
       end
