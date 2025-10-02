@@ -11,6 +11,14 @@ class TableSync::Utils::Schema
         @klasses = klasses
       end
 
+      # rubocop:disable Layout/ClassStructure
+      STRING = new("String", [String]).freeze
+      DATETIME = new("DateTime", [::Sequel::SQLTime, Date, Time, DateTime]).freeze
+      INTEGER = new("Integer", [Integer]).freeze
+      DECIMAL = new("Decimal", [Numeric]).freeze
+      BOOLEAN = new("Boolean", [TrueClass, FalseClass]).freeze
+      # rubocop:enable Layout/ClassStructure
+
       def validate(value)
         return if value.nil?
         return if klasses.any? { |klass| value.is_a?(klass) }
@@ -20,12 +28,6 @@ class TableSync::Utils::Schema
       def inspect
         display_name.inspect
       end
-
-      STRING = new("String", [String]).freeze
-      DATETIME = new("DateTime", [::Sequel::SQLTime, Date, Time, DateTime]).freeze
-      INTEGER = new("Integer", [Integer]).freeze
-      DECIMAL = new("Decimal", [Numeric]).freeze
-      BOOLEAN = new("Boolean", [TrueClass, FalseClass]).freeze
     end
   end
 end

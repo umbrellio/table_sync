@@ -25,7 +25,7 @@ class TableSync::Utils::Schema
                ActiveModel::Type::ImmutableString
             Type::STRING
           when ActiveModel::Type::DateTime,
-               ActiveModel::Type::Date
+               ActiveModel::Type::Date,
                ActiveModel::Type::Time
             Type::DATETIME
           when ActiveModel::Type::Integer
