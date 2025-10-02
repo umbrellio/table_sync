@@ -20,6 +20,7 @@ require "pry"
 require "ostruct"
 
 require "active_job" # NOTE: runtime dependency
+require "sequel" # NOTE: runtime dependency
 require "timecop" # NOTE: runtime dependency
 require "rabbit_messaging" # NOTE: runtime dependency
 require "rabbit/test_helpers" # NOTE: from rabbit_messaging

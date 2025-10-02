@@ -131,12 +131,20 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
     end
   end
 
+  def validate_data_types(model, data)
+    errors = model.validate_types(data)
+    return if errors.nil?
+
+    raise TableSync::DataError.new(data, errors.keys, errors.to_json)
+  end
+
   def perform(config, params)
     model = config.model
 
     model.transaction do
       results = if event == :update
                   config.before_update(**params)
+                  validate_data_types(model, params[:data])
                   model.upsert(**params)
                 else
                   config.before_destroy(**params)

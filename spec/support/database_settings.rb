@@ -17,13 +17,22 @@ ActiveRecord::Base.logger = Logger.new("log/ar.log")
 
 DB.run <<~SQL
   DROP TABLE IF EXISTS "items";
+  DROP TABLE IF EXISTS "players";
+  DROP TABLE IF EXISTS "clients";
+  DROP TABLE IF EXISTS "users";
+  DROP TABLE IF EXISTS "stat1";
+  DROP TABLE IF EXISTS "stat2";
+  DROP TABLE IF EXISTS "types_test";
+
+  DROP TABLE IF EXISTS "custom_schema"."clubs";
+  DROP SCHEMA IF EXISTS "custom_schema";
+
   CREATE TABLE "items" (
     "id" bigserial primary key,
     "name" varchar(255) NOT NULL,
     "price" double precision NOT NULL
   );
 
-  DROP TABLE IF EXISTS "players";
   CREATE TABLE "players" (
     "external_id" int primary key,
     "project_id" text,
@@ -33,7 +42,6 @@ DB.run <<~SQL
     "rest" jsonb
   );
 
-  DROP TABLE IF EXISTS "clients";
   CREATE TABLE "clients" (
     "client_id" int,
     "project_id" int,
@@ -46,7 +54,6 @@ DB.run <<~SQL
     UNIQUE (ext_id, ext_project_id)
   );
 
-  DROP TABLE IF EXISTS "users";
   CREATE TABLE "users" (
     "id" int primary key,
     "name" varchar(255) NOT NULL,
@@ -59,9 +66,6 @@ DB.run <<~SQL
     UNIQUE (ext_id, ext_project_id)
   );
 
-  DROP TABLE IF EXISTS "custom_schema"."clubs";
-  DROP SCHEMA IF EXISTS "custom_schema";
-
   CREATE SCHEMA custom_schema;
   CREATE TABLE "custom_schema"."clubs" (
     "id" int primary key,
@@ -71,7 +75,6 @@ DB.run <<~SQL
     "rest" jsonb
   );
 
-  DROP TABLE IF EXISTS "stat1";
   CREATE TABLE "stat1" (
     "id" int,
     "value" int,
@@ -79,10 +82,21 @@ DB.run <<~SQL
     PRIMARY KEY (id)
   );
 
-  DROP TABLE IF EXISTS "stat2";
   CREATE TABLE "stat2" (
     "id" int,
     "value" int,
+    "version" decimal,
+    PRIMARY KEY (id)
+  );
+
+  CREATE TABLE "types_test" (
+    "id" int,
+    "string" text NOT NULL,
+    "datetime" timestamp,
+    "integer" integer,
+    "decimal" decimal,
+    "array" text[],
+    "boolean" boolean,
     "version" decimal,
     PRIMARY KEY (id)
   );

@@ -8,6 +8,7 @@
     let(:players) { described_class.new(:players) }
     let(:clients) { described_class.new(:clients) }
     let(:users) { described_class.new(:users) }
+    let(:types_test) { described_class.new(:types_test) }
 
     it "#columns" do
       expect(players.columns)
@@ -587,6 +588,34 @@
 
           expectation.to raise_error(TableSync::DestroyError)
         end
+      end
+    end
+
+    describe "#validate_types" do
+      let(:data) do
+        [
+          id: 1,
+          string: nil,
+          datetime: "string",
+          integer: 10.5,
+          decimal: "string",
+          array: "string",
+          boolean: "string",
+          version: 123.456,
+        ]
+      end
+      let(:error) do
+        {
+          datetime: "expected DateTime, got: String",
+          integer: "expected Integer, got: Float",
+          decimal: "expected Decimal, got: String",
+          boolean: "expected Boolean, got: String",
+        }
+      end
+
+      it "raises TableSync::DataError" do
+        result = types_test.validate_types(data)
+        expect(result).to eq(error)
       end
     end
 
