@@ -1,9 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.9.1] - 2025-10-02
+### Fixed
+- DateTime can be String now
+
 ## [6.9.0] - 2025-10-02
-### Changed
-- Add check of data scalar types in order to provide readable error text.
+### Added
+- Add check of data scalar types in order to provide readable error text
 
 ## [6.8.0] - 2025-08-25
 ### Changed
