@@ -21,7 +21,7 @@ class TableSync::Utils::Schema
         end
       end
 
-      class String < Type
+      class Text < Type
         def valid?(value)
           return true if value.is_a?(::String)
           return true if value.is_a?(::Symbol)
@@ -41,10 +41,10 @@ class TableSync::Utils::Schema
       # @!method valid?
 
       # rubocop:disable Layout/ClassStructure
-      DECIMAL = Decimal.new("Decimal").freeze
-      DATETIME = DateTime.new("DateTime").freeze
-      BOOLEAN = Boolean.new("Boolean").freeze
-      STRING = String.new("String").freeze
+      DECIMAL = Decimal.new("Decimal")
+      DATETIME = DateTime.new("DateTime")
+      BOOLEAN = Boolean.new("Boolean")
+      STRING = Text.new("String")
       # rubocop:enable Layout/ClassStructure
 
       def validate(value)

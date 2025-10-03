@@ -611,7 +611,8 @@
       end
 
       context "Decimal" do
-        ["1.5", 1.5, 1, "-1.567", 1.5.to_d, Time.current].each do |value|
+        values = ["1.5", 1.5, 1, "-1.567", BigDecimal("1.5"), Time.current]
+        values.each do |value|
           it_behaves_like "returns success", :decimal, value
         end
 
@@ -622,12 +623,13 @@
       end
 
       context "DateTime" do
-        [
+        values = [
           "01.01.2010",
           Time.current, Date.current, DateTime.current,
           Sequel::SQLTime.new("2010-10-10 10:10:10"),
-          123, 123.5, 123.5.to_d
-        ].each do |value|
+          123, 123.5, BigDecimal("123.5")
+        ]
+        values.each do |value|
           it_behaves_like "returns success", :datetime, value
         end
 
@@ -640,11 +642,12 @@
       end
 
       context "Boolean" do
-        [
+        values = [
           true, false,
           0, 1,
           "true", "false", "TRUE", "False", "tRuE", "t", "f", "on", "off", "0", "1"
-        ].each do |value|
+        ]
+        values.each do |value|
           it_behaves_like "returns success", :boolean, value
         end
 
@@ -658,12 +661,13 @@
       end
 
       context "String" do
-        [
+        values = [
           true, false,
           "asfdnk", "1.5", "-1", "t", "f", :test,
-          45435.to_d, 1, 1.5, -1, 0,
+          BigDecimal(45435), 1, 1.5, -1, 0,
           Time.current, Sequel::SQLTime.new("2010-10-10 10:10:10")
-        ].each do |value|
+        ]
+        values.each do |value|
           it_behaves_like "returns success", :string, value
         end
 
