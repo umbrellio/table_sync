@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.9.2] - 2025-10-03
+### Fixed
+- Fix of all types taking type cast into account
+
 ## [6.9.1] - 2025-10-02
 ### Fixed
 - DateTime can be String now

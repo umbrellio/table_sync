@@ -592,29 +592,84 @@
     end
 
     describe "#validate_types" do
-      let(:data) do
-        [
-          id: 1,
-          string: nil,
-          datetime: "string",
-          integer: 10.5,
-          decimal: "string",
-          array: "string",
-          boolean: "string",
-          version: 123.456,
-        ]
-      end
-      let(:error) do
-        {
-          integer: "expected Integer, got: Float",
-          decimal: "expected Decimal, got: String",
-          boolean: "expected Boolean, got: String",
-        }
+      shared_examples "returns success" do |field, value|
+        context "with #{value}" do
+          specify do
+            result = types_test.validate_types([id: 1, field => value])
+            expect(result).to be_nil
+          end
+        end
       end
 
-      it "raises TableSync::DataError" do
-        result = types_test.validate_types(data)
-        expect(result).to eq(error)
+      shared_examples "returns error" do |field, value, got|
+        context "with #{value}" do
+          specify do
+            result = types_test.validate_types([id: 1, field => value])
+            expect(result[field]).to include("got: #{got}")
+          end
+        end
+      end
+
+      context "Decimal" do
+        ["1.5", 1.5, 1, "-1.567", 1.5.to_d, Time.current].each do |value|
+          it_behaves_like "returns success", :decimal, value
+        end
+
+        it_behaves_like "returns error", :decimal, {}, "Hash"
+        it_behaves_like "returns error", :decimal, [], "Array"
+        it_behaves_like "returns error", :decimal, "test", "String"
+        it_behaves_like "returns error", :decimal, true, "TrueClass"
+      end
+
+      context "DateTime" do
+        [
+          "01.01.2010",
+          Time.current, Date.current, DateTime.current,
+          Sequel::SQLTime.new("2010-10-10 10:10:10"),
+          123, 123.5, 123.5.to_d
+        ].each do |value|
+          it_behaves_like "returns success", :datetime, value
+        end
+
+        it_behaves_like "returns error", :datetime, {}, "Hash"
+        it_behaves_like "returns error", :datetime, [], "Array"
+        it_behaves_like "returns error", :datetime, "test", "String"
+        it_behaves_like "returns error", :datetime, true, "TrueClass"
+        it_behaves_like "returns error", :datetime, 0, "Integer"
+        it_behaves_like "returns error", :datetime, 0.1, "Float"
+      end
+
+      context "Boolean" do
+        [
+          true, false,
+          0, 1,
+          "true", "false", "TRUE", "False", "tRuE", "t", "f", "on", "off", "0", "1"
+        ].each do |value|
+          it_behaves_like "returns success", :boolean, value
+        end
+
+        it_behaves_like "returns error", :boolean, {}, "Hash"
+        it_behaves_like "returns error", :boolean, [], "Array"
+        it_behaves_like "returns error", :boolean, "test", "String"
+        it_behaves_like "returns error", :boolean, 10, "Integer"
+        it_behaves_like "returns error", :boolean, -1, "Integer"
+        it_behaves_like "returns error", :boolean, 1.5, "Float"
+        it_behaves_like "returns error", :boolean, Time.current, "Time"
+      end
+
+      context "String" do
+        [
+          true, false,
+          "asfdnk", "1.5", "-1", "t", "f", :test,
+          45435.to_d, 1, 1.5, -1, 0,
+          Time.current, Sequel::SQLTime.new("2010-10-10 10:10:10")
+        ].each do |value|
+          it_behaves_like "returns success", :string, value
+        end
+
+        it_behaves_like "returns error", :string, {}, "Hash"
+        it_behaves_like "returns error", :string, [], "Array"
+        it_behaves_like "returns error", :string, String, "Class"
       end
     end
 
