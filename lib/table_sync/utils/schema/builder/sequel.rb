@@ -25,9 +25,7 @@ class TableSync::Utils::Schema
             Type::STRING
           when :datetime, :date, :time
             Type::DATETIME
-          when :integer
-            Type::INTEGER
-          when :decimal, :float
+          when :integer, :decimal, :float
             Type::DECIMAL
           when :boolean
             Type::BOOLEAN

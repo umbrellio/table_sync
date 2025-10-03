@@ -28,9 +28,8 @@ class TableSync::Utils::Schema
                ActiveModel::Type::Date,
                ActiveModel::Type::Time
             Type::DATETIME
-          when ActiveModel::Type::Integer
-            Type::INTEGER
-          when ActiveModel::Type::Decimal,
+          when ActiveModel::Type::Integer,
+               ActiveModel::Type::Decimal,
                ActiveModel::Type::Float,
                ActiveModel::Type::BigInteger
             Type::DECIMAL
