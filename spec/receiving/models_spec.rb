@@ -626,7 +626,7 @@
         values = [
           "01.01.2010",
           Time.current, Date.current, DateTime.current,
-          Sequel::SQLTime.new("2010-10-10 10:10:10"),
+          Sequel::SQLTime.date,
           123, 123.5, BigDecimal("123.5")
         ]
         values.each do |value|
