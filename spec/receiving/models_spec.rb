@@ -665,7 +665,7 @@
           true, false,
           "asfdnk", "1.5", "-1", "t", "f", :test,
           BigDecimal(45435), 1, 1.5, -1, 0,
-          Time.current, Sequel::SQLTime.new("2010-10-10 10:10:10")
+          Time.current, Sequel::SQLTime.date
         ]
         values.each do |value|
           it_behaves_like "returns success", :string, value
