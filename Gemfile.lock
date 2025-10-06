@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    table_sync (6.9.1)
+    table_sync (6.9.2)
       memery
       rabbit_messaging (>= 1.7.0)
       rails
