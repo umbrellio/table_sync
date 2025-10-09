@@ -101,3 +101,8 @@ __END__
   :schema:
     :parameters: []
     :description: "returns an instance of Symbol"
+  :validate_types:
+    :parameters:
+      - - :req
+        - :data
+    :description: "validate types of receiving data to make more readable errors"

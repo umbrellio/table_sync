@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.9.3] - 2025-10-09
+### Fixed
+- Add validate_types to model interface
+
 ## [6.9.2] - 2025-10-03
 ### Fixed
 - Fix of all types taking type cast into account
