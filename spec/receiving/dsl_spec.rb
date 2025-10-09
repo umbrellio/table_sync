@@ -83,6 +83,8 @@ describe TableSync::Receiving::DSL do
             def table; end
 
             def schema; end
+
+            def validate_types(data); end
           end
         end
       end
