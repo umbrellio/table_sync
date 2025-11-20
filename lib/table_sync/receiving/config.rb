@@ -59,11 +59,11 @@ module TableSync::Receiving
         @default_values_for_options ||= {}
         @default_values_for_options[ivar] = proc { [nil, proc {}] }
 
-        define_method(name) do |options, &block|
+        define_method(name) do |options = nil, &block|
           old_options, old_block = instance_variable_get(ivar)
 
           new_options = options || old_options
-          new_block = TableSync::Utils.proc_keywords_resolver(&block) || old_block
+          new_block = block || old_block
 
           instance_variable_set(ivar, [new_options, new_block])
         end

@@ -349,6 +349,38 @@ describe TableSync::Receiving::Config do
       end
     end
 
+    describe "#conditional_handler" do
+      it "returns correct default value" do
+        value, callable = config.option(:conditional_handler)
+        expect(value).to be_nil
+        expect(callable).to be_a(Proc)
+      end
+
+      it "processes a single value" do
+        config.conditional_handler :test
+
+        value, callable = config.option(:conditional_handler)
+        expect(value).to eq(:test)
+        expect(callable).to be_a(Proc)
+      end
+
+      it "processes a single block" do
+        config.conditional_handler { :test }
+
+        value, callable = config.option(:conditional_handler)
+        expect(value).to be_nil
+        expect(callable.call).to eq(:test)
+      end
+
+      it "processes a value and a block" do
+        config.conditional_handler(:spam) { :test }
+
+        value, callable = config.option(:conditional_handler)
+        expect(value).to eq(:spam)
+        expect(callable.call).to eq(:test)
+      end
+    end
+
     %i[before_update after_commit_on_update before_destroy after_commit_on_destroy].each do |option|
       describe "##{option}" do
         it "returns correct default value" do
