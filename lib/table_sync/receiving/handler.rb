@@ -139,7 +139,7 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
     raise TableSync::DataError.new(data, errors.keys, errors.to_json)
   end
 
-  def perform(config, params)
+  def perform(config, params) # rubocop:disable Metrics/MethodLength
     model = config.model
 
     model.transaction do
