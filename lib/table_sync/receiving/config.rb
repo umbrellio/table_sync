@@ -23,13 +23,10 @@ module TableSync::Receiving
     class << self
       attr_reader :default_values_for_options
 
-      # In a configs this options are requested as they are
+      # In a configs these options are requested as they are
       # config.option - get value
       # config.option(args) - set static value
       # config.option { ... } - set proc as value
-      #
-      # In `Receiving::Handler` or `Receiving::EventActions` this options are requested
-      # through `Receiving::ConfigDecorator#method_missing` which always executes `config.option`
 
       def add_option(name, value_setter_wrapper:, value_as_proc_setter_wrapper:, default:)
         ivar = :"@#{name}"
@@ -55,10 +52,30 @@ module TableSync::Receiving
           instance_variable_set(ivar, result_value)
         end
       end
+
+      def add_simple_option(name)
+        ivar = :"@#{name}"
+
+        @default_values_for_options ||= {}
+        @default_values_for_options[ivar] = proc { [nil, proc {}] }
+
+        define_method(name) do |options, &block|
+          old_options, old_block = instance_variable_get(ivar)
+
+          new_options = options || old_options
+          new_block = TableSync::Utils.proc_keywords_resolver(&block) || old_block
+
+          instance_variable_set(ivar, [new_options, new_block])
+        end
+      end
     end
 
     def allow_event?(name)
       events.include?(name)
+    end
+
+    def option(name)
+      instance_variable_get(:"@#{name}")
     end
   end
 end
@@ -200,6 +217,8 @@ TableSync::Receiving::Config.add_option :wrap_receiving,
   value_setter_wrapper: raise_error,
   value_as_proc_setter_wrapper: any_value,
   default: proc { proc { |&block| block.call } }
+
+TableSync::Receiving::Config.add_simple_option :conditional_handler
 
 %i[
   before_update
