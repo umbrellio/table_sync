@@ -40,7 +40,7 @@ DB.run <<~SQL
     "online_status" boolean,
     "version" decimal,
     "rest" jsonb,
-    hooks jsonb
+    "hooks" jsonb
   );
 
   CREATE TABLE "clients" (
