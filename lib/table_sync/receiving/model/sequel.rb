@@ -10,7 +10,6 @@ module TableSync::Receiving::Model
       repeatable: :repeatable,
       serializable: :serializable,
     }.freeze
-    private_constant :ISOLATION_LEVELS
 
     def initialize(table_name)
       @raw_model = Class.new(::Sequel::Model(table_name)).tap(&:unrestrict_primary_key)

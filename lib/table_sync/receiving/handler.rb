@@ -161,15 +161,8 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
         model.after_commit do
           config.option(:after_commit_on_update, **params, results:)
 
-          # In case the `on_first_sync` option is not configured
-          # we'll have default value:
-          #   [nil, proc {}]
-          # Default value is treated as the option is disabled.
-          conditions, handler = config.option(:on_first_sync)
-          if conditions.present?
-            hook = ::TableSync::Receiving::Hooks::Once.new(conditions:, config:)
-            hook.perform(targets: results, &handler)
-          end
+          hook = config.option(:on_first_sync)
+          hook.perform(config:, targets: results) if hook.enabled?
         end
       else
         model.after_commit { config.option(:after_commit_on_destroy, **params, results:) }

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "hooks/once"
+
 module TableSync::Receiving
   class Config
     attr_reader :model, :events
@@ -53,19 +55,23 @@ module TableSync::Receiving
         end
       end
 
-      def add_simple_option(name)
+      def add_hook_option(name, hook_class:)
         ivar = :"@#{name}"
 
+        default_conditions = { columns: %i[] }
+        default_handler = proc { |**_| }
+
         @default_values_for_options ||= {}
-        @default_values_for_options[ivar] = proc { [nil, proc {}] }
+        @default_values_for_options[ivar] = proc do
+          hook_class.new(
+            conditions: default_conditions,
+            handler: default_handler,
+          )
+        end
 
-        define_method(name) do |options = nil, &block|
-          old_options, old_block = instance_variable_get(ivar)
-
-          new_options = options || old_options
-          new_block = block || old_block
-
-          instance_variable_set(ivar, [new_options, new_block])
+        define_method(name) do |conditions, &handler|
+          hook = hook_class.new(conditions:, handler:)
+          instance_variable_set(ivar, hook)
         end
       end
     end
@@ -218,7 +224,10 @@ TableSync::Receiving::Config.add_option :wrap_receiving,
   value_as_proc_setter_wrapper: any_value,
   default: proc { proc { |&block| block.call } }
 
-TableSync::Receiving::Config.add_simple_option :on_first_sync
+TableSync::Receiving::Config.add_hook_option(
+  :on_first_sync,
+  hook_class: TableSync::Receiving::Hooks::Once,
+)
 
 %i[
   before_update

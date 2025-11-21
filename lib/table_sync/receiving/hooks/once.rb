@@ -2,14 +2,19 @@
 
 module TableSync::Receiving::Hooks
   class Once
-    attr_reader :conditions, :config
+    attr_reader :conditions, :handler, :lookup_code
 
-    def initialize(conditions:, config:)
+    def initialize(conditions:, handler:)
       @conditions = conditions
-      @config = config
+      @handler = handler
+      init_lookup_code
     end
 
-    def perform(targets:, &)
+    def enabled?
+      conditions[:columns].any?
+    end
+
+    def perform(config:, targets:)
       target_keys = config.option(:target_keys)
       model = config.model
 
@@ -21,8 +26,8 @@ module TableSync::Receiving::Hooks
             next unless allow?(entry)
 
             entry.hooks ||= []
-            entry.hooks << hook_lookup_code
-            model.after_commit { yield(entry:) }
+            entry.hooks << lookup_code
+            model.after_commit { handler.call(entry:) }
           end
         end
       end
@@ -31,11 +36,11 @@ module TableSync::Receiving::Hooks
     private
 
     def allow?(entry)
-      Array(entry.hooks).exclude?(hook_lookup_code)
+      Array(entry.hooks).exclude?(lookup_code)
     end
 
-    def hook_lookup_code
-      @hook_lookup_code ||= conditions[:columns].map do |column|
+    def init_lookup_code
+      @lookup_code = conditions[:columns].map do |column|
         "#{column}-#{conditions[column]}"
       end.join(":")
     end

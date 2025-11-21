@@ -8,7 +8,6 @@ module TableSync::Receiving::Model
       repeatable: :repeatable_read,
       serializable: :serializable,
     }.freeze
-    private_constant :ISOLATION_LEVELS
 
     class AfterCommitWrap
       def initialize(&block)

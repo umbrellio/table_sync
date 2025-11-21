@@ -351,33 +351,23 @@ describe TableSync::Receiving::Config do
 
     describe "#on_first_sync" do
       it "returns correct default value" do
-        value, callable = config.option(:on_first_sync)
-        expect(value).to be_nil
-        expect(callable).to be_a(Proc)
+        hook = config.option(:on_first_sync)
+        expect(hook).not_to be_nil
+        expect(hook).not_to be_enabled
+        expect(hook.conditions[:columns]).to be_empty
+        expect(hook.lookup_code).to eq("")
       end
 
-      it "processes a single value" do
-        config.on_first_sync :test
+      it "processes a value" do
+        config.on_first_sync(columns: %i[test], test: "value") do |**_|
+          # Some hook work here
+        end
 
-        value, callable = config.option(:on_first_sync)
-        expect(value).to eq(:test)
-        expect(callable).to be_a(Proc)
-      end
-
-      it "processes a single block" do
-        config.on_first_sync { :test }
-
-        value, callable = config.option(:on_first_sync)
-        expect(value).to be_nil
-        expect(callable.call).to eq(:test)
-      end
-
-      it "processes a value and a block" do
-        config.on_first_sync(:spam) { :test }
-
-        value, callable = config.option(:on_first_sync)
-        expect(value).to eq(:spam)
-        expect(callable.call).to eq(:test)
+        hook = config.option(:on_first_sync)
+        expect(hook).not_to be_nil
+        expect(hook).to be_enabled
+        expect(hook.conditions[:columns]).not_to be_empty
+        expect(hook.lookup_code).to eq("test-value")
       end
     end
 
