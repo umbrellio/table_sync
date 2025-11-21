@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.9.4] - 2025-11-21
+### Fixed
+- Add on_first_sync callback
+
 ## [6.9.3] - 2025-10-09
 ### Fixed
 - Add validate_types to model interface
