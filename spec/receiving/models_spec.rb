@@ -12,7 +12,7 @@
 
     it "#columns" do
       expect(players.columns)
-        .to eq(%i[external_id project_id email online_status version rest])
+        .to eq(%i[external_id project_id email online_status version rest hooks])
       expect(clients.columns)
         .to eq(%i[client_id project_id name ext_id ext_project_id ts_version ts_rest])
     end
@@ -473,6 +473,7 @@
             online_status: true,
             version: 12.343,
             rest: nil,
+            hooks: nil,
           },
           {
             external_id: 222,
@@ -481,6 +482,7 @@
             online_status: false,
             version: 122.565,
             rest: nil,
+            hooks: nil,
           },
         ])
 
@@ -496,6 +498,7 @@
           online_status: false,
           version: 122.565,
           rest: nil,
+          hooks: nil,
         }])
       end
 
@@ -508,6 +511,7 @@
             online_status: true,
             version: 12.343,
             rest: nil,
+            hooks: nil,
           },
           {
             external_id: 222,
@@ -516,6 +520,7 @@
             online_status: false,
             version: 122.565,
             rest: nil,
+            hooks: nil,
           },
           {
             external_id: 333,
@@ -524,6 +529,7 @@
             online_status: false,
             version: 122.5653,
             rest: nil,
+            hooks: nil,
           },
         ])
 
@@ -543,6 +549,7 @@
             online_status: true,
             version: 12.343,
             rest: nil,
+            hooks: nil,
           },
           {
             external_id: 222,
@@ -551,6 +558,7 @@
             online_status: false,
             version: 122.565,
             rest: nil,
+            hooks: nil,
           },
         ])
       end
@@ -565,6 +573,7 @@
               online_status: false,
               version: 12.343,
               rest: nil,
+              hooks: nil,
             },
             {
               external_id: 2,
@@ -573,6 +582,7 @@
               online_status: false,
               version: 12.565,
               rest: nil,
+              hooks: nil,
             },
           ])
         end
@@ -707,6 +717,7 @@
               online_status: true,
               version: 12.343,
               rest: nil,
+              hooks: nil,
             }])
 
             players.after_commit { checks[0] = "test_after_commit" }
@@ -735,6 +746,7 @@
             online_status: true,
             version: 12.343,
             rest: nil,
+            hooks: nil,
           }])
 
           players.after_commit { checks[0] = "test_after_commit" }

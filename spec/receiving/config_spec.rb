@@ -349,33 +349,33 @@ describe TableSync::Receiving::Config do
       end
     end
 
-    describe "#conditional_handler" do
+    describe "#on_first_sync" do
       it "returns correct default value" do
-        value, callable = config.option(:conditional_handler)
+        value, callable = config.option(:on_first_sync)
         expect(value).to be_nil
         expect(callable).to be_a(Proc)
       end
 
       it "processes a single value" do
-        config.conditional_handler :test
+        config.on_first_sync :test
 
-        value, callable = config.option(:conditional_handler)
+        value, callable = config.option(:on_first_sync)
         expect(value).to eq(:test)
         expect(callable).to be_a(Proc)
       end
 
       it "processes a single block" do
-        config.conditional_handler { :test }
+        config.on_first_sync { :test }
 
-        value, callable = config.option(:conditional_handler)
+        value, callable = config.option(:on_first_sync)
         expect(value).to be_nil
         expect(callable.call).to eq(:test)
       end
 
       it "processes a value and a block" do
-        config.conditional_handler(:spam) { :test }
+        config.on_first_sync(:spam) { :test }
 
-        value, callable = config.option(:conditional_handler)
+        value, callable = config.option(:on_first_sync)
         expect(value).to eq(:spam)
         expect(callable.call).to eq(:test)
       end

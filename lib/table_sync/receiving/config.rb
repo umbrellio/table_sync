@@ -218,7 +218,7 @@ TableSync::Receiving::Config.add_option :wrap_receiving,
   value_as_proc_setter_wrapper: any_value,
   default: proc { proc { |&block| block.call } }
 
-TableSync::Receiving::Config.add_simple_option :conditional_handler
+TableSync::Receiving::Config.add_simple_option :on_first_sync
 
 %i[
   before_update
