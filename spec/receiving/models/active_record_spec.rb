@@ -25,20 +25,18 @@ describe TableSync::Receiving::Model::ActiveRecord do
 
     let(:row) { { external_id: } }
 
-    it "finds and updates an entry" do
+    it "finds and saves an entry" do
       model.find_and_save(row:, target_keys: [primary_key]) do |entry|
         entry.online_status = true
       end
       expect(player.reload.online_status).to be_truthy
     end
 
-    it "raise an error" do
-      expect do
-        row = { external_id: external_id + 1 }
-        model.find_and_save(row:, target_keys: [primary_key]) do |entry|
-          entry.online_status = true
-        end
-      end.to raise_error(ActiveRecord::RecordNotFound)
+    it "does nothing" do
+      row = { external_id: external_id + 1 }
+      model.find_and_save(row:, target_keys: [primary_key]) do |entry|
+        entry.online_status = true
+      end
       expect(player.reload.online_status).to be_falsy
     end
   end

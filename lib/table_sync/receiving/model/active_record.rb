@@ -130,7 +130,9 @@ module TableSync::Receiving::Model
     end
 
     def find_and_save(row:, target_keys:)
-      entry = raw_model.find_by!(row.slice(*target_keys))
+      entry = raw_model.find_by(row.slice(*target_keys))
+      return unless entry
+
       yield entry
       entry.save!
     end

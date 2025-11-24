@@ -77,7 +77,9 @@ module TableSync::Receiving::Model
     end
 
     def find_and_save(row:, target_keys:)
-      entry = dataset.first!(row.slice(*target_keys))
+      entry = dataset.first(row.slice(*target_keys))
+      return unless entry
+
       yield entry
       entry.save_changes
     end
