@@ -129,7 +129,7 @@ module TableSync::Receiving::Model
       db.add_transaction_record(AfterCommitWrap.new(&))
     end
 
-    def find_and_update(row:, target_keys:)
+    def find_and_save(row:, target_keys:)
       entry = raw_model.find_by!(row.slice(*target_keys))
       yield entry
       entry.save!

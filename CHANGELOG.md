@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [6.9.4] - 2025-11-21
+## [6.10.0] - 2025-11-21
 ### Fixed
 - Add on_first_sync callback
 

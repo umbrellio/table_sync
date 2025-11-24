@@ -22,7 +22,7 @@ module TableSync::Receiving::Hooks
         next unless conditions?(target)
 
         model.transaction(isolation: model.isolation_level(:repeatable)) do
-          model.find_and_update(row: target, target_keys:) do |entry|
+          model.find_and_save(row: target, target_keys:) do |entry|
             next unless allow?(entry)
 
             entry.hooks ||= []

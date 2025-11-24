@@ -11,7 +11,7 @@ describe TableSync::Receiving::Model::ActiveRecord do
     it { expect { model.isolation_level(:invalid) }.to raise_error(KeyError) }
   end
 
-  describe "find_and_update" do
+  describe "find_and_save" do
     let(:primary_key) { :external_id }
     let(:external_id) { 100_500 }
     let!(:player) do
@@ -26,7 +26,7 @@ describe TableSync::Receiving::Model::ActiveRecord do
     let(:row) { { external_id: } }
 
     it "finds and updates an entry" do
-      model.find_and_update(row:, target_keys: [primary_key]) do |entry|
+      model.find_and_save(row:, target_keys: [primary_key]) do |entry|
         entry.online_status = true
       end
       expect(player.reload.online_status).to be_truthy
@@ -35,7 +35,7 @@ describe TableSync::Receiving::Model::ActiveRecord do
     it "raise an error" do
       expect do
         row = { external_id: external_id + 1 }
-        model.find_and_update(row:, target_keys: [primary_key]) do |entry|
+        model.find_and_save(row:, target_keys: [primary_key]) do |entry|
           entry.online_status = true
         end
       end.to raise_error(ActiveRecord::RecordNotFound)

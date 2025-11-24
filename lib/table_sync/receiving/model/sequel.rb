@@ -76,7 +76,7 @@ module TableSync::Receiving::Model
       db.after_commit(&)
     end
 
-    def find_and_update(row:, target_keys:)
+    def find_and_save(row:, target_keys:)
       entry = dataset.first!(row.slice(*target_keys))
       yield entry
       entry.save_changes
