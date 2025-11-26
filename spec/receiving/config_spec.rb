@@ -349,6 +349,25 @@ describe TableSync::Receiving::Config do
       end
     end
 
+    describe "#on_first_sync" do
+      it "returns correct default value" do
+        hooks = config.option(:on_first_sync)
+        expect(hooks).to be_empty
+      end
+
+      it "processes a value" do
+        config.on_first_sync(columns: %i[test], test: "value") do |**_|
+          # Some hook work here
+        end
+
+        hooks = config.option(:on_first_sync)
+        expect(hooks).not_to be_nil
+        expect(hooks.first).to be_enabled
+        expect(hooks.first.conditions[:columns]).not_to be_empty
+        expect(hooks.first.lookup_code).to eq("test-value")
+      end
+    end
+
     %i[before_update after_commit_on_update before_destroy after_commit_on_destroy].each do |option|
       describe "##{option}" do
         it "returns correct default value" do

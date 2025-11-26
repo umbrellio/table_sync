@@ -2,6 +2,13 @@
 
 module TableSync::Receiving::Model
   class ActiveRecord
+    ISOLATION_LEVELS = {
+      uncommitted: :read_uncommitted,
+      committed: :read_committed,
+      repeatable: :repeatable_read,
+      serializable: :serializable,
+    }.freeze
+
     class AfterCommitWrap
       def initialize(&block)
         @callback = block
@@ -31,6 +38,10 @@ module TableSync::Receiving::Model
 
       @table = model_naming.table.to_sym
       @schema = model_naming.schema.to_sym
+    end
+
+    def isolation_level(lookup_code)
+      ISOLATION_LEVELS.fetch(lookup_code)
     end
 
     def columns
@@ -110,12 +121,28 @@ module TableSync::Receiving::Model
       types_validator.validate(data)
     end
 
-    def transaction(&)
-      ::ActiveRecord::Base.transaction(&)
+    def transaction(**params, &)
+      ::ActiveRecord::Base.transaction(**params, &)
     end
 
     def after_commit(&)
       db.add_transaction_record(AfterCommitWrap.new(&))
+    end
+
+    def try_advisory_lock(lock_key)
+      transaction do
+        if db.query_value("SELECT pg_try_advisory_xact_lock(#{lock_key.to_i})")
+          yield
+        end
+      end
+    end
+
+    def find_and_save(keys:)
+      entry = raw_model.find_by(keys)
+      return unless entry
+
+      yield entry
+      entry.save!
     end
 
     private

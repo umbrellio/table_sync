@@ -2,9 +2,6 @@
 
 module TableSync::Receiving
   class ConfigDecorator
-    extend Forwardable
-
-    def_delegators :@config, :allow_event?
     # rubocop:disable Metrics/ParameterLists
     def initialize(config:, event:, model:, version:, project_id:, raw_data:)
       @config = config
@@ -19,9 +16,17 @@ module TableSync::Receiving
     end
     # rubocop:enable Metrics/ParameterLists
 
-    def method_missing(name, **additional_params, &)
-      value = @config.send(name)
+    def option(name, **additional_params, &)
+      value = @config.option(name)
       value.is_a?(Proc) ? value.call(@default_params.merge(additional_params), &) : value
+    end
+
+    def model
+      @config.model
+    end
+
+    def allow_event?(name)
+      @config.allow_event?(name)
     end
   end
 end

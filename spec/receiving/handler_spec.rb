@@ -171,6 +171,7 @@ describe TableSync::Receiving::Handler do
         online_status: nil,
         project_id: "PID",
         rest: nil,
+        hooks: nil,
         version: 123.34534,
       }
     end
@@ -362,6 +363,7 @@ describe TableSync::Receiving::Handler do
             online_status: nil,
             project_id: "PID",
             rest: nil,
+            hooks: nil,
             version: 123.34534,
           )
 
@@ -371,6 +373,7 @@ describe TableSync::Receiving::Handler do
             online_status: nil,
             project_id: "PID",
             rest: nil,
+            hooks: nil,
             version: 123.34534,
           )
         end
@@ -602,6 +605,51 @@ describe TableSync::Receiving::Handler do
       it "raises TableSync::DataError" do
         expect { fire_update_event }.to raise_error(TableSync::DataError)
       end
+    end
+  end
+
+  describe "#on_first_sync" do
+    let(:callback_flags) { { on_first_sync: [] } }
+    let(:handler) do
+      callback_flags_link = callback_flags
+      handler = Class.new(described_class)
+
+      handler.receive("User", to_table: :players) do
+        rest_key false
+        mapping_overrides id: :external_id
+
+        on_first_sync columns: %i[online_status], online_status: true do |entry:|
+          callback_flags_link[:on_first_sync] << entry.external_id
+        end
+      end
+
+      handler
+    end
+    let(:update_event) do
+      OpenStruct.new(
+        data: {
+          event: "update",
+          model: "User",
+          attributes: {
+            id: user_id,
+            email: "mail@example.com",
+            online_status: true,
+          },
+          version: 123.34534,
+        },
+        project_id: "pid",
+      )
+    end
+
+    it "provides proper event to wrap receiving" do
+      fire_update_event
+      expect(DB[:players].count).to eq(1)
+      expect(callback_flags[:on_first_sync]).to be_one
+
+      update_event.data[:version] = update_event.data[:version] + 1
+      fire_update_event
+      expect(DB[:players].count).to eq(1)
+      expect(callback_flags[:on_first_sync]).to be_one
     end
   end
 

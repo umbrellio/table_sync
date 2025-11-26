@@ -4,6 +4,13 @@ module TableSync::Receiving::Model
   class Sequel
     attr_reader :table, :schema
 
+    ISOLATION_LEVELS = {
+      uncommitted: :uncommitted,
+      committed: :committed,
+      repeatable: :repeatable,
+      serializable: :serializable,
+    }.freeze
+
     def initialize(table_name)
       @raw_model = Class.new(::Sequel::Model(table_name)).tap(&:unrestrict_primary_key)
       @types_validator = TableSync::Utils::Schema::Builder::Sequel.build(@raw_model)
@@ -15,6 +22,10 @@ module TableSync::Receiving::Model
 
       @table = model_naming.table.to_sym
       @schema = model_naming.schema.to_sym
+    end
+
+    def isolation_level(lookup_code)
+      ISOLATION_LEVELS.fetch(lookup_code)
     end
 
     def columns
@@ -57,12 +68,28 @@ module TableSync::Receiving::Model
       types_validator.validate(data)
     end
 
-    def transaction(&)
-      db.transaction(&)
+    def transaction(**params, &)
+      db.transaction(**params, &)
     end
 
     def after_commit(&)
       db.after_commit(&)
+    end
+
+    def try_advisory_lock(lock_key)
+      transaction do
+        if db.get(::Sequel.function(:pg_try_advisory_xact_lock, lock_key.to_i))
+          yield
+        end
+      end
+    end
+
+    def find_and_save(keys:)
+      entry = dataset.first(keys)
+      return unless entry
+
+      yield entry
+      entry.save_changes
     end
 
     private

@@ -39,7 +39,8 @@ DB.run <<~SQL
     "email" varchar(255) NOT NULL,
     "online_status" boolean,
     "version" decimal,
-    "rest" jsonb
+    "rest" jsonb,
+    "hooks" jsonb
   );
 
   CREATE TABLE "clients" (

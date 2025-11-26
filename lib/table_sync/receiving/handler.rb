@@ -22,22 +22,20 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
 
       next if data.empty?
 
-      version_key = config.version_key(data:)
-      data.each { |row| row[version_key] = version }
-
-      target_keys = config.target_keys(data:)
+      target_keys = config.option(:target_keys, data:)
 
       validate_data(data, target_keys:)
 
       data.sort_by! { |row| row.values_at(*target_keys).map { |value| sort_key(value) } }
 
+      version_key = config.option(:version_key, data:)
       params = { data:, target_keys:, version_key: }
 
       if event == :update
-        params[:default_values] = config.default_values(data:)
+        params[:default_values] = config.option(:default_values, data:)
       end
 
-      config.wrap_receiving(event:, **params) do
+      config.option(:wrap_receiving, **params) do
         perform(config, params)
       end
     end
@@ -83,24 +81,27 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
   end
 
   def processed_data(config)
+    version_key = config.option(:version_key, data:)
     data.filter_map do |row|
-      next if config.skip(row:)
+      next if config.option(:skip, row:)
 
       row = row.dup
 
-      config.mapping_overrides(row:).each do |before, after|
+      config.option(:mapping_overrides, row:).each do |before, after|
         row[after] = row.delete(before)
       end
 
-      config.except(row:).each { |x| row.delete(x) }
+      config.option(:except, row:).each { |x| row.delete(x) }
 
-      row.merge!(config.additional_data(row:))
+      row.merge!(config.option(:additional_data, row:))
 
-      only = config.only(row:)
+      only = config.option(:only, row:)
       row, rest = row.partition { |key, _| key.in?(only) }.map(&:to_h)
 
-      rest_key = config.rest_key(row:, rest:)
+      rest_key = config.option(:rest_key, row:, rest:)
       (row[rest_key] ||= {}).merge!(rest) if rest_key
+
+      row[version_key] = version
 
       row
     end
@@ -138,16 +139,16 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
     raise TableSync::DataError.new(data, errors.keys, errors.to_json)
   end
 
-  def perform(config, params)
+  def perform(config, params) # rubocop:disable Metrics/MethodLength
     model = config.model
 
     model.transaction do
       results = if event == :update
-                  config.before_update(**params)
+                  config.option(:before_update, **params)
                   validate_data_types(model, params[:data])
                   model.upsert(**params)
                 else
-                  config.before_destroy(**params)
+                  config.option(:before_destroy, **params)
                   model.destroy(**params)
                 end
 
@@ -157,9 +158,15 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
       end
 
       if event == :update
-        model.after_commit { config.after_commit_on_update(**params, results:) }
+        model.after_commit do
+          config.option(:after_commit_on_update, **params, results:)
+
+          Array(config.option(:on_first_sync)).each do |hook|
+            hook.perform(config:, targets: results) if hook.enabled?
+          end
+        end
       else
-        model.after_commit { config.after_commit_on_destroy(**params, results:) }
+        model.after_commit { config.option(:after_commit_on_destroy, **params, results:) }
       end
     end
   end
