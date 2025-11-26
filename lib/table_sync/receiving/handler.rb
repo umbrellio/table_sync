@@ -161,8 +161,9 @@ class TableSync::Receiving::Handler < Rabbit::EventHandler
         model.after_commit do
           config.option(:after_commit_on_update, **params, results:)
 
-          hook = config.option(:on_first_sync)
-          hook.perform(config:, targets: results) if hook.enabled?
+          Array(config.option(:on_first_sync)).each do |hook|
+            hook.perform(config:, targets: results) if hook.enabled?
+          end
         end
       else
         model.after_commit { config.option(:after_commit_on_destroy, **params, results:) }

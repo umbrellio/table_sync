@@ -351,11 +351,8 @@ describe TableSync::Receiving::Config do
 
     describe "#on_first_sync" do
       it "returns correct default value" do
-        hook = config.option(:on_first_sync)
-        expect(hook).not_to be_nil
-        expect(hook).not_to be_enabled
-        expect(hook.conditions[:columns]).to be_empty
-        expect(hook.lookup_code).to eq("")
+        hooks = config.option(:on_first_sync)
+        expect(hooks).to be_empty
       end
 
       it "processes a value" do
@@ -363,11 +360,11 @@ describe TableSync::Receiving::Config do
           # Some hook work here
         end
 
-        hook = config.option(:on_first_sync)
-        expect(hook).not_to be_nil
-        expect(hook).to be_enabled
-        expect(hook.conditions[:columns]).not_to be_empty
-        expect(hook.lookup_code).to eq("test-value")
+        hooks = config.option(:on_first_sync)
+        expect(hooks).not_to be_nil
+        expect(hooks.first).to be_enabled
+        expect(hooks.first.conditions[:columns]).not_to be_empty
+        expect(hooks.first.lookup_code).to eq("test-value")
       end
     end
 

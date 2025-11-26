@@ -58,20 +58,15 @@ module TableSync::Receiving
       def add_hook_option(name, hook_class:)
         ivar = :"@#{name}"
 
-        default_conditions = { columns: %i[] }
-        default_handler = proc { |**_| }
-
         @default_values_for_options ||= {}
-        @default_values_for_options[ivar] = proc do
-          hook_class.new(
-            conditions: default_conditions,
-            handler: default_handler,
-          )
-        end
+        @default_values_for_options[ivar] = proc { [] }
 
         define_method(name) do |conditions, &handler|
-          hook = hook_class.new(conditions:, handler:)
-          instance_variable_set(ivar, hook)
+          hooks = instance_variable_get(ivar)
+          hooks ||= []
+
+          hooks << hook_class.new(conditions:, handler:)
+          instance_variable_set(ivar, hooks)
         end
       end
     end
