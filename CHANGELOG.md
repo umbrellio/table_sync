@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [6.10.0] - 2025-11-21
-### Fixed
+### Added
 - Add on_first_sync callback
 
 ## [6.9.3] - 2025-10-09
