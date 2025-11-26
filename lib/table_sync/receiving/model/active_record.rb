@@ -129,8 +129,16 @@ module TableSync::Receiving::Model
       db.add_transaction_record(AfterCommitWrap.new(&))
     end
 
-    def find_and_save(row:, target_keys:)
-      entry = raw_model.find_by(row.slice(*target_keys))
+    def try_advisory_lock(lock_key)
+      transaction do
+        if db.query_value("SELECT pg_try_advisory_xact_lock(#{lock_key.to_i})")
+          yield
+        end
+      end
+    end
+
+    def find_and_save(keys:)
+      entry = raw_model.find_by(keys)
       return unless entry
 
       yield entry

@@ -76,8 +76,16 @@ module TableSync::Receiving::Model
       db.after_commit(&)
     end
 
-    def find_and_save(row:, target_keys:)
-      entry = dataset.first(row.slice(*target_keys))
+    def try_advisory_lock(lock_key)
+      transaction do
+        if db.get(::Sequel.function(:pg_try_advisory_xact_lock, lock_key.to_i))
+          yield
+        end
+      end
+    end
+
+    def find_and_save(keys:)
+      entry = dataset.first(keys)
       return unless entry
 
       yield entry

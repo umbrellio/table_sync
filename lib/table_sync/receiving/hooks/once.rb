@@ -2,6 +2,8 @@
 
 module TableSync::Receiving::Hooks
   class Once
+    LOCK_KEY = "hook-once-lock-key"
+
     attr_reader :conditions, :handler, :lookup_code
 
     def initialize(conditions:, handler:)
@@ -21,8 +23,9 @@ module TableSync::Receiving::Hooks
       targets.each do |target|
         next unless conditions?(target)
 
-        model.transaction(isolation: model.isolation_level(:repeatable)) do
-          model.find_and_save(row: target, target_keys:) do |entry|
+        keys = target.slice(*target_keys)
+        model.try_advisory_lock(prepare_lock_key(keys)) do
+          model.find_and_save(keys:) do |entry|
             next unless allow?(entry)
 
             entry.hooks ||= []
@@ -49,6 +52,11 @@ module TableSync::Receiving::Hooks
       conditions[:columns].all? do |column|
         row[column] == (conditions[column] || row[column])
       end
+    end
+
+    def prepare_lock_key(row_keys)
+      lock_keys = [LOCK_KEY] + row_keys.values
+      Zlib.crc32(lock_keys.join(":")) % (2**31)
     end
   end
 end
