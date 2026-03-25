@@ -10,6 +10,7 @@ module TableSync::Publishing::Params
       @exchange_name      = attrs[:exchange_name]
       @routing_key        = attrs[:routing_key]
       @headers            = attrs[:headers]
+      @compress           = attrs.fetch(:compress, false)
     end
 
     def exchange_name

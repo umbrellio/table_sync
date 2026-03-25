@@ -9,7 +9,8 @@ module TableSync::Publishing::Message
                   :routing_key,
                   :headers,
                   :custom_version,
-                  :event
+                  :event,
+                  :compress
 
     def initialize(params = {})
       self.model_name          = params[:model_name]
@@ -20,6 +21,7 @@ module TableSync::Publishing::Message
       self.headers             = params[:headers]
       self.custom_version      = params[:custom_version]
       self.event               = params[:event]
+      self.compress            = params.fetch(:compress, false)
     end
 
     def publish
@@ -35,6 +37,7 @@ module TableSync::Publishing::Message
         table: table_name,
         schema: schema_name,
         event:,
+        compress: compress,
         count: original_attributes.count,
         direction: :publish,
       )
@@ -57,7 +60,7 @@ module TableSync::Publishing::Message
 
     def params
       TableSync::Publishing::Params::Raw.new(
-        { model_name:, headers:, routing_key: }.compact,
+        { model_name:, headers:, routing_key:, compress: }.compact,
       ).construct
     end
   end

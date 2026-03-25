@@ -7,7 +7,7 @@ module TableSync::Publishing::Message
     end
 
     def params
-      TableSync::Publishing::Params::Single.new(object:).construct
+      TableSync::Publishing::Params::Single.new(object:, compress:).construct
     end
   end
 end

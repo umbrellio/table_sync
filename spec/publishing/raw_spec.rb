@@ -10,6 +10,7 @@ RSpec.describe TableSync::Publishing::Raw do
   let(:original_attributes) { [{ id: 1, name: "purum" }] }
   let(:table_name) { "sequel_users" }
   let(:schema_name) { "public" }
+  let(:compress) { false }
 
   let(:attributes) do
     {
@@ -21,6 +22,7 @@ RSpec.describe TableSync::Publishing::Raw do
       table_name:,
       schema_name:,
       custom_version: nil,
+      compress:,
     }
   end
 
@@ -31,6 +33,16 @@ RSpec.describe TableSync::Publishing::Raw do
 
   it_behaves_like "publisher#publish_now without stubbed message",
                   TableSync::Publishing::Message::Raw
+
+  context "when compress option has been provided" do
+    let(:compress) { true }
+
+    it_behaves_like "publisher#publish_now with stubbed message",
+                    TableSync::Publishing::Message::Raw
+
+    it_behaves_like "publisher#publish_now without stubbed message",
+                    TableSync::Publishing::Message::Raw
+  end
 
   context "when routing_key is nil" do
     let(:routing_key) { nil }

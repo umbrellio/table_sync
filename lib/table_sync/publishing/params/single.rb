@@ -4,10 +4,11 @@ module TableSync::Publishing::Params
   class Single < Base
     attr_reader :object, :routing_key, :headers
 
-    def initialize(object:)
+    def initialize(object:, compress: false)
       @object      = object
       @routing_key = calculated_routing_key
       @headers     = calculated_headers
+      @compress    = compress
     end
 
     private

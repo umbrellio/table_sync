@@ -13,7 +13,7 @@ module TableSync::Publishing::Message
 
     def params
       TableSync::Publishing::Params::Batch.new(
-        { object_class:, headers:, routing_key: }.compact,
+        { object_class:, headers:, routing_key:, compress: }.compact,
       ).construct
     end
   end

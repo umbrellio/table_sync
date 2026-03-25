@@ -1,9 +1,20 @@
+GIT
+  remote: git@github.com:umbrellio/rabbit_messaging.git
+  revision: 2a31c6878f012fd3a31f538a9d1ac2d0670a2e50
+  branch: compression-for-publisher-and-reciver
+  specs:
+    rabbit_messaging (1.8.0)
+      bunny (~> 2.0)
+      kicks
+      msgpack
+      zlib
+
 PATH
   remote: .
   specs:
-    table_sync (6.10.0)
+    table_sync (6.11.0)
       memery
-      rabbit_messaging (>= 1.7.0)
+      rabbit_messaging (>= 1.8.0)
       rails
       self_data
 
@@ -136,6 +147,7 @@ GEM
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
     minitest (5.25.5)
+    msgpack (1.8.0)
     net-imap (0.5.12)
       date
       net-protocol
@@ -181,9 +193,6 @@ GEM
     psych (5.2.6)
       date
       stringio
-    rabbit_messaging (1.7.0)
-      bunny (~> 2.0)
-      kicks
     racc (1.8.1)
     rack (3.1.15)
     rack-session (2.1.1)
@@ -326,6 +335,7 @@ GEM
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
     zeitwerk (2.6.18)
+    zlib (3.2.3)
 
 PLATFORMS
   aarch64-linux-gnu
@@ -345,6 +355,7 @@ DEPENDENCIES
   ostruct
   pg
   pry
+  rabbit_messaging!
   rake
   rspec
   rubocop-config-umbrellio

@@ -41,6 +41,7 @@ describe TableSync::Publishing::Message::Single do
       let(:params_attributes) do
         {
           object:,
+          compress: false,
         }
       end
 
@@ -64,6 +65,21 @@ describe TableSync::Publishing::Message::Single do
         expect(params).to receive(:construct)
 
         described_class.new(attributes).publish
+      end
+
+      context "when compress option has been specified" do
+        let(:attributes) { super().merge(compress: true) }
+        let(:params_attributes) { super().merge(compress: true) }
+
+        it "calls data and params with correct attrs" do
+          expect(data_class).to receive(:new).with(data_attributes)
+          expect(params_class).to receive(:new).with(params_attributes)
+
+          expect(data).to receive(:construct)
+          expect(params).to receive(:construct)
+
+          described_class.new(attributes).publish
+        end
       end
     end
 

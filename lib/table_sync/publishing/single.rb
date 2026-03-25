@@ -7,7 +7,8 @@ class TableSync::Publishing::Single
                 :original_attributes,
                 :debounce_time,
                 :custom_version,
-                :event
+                :event,
+                :compress
 
   def initialize(attrs = {})
     attrs = attrs.with_indifferent_access
@@ -15,6 +16,7 @@ class TableSync::Publishing::Single
     self.object_class         = attrs[:object_class]
     self.original_attributes  = attrs[:original_attributes]
     self.debounce_time        = attrs[:debounce_time]
+    self.compress             = attrs.fetch(:compress, false)
     self.custom_version       = attrs[:custom_version]
     self.event                = attrs.fetch(:event, :update)
   end
@@ -56,6 +58,7 @@ class TableSync::Publishing::Single
       debounce_time: debounce_time,
       custom_version: custom_version,
       event: event,
+      compress: compress,
     }
   end
 

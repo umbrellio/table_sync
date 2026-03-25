@@ -10,7 +10,8 @@ class TableSync::Publishing::Raw
                 :custom_version,
                 :routing_key,
                 :headers,
-                :event
+                :event,
+                :compress
 
   def initialize(attributes = {})
     attributes = attributes.with_indifferent_access
@@ -23,6 +24,7 @@ class TableSync::Publishing::Raw
     self.routing_key          = attributes[:routing_key]
     self.headers              = attributes[:headers]
     self.event                = attributes.fetch(:event, :update).to_sym
+    self.compress             = attributes.fetch(:compress, false)
   end
 
   require_attributes :model_name, :original_attributes
@@ -47,6 +49,7 @@ class TableSync::Publishing::Raw
       routing_key: routing_key,
       headers: headers,
       event: event,
+      compress: compress,
     }
   end
 end

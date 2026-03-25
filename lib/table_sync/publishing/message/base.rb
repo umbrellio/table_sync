@@ -5,7 +5,8 @@ module TableSync::Publishing::Message
     attr_accessor :custom_version,
                   :object_class,
                   :original_attributes,
-                  :event
+                  :event,
+                  :compress
 
     attr_reader :objects
 
@@ -14,6 +15,7 @@ module TableSync::Publishing::Message
       self.object_class          = params[:object_class]
       self.original_attributes   = params[:original_attributes]
       self.event                 = params[:event].to_sym
+      self.compress              = params.fetch(:compress, false)
 
       @objects = find_or_init_objects
 
@@ -65,6 +67,7 @@ module TableSync::Publishing::Message
         table: model_naming.table,
         schema: model_naming.schema,
         event:,
+        compress:,
         direction: :publish,
         count: objects.count,
       )

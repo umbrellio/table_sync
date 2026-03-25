@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.11.0] - 2026-03-25
+### Added
+- Ability to specify option for compression when publish data
+
 ## [6.10.0] - 2025-11-21
 ### Added
 - Add on_first_sync callback

@@ -4,13 +4,14 @@ module TableSync::InstrumentAdapter
   module ActiveSupport
     module_function
 
-    def notify(table:, schema:, event:, direction:, count: 1)
+    def notify(table:, schema:, event:, direction:, count: 1, compress: false)
       ::ActiveSupport::Notifications.instrument "tablesync.#{direction}.#{event}",
                                                 count:,
                                                 table: table.to_s,
                                                 schema: schema.to_s,
                                                 event:,
-                                                direction:
+                                                direction:,
+                                                compress:
     end
   end
 end

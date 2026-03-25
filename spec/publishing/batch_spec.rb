@@ -11,6 +11,7 @@ RSpec.describe TableSync::Publishing::Batch do
   let(:routing_key)					  { object_class.tableize }
   let(:expected_routing_key) { "a_record_users" }
   let(:headers) { { klass: object_class } }
+  let(:compress) { false }
 
   let(:attributes) do
     {
@@ -20,6 +21,7 @@ RSpec.describe TableSync::Publishing::Batch do
       headers:,
       routing_key:,
       custom_version: nil,
+      compress:,
     }
   end
 
@@ -28,6 +30,16 @@ RSpec.describe TableSync::Publishing::Batch do
   it_behaves_like "publisher#new without expected fields",
                   TableSync::Publishing::Batch,
                   %i[object_class original_attributes]
+
+  context "when compress option has been provided" do
+    let(:compress) { true }
+
+    it_behaves_like "publisher#publish_now with stubbed message",
+                    TableSync::Publishing::Message::Batch
+    it_behaves_like "publisher#new without expected fields",
+                    TableSync::Publishing::Batch,
+                    %i[object_class original_attributes]
+  end
 
   context "real user" do
     context "sequel" do

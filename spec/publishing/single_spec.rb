@@ -11,6 +11,7 @@ RSpec.describe TableSync::Publishing::Single do
   let(:expected_routing_key) { "a_record_users" }
   let(:headers) { { klass: object_class } }
   let(:debounce_time)	{ 30 }
+  let(:compress) { false }
 
   let(:attributes) do
     {
@@ -19,10 +20,18 @@ RSpec.describe TableSync::Publishing::Single do
       event:,
       debounce_time:,
       custom_version: nil,
+      compress:,
     }
   end
 
   describe "#publish_now" do
+    context "when compress option has been provided" do
+      let(:compress) { true }
+
+      it_behaves_like "publisher#publish_now with stubbed message",
+                      TableSync::Publishing::Message::Single
+    end
+
     it_behaves_like "publisher#publish_now with stubbed message",
                     TableSync::Publishing::Message::Single
 
