@@ -1,5 +1,5 @@
 GIT
-  remote: git@github.com:umbrellio/rabbit_messaging.git
+  remote: https://github.com/umbrellio/rabbit_messaging.git
   revision: 2a31c6878f012fd3a31f538a9d1ac2d0670a2e50
   branch: compression-for-publisher-and-reciver
   specs:
