@@ -57,8 +57,8 @@ class TableSync::Publishing::Single
       original_attributes: original_attributes,
       debounce_time: debounce_time,
       custom_version: custom_version,
+      headers: { compress: compress },
       event: event,
-      compress: compress,
     }
   end
 

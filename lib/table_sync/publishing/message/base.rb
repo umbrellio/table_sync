@@ -15,7 +15,7 @@ module TableSync::Publishing::Message
       self.object_class          = params[:object_class]
       self.original_attributes   = params[:original_attributes]
       self.event                 = params[:event].to_sym
-      self.compress              = params.fetch(:compress, false)
+      self.compress              = params.dig(:headers, :compress) || false
 
       @objects = find_or_init_objects
 

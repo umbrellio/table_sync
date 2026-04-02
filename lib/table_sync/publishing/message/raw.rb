@@ -60,7 +60,7 @@ module TableSync::Publishing::Message
 
     def params
       TableSync::Publishing::Params::Raw.new(
-        { model_name:, headers:, routing_key:, compress: }.compact,
+        { model_name:, headers:, routing_key: }.compact,
       ).construct
     end
   end

@@ -10,7 +10,7 @@ RSpec.describe TableSync::Publishing::Batch do
   let(:object_class)				  { "ARecordUser" }
   let(:routing_key)					  { object_class.tableize }
   let(:expected_routing_key) { "a_record_users" }
-  let(:headers) { { klass: object_class } }
+  let(:headers) { { compress: compress, klass: object_class } }
   let(:compress) { false }
 
   let(:attributes) do
@@ -21,8 +21,10 @@ RSpec.describe TableSync::Publishing::Batch do
       headers:,
       routing_key:,
       custom_version: nil,
-      compress:,
     }
+  end
+  let(:attributes_for_instance) do
+    attributes.merge(compress: compress)
   end
 
   it_behaves_like "publisher#publish_now with stubbed message",

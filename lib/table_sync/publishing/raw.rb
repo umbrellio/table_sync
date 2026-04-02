@@ -47,9 +47,8 @@ class TableSync::Publishing::Raw
       original_attributes: original_attributes,
       custom_version: custom_version,
       routing_key: routing_key,
-      headers: headers,
+      headers: headers.merge(compress: compress),
       event: event,
-      compress: compress,
     }
   end
 end

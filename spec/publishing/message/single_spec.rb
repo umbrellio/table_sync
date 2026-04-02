@@ -11,11 +11,12 @@ describe TableSync::Publishing::Message::Single do
         object_class:,
         original_attributes: [{ id: 1 }],
         routing_key: "users",
-        headers: { kek: 1 },
+        headers:,
         event:,
         custom_version: nil,
       }
     end
+    let(:headers) { { kek: 1 } }
 
     let(:object_class) { "ARecordUser" }
 
@@ -41,7 +42,7 @@ describe TableSync::Publishing::Message::Single do
       let(:params_attributes) do
         {
           object:,
-          compress: false,
+          headers:,
         }
       end
 
@@ -68,8 +69,7 @@ describe TableSync::Publishing::Message::Single do
       end
 
       context "when compress option has been specified" do
-        let(:attributes) { super().merge(compress: true) }
-        let(:params_attributes) { super().merge(compress: true) }
+        let(:headers) { super().merge(compress: true) }
 
         it "calls data and params with correct attrs" do
           expect(data_class).to receive(:new).with(data_attributes)

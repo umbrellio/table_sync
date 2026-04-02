@@ -13,11 +13,8 @@ module TableSync::Publishing::Params
         routing_key:,
         headers:,
         exchange_name:,
-        compress: compress,
       )
     end
-
-    attr_accessor :compress
 
     private
 

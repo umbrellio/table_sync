@@ -6,7 +6,7 @@ RSpec.describe TableSync::Publishing::Raw do
   let(:event)               { :update }
   let(:routing_key)         { "custom_routing_key" }
   let(:expected_routing_key) { "custom_routing_key" }
-  let(:headers) { { some_key: "123" } }
+  let(:headers) { { compress: compress, some_key: "123" } }
   let(:original_attributes) { [{ id: 1, name: "purum" }] }
   let(:table_name) { "sequel_users" }
   let(:schema_name) { "public" }
@@ -22,8 +22,10 @@ RSpec.describe TableSync::Publishing::Raw do
       table_name:,
       schema_name:,
       custom_version: nil,
-      compress:,
     }
+  end
+  let(:attributes_for_instance) do
+    attributes.merge(compress: compress)
   end
 
   let(:expected_object_data) { original_attributes }

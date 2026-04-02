@@ -9,7 +9,7 @@ RSpec.describe TableSync::Publishing::Single do
   let(:object_class)				{ "ARecordUser" }
   let(:routing_key)					{ object_class.tableize }
   let(:expected_routing_key) { "a_record_users" }
-  let(:headers) { { klass: object_class } }
+  let(:headers) { { compress: compress, klass: object_class } }
   let(:debounce_time)	{ 30 }
   let(:compress) { false }
 
@@ -18,10 +18,13 @@ RSpec.describe TableSync::Publishing::Single do
       object_class:,
       original_attributes:,
       event:,
+      headers: { compress: compress },
       debounce_time:,
       custom_version: nil,
-      compress:,
     }
+  end
+  let(:attributes_for_instance) do
+    attributes.merge(compress: compress)
   end
 
   describe "#publish_now" do

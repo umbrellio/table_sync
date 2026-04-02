@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/umbrellio/rabbit_messaging.git
-  revision: a7c85902a8655745525e3f378e58f816ec4ab9c0
+  revision: 975cdf925ab5102c0234bfcf2732dbaaa49a0ed3
   branch: compression-for-publisher-and-reciver
   specs:
     rabbit_messaging (1.8.0)
@@ -92,7 +92,7 @@ GEM
       minitest (>= 5.1)
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
-    amq-protocol (2.5.1)
+    amq-protocol (2.7.0)
     ast (2.4.3)
     base64 (0.3.0)
     benchmark (0.4.0)
@@ -123,8 +123,8 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.12.2)
-    kicks (3.2.0)
-      bunny (~> 2.19)
+    kicks (3.3.0)
+      bunny (~> 2.24)
       concurrent-ruby (~> 1.0)
       rake (>= 12.3, < 14.0)
       serverengine (~> 2.1)

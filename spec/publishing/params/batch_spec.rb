@@ -10,7 +10,6 @@ describe TableSync::Publishing::Params::Batch do
     {
       confirm_select: true,
       realtime: true,
-      compress: false,
       event: :table_sync,
     }
   end
@@ -28,13 +27,6 @@ describe TableSync::Publishing::Params::Batch do
   end
 
   describe "#construct" do
-    context "when compress option has been provided" do
-      let(:attributes) { super().merge(compress: true) }
-      let(:expected_values) { default_expected_values.merge(compress: true) }
-
-      it_behaves_like "constructs with expected values"
-    end
-
     context "default params" do
       let(:expected_values) { default_expected_values }
 

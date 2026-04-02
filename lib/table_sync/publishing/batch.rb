@@ -16,7 +16,7 @@ class TableSync::Publishing::Batch
     self.original_attributes  = attrs[:original_attributes]
     self.custom_version       = attrs[:custom_version]
     self.routing_key          = attrs[:routing_key]
-    self.headers              = attrs[:headers]
+    self.headers              = attrs[:headers] || {}
     self.event                = attrs.fetch(:event, :update).to_sym
     self.compress             = attrs.fetch(:compress, false)
 
@@ -55,9 +55,8 @@ class TableSync::Publishing::Batch
       original_attributes: original_attributes,
       custom_version: custom_version,
       routing_key: routing_key,
-      headers: headers,
+      headers: headers.merge(compress: compress),
       event: event,
-      compress: compress,
     }
   end
 

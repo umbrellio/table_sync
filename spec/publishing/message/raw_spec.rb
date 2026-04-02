@@ -7,11 +7,12 @@ describe TableSync::Publishing::Message::Raw do
         model_name: "User",
         original_attributes: [{ id: 1 }],
         routing_key: "users",
-        headers: { kek: 1 },
+        headers:,
         event: :update,
         custom_version: nil,
       }
     end
+    let(:headers) { { kek: 1 } }
 
     context "with stubbed data and params" do
       let(:data_class)   { TableSync::Publishing::Data::Raw }
@@ -34,7 +35,6 @@ describe TableSync::Publishing::Message::Raw do
           model_name: attributes[:model_name],
           routing_key: attributes[:routing_key],
           headers: attributes[:headers],
-          compress: false,
         }
       end
 
@@ -57,8 +57,7 @@ describe TableSync::Publishing::Message::Raw do
       end
 
       context "when compress option has been specified" do
-        let(:attributes) { super().merge(compress: true) }
-        let(:params_attributes) { super().merge(compress: true) }
+        let(:headers) { super().merge(compress: true) }
 
         it "calls data and params with correct attrs" do
           expect(data_class).to receive(:new).with(data_attributes)

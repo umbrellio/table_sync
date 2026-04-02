@@ -11,7 +11,6 @@ describe TableSync::Publishing::Params::Raw do
       confirm_select: true,
       realtime: true,
       event: :table_sync,
-      compress: false,
     }
   end
 
@@ -28,13 +27,6 @@ describe TableSync::Publishing::Params::Raw do
   end
 
   describe "#construct" do
-    context "when compress option has been provided" do
-      let(:attributes) { super().merge(compress: true) }
-      let(:expected_values) { default_expected_values.merge(compress: true) }
-
-      it_behaves_like "constructs with expected values"
-    end
-
     context "default params" do
       let(:expected_values) { default_expected_values }
 
