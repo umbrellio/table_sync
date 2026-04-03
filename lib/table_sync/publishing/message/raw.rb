@@ -21,7 +21,7 @@ module TableSync::Publishing::Message
       self.headers             = params[:headers]
       self.custom_version      = params[:custom_version]
       self.event               = params[:event]
-      self.compress            = params.fetch(:compress, false)
+      self.compress            = params.dig(:headers, :compress) || false
     end
 
     def publish
