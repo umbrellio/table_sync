@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/umbrellio/rabbit_messaging.git
-  revision: 3ebe0d31ea9d6a9f2532b7e49d0e5de590367dda
+  revision: e7da21ebcdd914025e5ef8586d8bcb17d5a05b58
   branch: compression-for-publisher-and-reciver
   specs:
     rabbit_messaging (1.8.0)
