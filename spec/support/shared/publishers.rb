@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # needs let(:attributes)
+# needs let(:attributes_for_instance)
 shared_examples "publisher#publish_now with stubbed message" do |message_class|
   describe "#publish_now" do
     context "with stubbed message" do
@@ -17,13 +18,14 @@ shared_examples "publisher#publish_now with stubbed message" do |message_class|
         expect(message_class).to receive(:new).with(attributes)
         expect(message_double).to receive(:publish)
 
-        described_class.new(attributes).publish_now
+        described_class.new(attributes_for_instance).publish_now
       end
     end
   end
 end
 
 # needs let(:attributes)
+# needs let(:attributes_for_instance)
 # needs let(:object_class) - String
 # needs let(:expected_object_data)
 # needs let(:headers)
@@ -48,7 +50,7 @@ shared_examples "publisher#publish_now without stubbed message" do
       it "calls Rabbit#publish with attributes" do
         expect(Rabbit).to receive(:publish).with(rabbit_params)
 
-        described_class.new(attributes).publish_now
+        described_class.new(attributes_for_instance).publish_now
       end
     end
   end

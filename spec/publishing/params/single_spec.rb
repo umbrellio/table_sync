@@ -3,7 +3,7 @@
 describe TableSync::Publishing::Params::Single do
   let(:object_class)       { "ARecordUser" }
   let(:attributes)         { default_attributes }
-  let(:default_attributes) { { object: } }
+  let(:default_attributes) { { object:, headers: } }
   let(:service)            { described_class.new(**attributes) }
 
   let(:object) do
@@ -17,8 +17,12 @@ describe TableSync::Publishing::Params::Single do
       confirm_select: true,
       realtime: true,
       event: :table_sync,
+      headers: headers,
     }
   end
+
+  let(:headers) { { compress: compress } }
+  let(:compress) { false }
 
   shared_examples "constructs with expected values" do
     specify do
@@ -40,6 +44,7 @@ describe TableSync::Publishing::Params::Single do
 
   describe "#construct" do
     context "default params" do
+      let(:headers) { super().merge(klass: "ARecordUser") }
       let(:expected_values) { default_expected_values }
 
       it_behaves_like "constructs with expected values"
@@ -48,7 +53,7 @@ describe TableSync::Publishing::Params::Single do
     context "headers" do
       context "calculated" do
         let(:expected_values) do
-          default_expected_values.merge(headers: { object_class: })
+          default_expected_values.merge(headers: { object_class:, compress: })
         end
 
         before do
@@ -56,6 +61,12 @@ describe TableSync::Publishing::Params::Single do
         end
 
         it_behaves_like "constructs with expected values"
+
+        context "when message has been compressed" do
+          let(:compress) { true }
+
+          it_behaves_like "constructs with expected values"
+        end
       end
 
       context "without headers callable" do
@@ -92,6 +103,7 @@ describe TableSync::Publishing::Params::Single do
         let(:expected_values) do
           default_expected_values.merge(routing_key: object_class)
         end
+        let(:headers) { super().merge(klass: "ARecordUser") }
 
         before do
           TableSync.routing_key_callable = -> (object_class, _atrs) { object_class }
@@ -135,6 +147,7 @@ describe TableSync::Publishing::Params::Single do
       context "by default" do
         let(:exchange_name)   { "some.project.table_sync" }
         let(:expected_values) { default_expected_values.merge(exchange_name:) }
+        let(:headers) { super().merge(klass: "ARecordUser") }
 
         before { TableSync.exchange_name = exchange_name }
 

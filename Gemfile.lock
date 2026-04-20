@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    table_sync (6.10.0)
+    table_sync (6.11.0)
       memery
-      rabbit_messaging (>= 1.7.0)
+      rabbit_messaging (>= 1.8.0)
       rails
       self_data
 
@@ -81,9 +81,9 @@ GEM
       minitest (>= 5.1)
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
-    amq-protocol (2.3.4)
+    amq-protocol (2.7.0)
     ast (2.4.3)
-    base64 (0.2.0)
+    base64 (0.3.0)
     benchmark (0.4.0)
     bigdecimal (3.1.9)
     builder (3.3.0)
@@ -92,7 +92,7 @@ GEM
       sorted_set (~> 1, >= 1.0.2)
     cgi (0.5.0)
     coderay (1.1.3)
-    concurrent-ruby (1.3.5)
+    concurrent-ruby (1.3.6)
     connection_pool (2.5.3)
     crass (1.0.6)
     date (3.5.0)
@@ -112,8 +112,8 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.12.2)
-    kicks (3.2.0)
-      bunny (~> 2.19)
+    kicks (3.3.0)
+      bunny (~> 2.24)
       concurrent-ruby (~> 1.0)
       rake (>= 12.3, < 14.0)
       serverengine (~> 2.1)
@@ -136,6 +136,7 @@ GEM
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
     minitest (5.25.5)
+    msgpack (1.8.0)
     net-imap (0.5.12)
       date
       net-protocol
@@ -181,9 +182,11 @@ GEM
     psych (5.2.6)
       date
       stringio
-    rabbit_messaging (1.7.0)
+    rabbit_messaging (1.8.0)
       bunny (~> 2.0)
       kicks
+      msgpack
+      zlib
     racc (1.8.1)
     rack (3.1.15)
     rack-session (2.1.1)
@@ -223,7 +226,7 @@ GEM
       thor (~> 1.0, >= 1.2.2)
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
-    rake (13.2.1)
+    rake (13.3.1)
     rbtree (0.4.6)
     rdoc (6.15.1)
       erb
@@ -298,7 +301,6 @@ GEM
       base64 (~> 0.1)
       logger (~> 1.4)
       sigdump (~> 0.2.2)
-    set (1.1.2)
     sigdump (0.2.5)
     simplecov (0.22.0)
       docile (~> 1.1)
@@ -307,11 +309,10 @@ GEM
     simplecov-html (0.13.1)
     simplecov-lcov (0.8.0)
     simplecov_json_formatter (0.1.4)
-    sorted_set (1.0.3)
+    sorted_set (1.1.0)
       rbtree
-      set (~> 1.0)
     stringio (3.1.8)
-    thor (1.4.0)
+    thor (1.5.0)
     timecop (0.9.10)
     timeout (0.4.3)
     tsort (0.2.0)
@@ -326,6 +327,7 @@ GEM
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
     zeitwerk (2.6.18)
+    zlib (3.2.3)
 
 PLATFORMS
   aarch64-linux-gnu

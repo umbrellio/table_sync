@@ -52,6 +52,7 @@ module TableSync
         if_condition: options[:if],
         unless_condition: options[:unless],
         debounce_time: options[:debounce_time],
+        compress: options.fetch(:compress, false),
       ).register_callbacks
     end
 

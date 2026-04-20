@@ -9,20 +9,32 @@ RSpec.describe TableSync::Publishing::Single do
   let(:object_class)				{ "ARecordUser" }
   let(:routing_key)					{ object_class.tableize }
   let(:expected_routing_key) { "a_record_users" }
-  let(:headers) { { klass: object_class } }
+  let(:headers) { { compress: compress, klass: object_class } }
   let(:debounce_time)	{ 30 }
+  let(:compress) { false }
 
   let(:attributes) do
     {
       object_class:,
       original_attributes:,
       event:,
+      headers: { compress: compress },
       debounce_time:,
       custom_version: nil,
     }
   end
+  let(:attributes_for_instance) do
+    attributes.merge(compress: compress)
+  end
 
   describe "#publish_now" do
+    context "when compress option has been provided" do
+      let(:compress) { true }
+
+      it_behaves_like "publisher#publish_now with stubbed message",
+                      TableSync::Publishing::Message::Single
+    end
+
     it_behaves_like "publisher#publish_now with stubbed message",
                     TableSync::Publishing::Message::Single
 

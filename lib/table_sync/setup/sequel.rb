@@ -15,6 +15,7 @@ module TableSync::Setup
               original_attributes: values,
               event:,
               debounce_time: options[:debounce_time],
+              compress: options.fetch(:compress, false),
             ).publish_later
           end
         end

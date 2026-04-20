@@ -6,7 +6,7 @@ module TableSync::Setup
     INVALID_EVENT     = Class.new(StandardError)
     INVALID_CONDITION = Class.new(StandardError)
 
-    attr_accessor :object_class, :debounce_time, :on, :if_condition, :unless_condition
+    attr_accessor :object_class, :debounce_time, :on, :if_condition, :unless_condition, :compress
 
     def initialize(attrs = {})
       attrs.each do |key, value|
@@ -57,6 +57,7 @@ module TableSync::Setup
         if: if_condition,
         unless: unless_condition,
         debounce_time:,
+        compress: compress,
       }
     end
   end
