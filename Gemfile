@@ -19,5 +19,3 @@ gem "bundler"
 gem "ostruct"
 gem "pry"
 gem "rake"
-
-gem "rabbit_messaging", git: "https://github.com/umbrellio/rabbit_messaging.git", branch: "compression-for-publisher-and-reciver"
